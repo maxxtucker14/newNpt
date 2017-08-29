@@ -1,0 +1,24 @@
+npt Change Log (Troy)
+
+June 9, 2004
+Removed redundant code in ReadRevCorrIni.m  (iniInfo.still_images was being assigned 
+to 0 even though it had been previously initialized to that value).
+
+June 21, 2004
+The format of "PostStimulus Duration" was different in older ini files than current
+ones.  I've changed the appropriate "case" command in ReadRevCorrIni so that either works.
+
+August 31, 2004
+Changed nptThreshold so that regions of the inspected data > (mean + 4sigma) are
+removed instead of set to the mean.  Also, if the data has multiple channels, these
+are kept separate.
+
+October 20, 2004
+Created 2 new scripts: ReadNewStimulusHeader and ReadNewStimulusFrame from their older counterparts.
+Both include the same change; instead of creating a name and path for the stimulus file from the
+.ini file, the user must input the filename (including path).
+
+April 21, 2005
+Corrected a view bugs (incorrect variable names) in nptReadDXYFile.m
+Removed some arguments in nptdata\ProcessDay and ProcessSession so that other arguments were passed
+on to the next level.

@@ -1,0 +1,28 @@
+Change Log for matlab functions used to analyze cat data
+Jonathan Baker
+
+June 8, 2004
+\npt\scripts\miscellaneous
+	Committed the function OrganizeData which should be run under the day directory or
+	in the cat data, the experiment directory. The function reads a .txt file which contains
+	the recording site information and then reorganizes the data from a day/session data 
+	hierarchy to a day/site/session data hierarchy. The function should only be run after all 
+	of the data is located in the day directory. This should be changed to account for partial
+	structures.
+
+June 18, 2004
+\npt\scripts\miscellaneous
+	Made major changes to the function OrganizeData. It will now delete and remove data properly, previously
+	it could not handle numerous sub directories like sort and FD folders. 
+	
+September 22, 2004
+\npt\scripts\read_files\ReadOldRevCorrIni
+    Made a change to the M-Seq and Sparse Noise Cases. Old ini files write out the grid center and new ini files 
+    write out the x and y centers. Changed the function to write out the x and y centers to be consistent across 
+    different data. Also included a field m_seq_size: '64x64 (order=16)', since it's not written out in the old 
+    data.
+
+September 23, 2004
+\npt\scripts\view\@nptdata\groupDirs
+    Modified the function to account for IntraGroup, InterGroup and Pairs of cells within Groups, currently the 
+    InterGroup portion does not work.

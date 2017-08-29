@@ -1,0 +1,205 @@
+To Do:
+172.20.72.168
+StarHub: Cancel Call Waiting?
+Amex: Check web site login.
+
+Histogram different ranges of windowed noise correlations.
+Look at high rate changes versus windowed noise correlations.
+
+Create contoursraster object to speed up display of spike trains. Include
+	options to group reaction times in different ways and to align spike
+	trains to stimulus onset. Allow single and grouped spike trains to be
+	displayed.
+
+Rename session directories for old Clark data.
+Rename descriptor files for old Clark data.
+Update function to convert old data directories to use sessionxx.
+Modify ProcessSession to handle eyecal sessions with empty or missing trials.
+
+Look into display raw data along with rasters.
+
+Check normalization factor in free-firing rate q(t) in getSurrogateSpikes
+
+
+Work Log
+Alter stimuli.bin files to change target window?
+
+Fix Contours preview size mismatch.
+
+Update performance, timing, bias objects to return Args	and varargout 
+	so we can use PlotOptions in InspectGUI.
+
+Set up code to select which sessions go with which eye calib sessions.
+Merge data from eye calibration sessions with different settings.
+
+Check distribution of spike counts to see if mean and std are reasonable
+	to use in contoursPSTH.
+Modify ispikes/separate to add option to just replace ispikes files 
+	instead of the entire directory.
+Move eyejitter included-trials code into method for eyejitter class which
+	is called using [nd,data] = ProcessDirs(nd,'nptDirCmd','data = 
+	get(eyejitter,''IncludeTrials'');');
+Modify eyestarget object to use MUA to look at response weighted
+	eyejitter data.
+Create variability objects for cat drifting grating sessions.
+Create site object to compare statistics between different stimuli or 
+	create function to find common session/group/cluster directories in
+	multiple nptdata objects.
+Create eyejitter objects for non-contour sessions.
+Check raw signals for 08130304.
+
+
+To Do
+Cat
+---
+Revise cat paper.
+
+Find way to objectively discard cells with refresh artifact (peak of xcorr with
+delta functions at the refresh, or take xcorr and find peaks).
+
+Regenerate surrogates. Check for duplicate spike times with 0 isi.
+
+Calculate variability for larger windows. Look for relationship between spike
+count and spike time in larger windows.
+
+Check if response latency within a window can account for low spike time
+variability.
+
+Add optional arguments to @refractory/plot to pan through spike 
+probability function spike by spike.
+
+Add overloaded get function for @refractory/plot to return right number 
+of events.
+
+Spikes:
+Fit peaks of cross-correlation peaks to find time-scale of correlations.
+Linear reconstruction vs prediction.
+Pseudo-inverse of movie images to get kernels. Compare predictions using
+these kernels with predictions using M-sequence.
+Information for individual cells, cell pairs, and groups.
+Compare information of joint activity versus independent activity.
+Time resolution corresponding to maximum information.
+
+LFP:
+Multi-taper time-frequency analysis.
+Response-response coherence.
+
+Spike sorting – wavelet features, Zoltan’s clustering algorithm,
+clustering measure, Dimitrov’s spike extraction algorithm
+
+Reverse correlation – separate on- and off-transients reverse
+correlation from m-sequence, higher order correlations, temporal
+transient reverse correlation, reverse correlate to filtered images
+
+Information theory calculations on responses ala Aronov and Victor,
+Nirenberg and Latham, Schnitzer and Meister, synergy vs redundancy
+
+Spike time patterns ala Sejnowski, sliding cross-correlations ala
+Laurent, quantization analysis ala Dimitrov
+
+Response prediction using frame level m-sequence kernels, pseudo-inverse
+natural movies, maximal information dimension, dejittered kernels
+
+Variability quantified using response-response coherence,
+stimulus-response coherence
+
+Time-frequency analysis of spike and lfp signals
+
+Test normalization models using multi-cell data
+
+Interactions between neighboring neurons
+
+Interactions between neurons in different cortical layers
+
+Feed-forward and feed-back interactions between neurons in different
+cortical areas
+
+Contours
+--------
+Fix classes to not assume 300 ms as the valid match time window.
+
+Add option that automatically adds sessions that are similar and skips
+sessions that are different for bias, performance, and timing classes.
+
+Reanalyze bias data taking into account fixation eye position.
+
+Add optional arguments to @bias/plot to pan through salience levels for 
+single session or for overall data.
+
+Add overloaded get function for @bias/plot to return right number of 
+events.
+
+Create script to automatically generate MClust plots for clusters and 
+insert them into Keynote.
+
+Check for linearity in adding cues ala Randolph Blake.
+
+
+npt
+---
+Modify InspectGUI so linkedzoom can be turned on for selected subplots.
+
+Modify dxy file generation to ignore extra files.
+
+Add function to merge fields of Args structure and merge the flags field. 
+	Set up code to check Args along with Args from subfunctions as well as to 
+	ignore fields like RedoLevel and SaveLevels. 
+
+Add try-catch around new call to plot that expects a second output
+	argument. The catch statements should try to create the Args
+	from s.optArgs (won't work with flags but it is better than nothing).
+Need way to specify optional output arguments.
+
+Modify objects to make use of directory information in nptdata
+object to move to the right directory if necessary. Especially useful
+for objects without self-contained data.
+
+Add code to panGUI to store original limits in order to allow zooming 
+out.
+
+Move subplot code in @nptdata/plot to nptSubplot.
+
+Update checksystem class to use new nptdata framework.
+
+Modifiy optional input argument addObjs for InspectGUI to include 
+optional arguments instead of having to use optArgs input argument.
+
+Incorporate panGUI to InspectGUI.
+
+Add plot options GUI to InspectGUI that uses overloaded function from
+each class to fill GUI.
+
+Debug nptRemoveLineNoise.
+
+Experiment with Alex's spike extraction algorithm
+
+
+Presenter
+---------
+Fix sync and scanline monitoring for NoTransient condition
+
+Check paradigm for missing wait for acknowledgement from Streamer after 
+incomplete trial
+
+Add open contours to Interpolated Contour stimulus
+
+
+Rig Tests & Modifications
+-------------------------
+Add data precision controls to DataStreamer
+
+
+Possible Stimulus Protocol
+Moving Gabors with no distractors
+Moving Gabors with distractors
+Static Gabors with no distractors
+Static Gabors with distractors
+No Transient, Moving Gabors with no distractors
+No Transient, Moving Gabors with distractors
+No Transient, Static Gabors with no distractors
+No Transient, Static Gabors with distractors
+
+Unique or redundant information in cell pairs?
+Response-response coherence?
+Low contrast stimuli?
+Quantitative receptive maps

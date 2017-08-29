@@ -1,0 +1,2765 @@
+Neuro Physiology Toolbox 
+Change Log (Shih-Cheng Yen)
+
+July 16, 2001
+nptWritSorterHDR: renamed to nptWriteSorterHDR.
+	changed format of header slightly to make reading back easier.
+nptReadSorterHDR: created to return header info.
+nptReadDatFile:	updated help message.
+
+July 17, 2001
+ProcessDay: Moved ProcessSession call into a separate loop after files 
+	have been moved.
+
+July 20, 2001
+GenerateSessionSpikeTrains: Changed session structure so that we can 
+	store the session name, and max trial duration in the structure.
+InspectSpikes: Renamed from CheckingSorting. Updated to use the new 
+	session structure. Fixed bug that was rounding up a integer instead 
+	of a float.
+
+July 30, 2001
+GenerateSessionSpikeTrains: Added signal number as an argument so that a 
+	signal field is added to the session structure to store signal 
+	number in the raw streamer file so that InsepectSpikes won't need 
+	any additional information. 
+InspectSpikes: Updated to use signal number in the session structure 
+	instead of requiring an additional argument to specify the signal 
+	number.
+				
+July 31, 2001
+nptHighPass: Use filtfilt instead of filter to eliminate phase shifts in
+	the filtered signal.
+nptLfpFilter2: Use filtfilt instead of filter to eliminate phase shifts 
+	in the filtered signal.
+AutomatedScript: Moved check for marker file to ProcessDay.
+ProcessDay: Now checks for marker file before proceeding.
+ProcessSession: Fixed bug that did not create marker file when done
+	processing. Added check to make sure ini file is not a RF file
+	before trying to read it to see if it is a calibration session.
+nptReadSorterHdr: Added channel order in streamer file to the list of 
+	return parameters.
+
+August 1, 2001
+InspectSpikes: Fixed bug that left out a close parenthesis in checking 
+	for the presence of highpass in the session name.
+nptLfpFilter2: Changed filter cutoffs to 1-150 Hz. 
+ProcessDay: Changed marker name to processday.txt so there are no 
+	confusions with other scripts.
+ProcessSession: Changed marker name to processsession.txt so there are 
+	no confusions with other scripts.
+ProcessEyeSessions: Changed marker name to processeyes.txt so there are 
+	no confusions with other scripts.
+
+August 2, 2001
+GenerateSessionSpikeTrains: Now opens .GDF, .DAT, and .HDR file so you
+	don't have to load them all separately.
+nptReadSorterHdr: Updated comments.
+ProcessDay: Added check for file skip.txt to see if we should skip the 
+	day.
+ProcessSession: Added check for file skip.txt to see if we should skip 
+	the	session.
+ProcessEyeSessions: Added check for file skip.txt to see if we should 
+	skip the session.
+nptLfpFilter2: Removed for loop used in resampling the data.
+
+August 3, 2001
+nptLfpFilter2: Need to call butter each time since we are running into
+	problems with the round off error in the coefficients when
+	we specify them in the script.
+ProcessSession: Changed filenames for lfp and highpass to the following
+	format sessionname_lfp0001.bin and sessionname_highpass0001.bin.
+	Added extra fprintf at the end to return prompt to the usual
+	place. Added check to make sure there were ini files in a
+	directory before proceeding, e.g. when we place a dxy file in a 
+	dummy session just so we can use the eye data.
+ProcessEyeSessions: Fixed bug that forgot to create processedeyes.txt 
+	when done with each session. Added extra fprintf at the end to 
+	return prompt to the usual place. 
+ProcessDay: Updated to use new naming format. Reversed order of moving 
+	eye and eyefilt files because of new naming format.
+nptHighPass: Now calls butter each time to get the proper coefficients. 
+	Also transposes data since filtfilt takes data in columns. The
+	filtered data is transposed back since extractor expects data
+	in rows.
+				
+August 4, 2001
+InspectSpikes: Added 'zoom on' to allow interactive magnification. Will 
+	now use current figure if there is one instead of creating a new
+	figure each time.
+
+August 8, 2001
+InspectSpikes: Added mod to line commands to allow more than 7 clusters.
+InspectDatFile: Rewritten to use nptReadDatFile to read in whole DAT 
+	file and added keyboard handling similar to InspectSpikes.
+
+August 13, 2001
+nptReadStreamerFile: Updated help comments. Added Dependencies section.
+nptReadDatFile: Updated help comments. Added Dependencies section.
+nptReadSorterHdr: Updated help comments. Added Dependencies section.
+InspectSpikes: Updated help comments. Added Dependencies section.
+GenerateSessionSpikeTrains: Updated help comments. Added Dependencies 
+	section.
+
+August 15, 2001
+GenerateSessionSpikeTrains: Fixed bug that failed to check to see if we 
+	have exceeded the size of the gdf vector.
+				
+August 26, 2001
+nptExtructor: Changed ceil to floor when rounding negative stdev. 
+	Removed redundancies in code. Updated comments.
+AutomatedScript: Updated comments. Replaced size(varargin,2) with 
+	nargin. Added processing of 'redo' argument.
+ProcessDay: Updated comments. Added processing of 'redo' argument. Added
+	argument to call to ProcessEyeSessions. 
+ProcessEyeSessions: Added arguments to function call to check for 'redo'
+	argument.
+ProcessSession: Updated comments. Added processing of 'redo' argument. 
+	Fixed function names to be conscious of case-sentivity.
+InspectDatFile: Updated comments.
+
+August 29, 2001
+AutomatedScript: Checks if the arguments passed in are in a cell array.
+ProcessDay: Checks if the arguments passed in are in a cell array. 
+	Indents fprintf commands to provide clearer feedback.
+ProcessSession: Checks if the arguments passed in are in a cell array. 
+	Indents	fprintf commands to provide clearer feedback.
+ProcessEyesSessions: Checks if the arguments passed in are in a cell 
+	array. Indents fprintf commands to provide clearer feedback.
+
+September 2, 2001
+ProcessSession: Added code to extract spikes from highpass filtered data 
+	if the session contained broadband data. Fixed neuron spelling.
+ProcessDay: Now calls unix script tolower.tcsh to rename all filenames 
+	to lowercase characters if run on anything other than PC or Mac
+	platforms.
+
+September 5, 2001
+ExtractorWrapper: Added return arguments for mean and 4 stdev for 
+	clipped data. Now clips data without assuming mean of 0 for data. 
+	Now	passes mean and 4 stdev for clipped data to nptExtructor. Fixed
+	neuron spelling.
+nptExtructor: Now takes mean of clipped data as argument instead of 
+	calculating	the mean from unclipped data.
+nptWriteDat: Fixed neuron spelling.
+
+September 6, 2001
+ExtractorWrapper: Fixed bug that didn't store the means and thresholds
+	separately for the different groups. Updated comments. 
+ProcessSession: Now keeps the means and thresholds for the different 
+	groups separate. Now loops over groups after extraction and calls 
+	nptWriteDat and nptWriteSorterHdr separately.
+nptWriteDat: Now just writes DAT file instead of looping over groups and 
+	calling nptWriteSorterHdr.
+nptWriteSorterHdr: Now writes means and thresholds used in extraction
+	for each trial.
+GenerateSessionSpikeTrains: Fixed bug that failed to set gdfsize when 
+	gdf's are not being used. Now reads in means and thresholds for each
+	trial from the HDR files created by the extraction functions.
+InspectSpikes: Added code to draw mean and thresholds used in extraction 
+	on raw data.
+				
+September 7, 2001
+GenerateSessionSpikeTrains: Updated comments.
+nptReadSorterHdr: Fixed error in comment. Put in code to set means and 
+	thresholds to empty arrays to retain backward compatability with old
+	data. Fixed	typo in means.
+InspectSpikes: Added check to see if means and thresholds are empty in 
+	order to retain backward compatability with old data. Added quit 
+	key.
+ProcessSession: Added adjustment of signal number when writing HDR files 
+	for data extracted from highpass data files. Also added clear data 
+	command	to improve memory usuage.
+
+September 11, 2001
+InspectDatFile: Added quit key.
+nptLfpFilter2: Added command to transpose the filtered data back into 
+	the same form as the input data, i.e. each channel is in a row.
+ProcessSession: Renamed groupfilename to rawfilename when calling to 
+	avoid confusion when calling nptWriteSorterHdr. Added scanorders for 
+	eye, lowpass, broadband so that when nptWriteStreamerFile is called, 
+	it has only the relevant channels.
+				
+September 12, 2001
+InspectSpikes: Updated comments. Added clear data command to improve 
+	memory usage. Added check to avoid reading first trial twice.
+InsepctStreamerSession: New function to inspect streamer files for all 
+	trials in a session. Can also be used to look at lfp and high pass 
+	signals.
+
+September 13, 2001
+InspectSpikes: Shifted x axis a little bit so we can see the start of 
+	the data better. 
+InspectStreamerSession: Shifted x axis a little bit so we can see the 
+	start of the data	better. Added code to update time vector when 
+	longer data files are encountered.
+
+September 14, 2001
+InspectStreamerSession: Fixed bug in computing durations.
+
+September 18, 2001
+ProcessEyeSessions: Fixed bug that would stop if a session with a 
+	substitute eye session is encountered.
+
+September 21, 2001
+InspectSpikes: Fixed mod bug in cycling through plot colors when there 
+	are more than 7 clusters.
+
+October 5, 2001
+nptAddPath: Created script to add NPT directories to path.
+
+October 7, 2001
+ProcessSession: Round max duration up to nearest integer to avoid 
+	problems with round off errors.
+
+October 8, 2001
+read_init_info: Replaced calls to strread (which is not available in 
+	Matlab 5.3) with sscanf.
+
+October 9, 2001
+ProcessEyeSessions: Added check for empty arguments. Fixed new bug that 
+	failed to convert eye positions to screen coordinates for 
+	experimental sessions.
+InspectDatFile: Fixed bug that prevented the first trial from being 
+	displayed after the start.
+ProcessSession: Removed warning message about unknown signals (due to 
+	trigger	channel now being acquired). 
+				
+October 11, 2001
+AutomatedScript: Now passes arguments as comma separated strings so we 
+	don't have to do all kinds of checks for the form of the arguments.
+ProcessDay: Changed argument form as above.
+ProcessSession: Changed argument form as above.
+ProcessEyeSessions: Changed argument form as above.
+
+October 12, 2001
+ProcessSession: Commented out LFP processing. Now do nothing if signal 
+	is LFP. Also no longer lowpass filter signals if they are broadband.
+
+October 17, 2001
+nptReadStreamerChannel: New function.
+
+October 18, 2001
+ProcessSession: Put lfp processing back as an optional user specified 
+	calculation. Changed name format for streamer-like files back
+	to session_highpass.0001 to make them easier to work with.
+ProcessEyeSessions: Changed name format for streamer-like files back
+	to session_highpass.0001 to make them easier to work with.
+ProcessDay: Updated code to work with new file name format.
+InspectSpikes: Updated code to work with new file name format.
+InspectSpikesOnEyes: Updated code to work with new file name format.
+InspectStreamerSession: Updated code to work with new file name format.
+InspectLFPs: Function removed since InspectStreamerSession can do the 
+	job as a result of the name change.
+nptDisplayMovie: Updated code to work with new file name format.
+nptDisplayStillImage: Updated code to work with new file name format.
+nptDetectSaccade: Updated code to work with new file name format.
+nptEyeInfo: Updated code to work with new file name format.
+
+October 21, 2001
+ProcessSession: Added computation of min_duration which is also passed 
+	to nptWriteSorterHdr to be written out to the HDR file.
+nptWriteSorterHdr: Now writes min_duration to the HDR file.
+nptReadSorterHdr: Now reads min_duration from the HDR file.
+
+October 22, 2001
+nptDetectSaccade: Merged with Baldwin's changes.
+nptEyeDurationHistograms: Updated to Baldwin's verson.
+nptWriteSorterHdr: Changed format when writing min duration to the HDR 
+	file to improve compatability with older files.
+nptReadSorterHdr: Updated code to work with new min duration format.
+
+October 28, 2001
+ProcessSession: Fixed typo in computing min duration.
+nptWriteSorterHdr: Fixed bug in writing duration.
+
+October 30, 2001
+nptDetectSaccade: Updated Baldwin's version.
+nptEyeDurationHistograms: Updated Baldwin's version.
+ProcessEyeSessions: Merged with Baldwin's changes. Moved addition of 
+	session to experimental list out of if loop.
+ProcessSessions: Merged with Baldwin's changes.
+nptGetStreamerChannel: Function deleted.
+nptReadSorterHdr: Updated Baldwin's version.
+read_init_info: Updated to Baldwin's version.
+InspectLFPs: Function deleted.
+nptWriteSorterHdr: Updated Baldwin's version.
+
+November 1, 2001
+ProcessSession: Put low-pass processing back into ProcessSession. Fixed 
+	typo in extractionflag. Now grabs the session name from 
+	the directory to select raw data files.
+
+
+November 23, 2001
+GenerateSessionSpikeTrains: Updated to use new nptReadSorterHdr.
+
+November 24, 2001
+nptAddPath: Modified to remove any hard coded directories. Now it should
+	discover for itself the location of the base dir and add
+	all subdirectories to the path.
+nptREADME: Added instructions to set up paths.
+
+December 5, 2001
+Merged with Baldwin's changes:
+nptDetectSaccade: Deleted.
+nptGenerateSessionEyeMovements: Updated to Baldwin's version.
+nptEyeCalibAnalysis: Updated to Baldwin's version (changes in comments 
+	that were not documented in Baldwin's change log).
+nptEyeDurationHistograms: Updated to Baldwin's version (changes in 
+	comments that were not documented in Baldwin's change log).
+nptEyeInfo:	Deleted as per Baldwin's changes.
+nptEyePowerSpectrum: Added as per Baldwin's changes.
+nptEyeVelocityHistogram: Added as per Baldwin's changes.
+nptEyePositionRangeHistogram: Added as per Baldwin's changes.
+nptEyecoil2Screen: Updated to Baldwin's version (changes in comments 
+	that were not documented in Baldwin's change log).
+nptPSTH: Updated to Baldwin's version.
+pixel2degree: Updated to Baldwin's version (changes in comments that 
+	were not documented in Baldwin's change log).
+nptGaussainConv: Updated to Baldwin's version (changes in comments that 
+	were not documented in Baldwin's change log).
+nptHighPass: Updated to Baldwin's version (changes in comments that were 
+	not documented in Baldwin's change log).
+nptLfpFilter2: Deleted as per Baldwin's changes.
+nptLowPassFilter: Added as per Baldwin's changes.
+nptGenerateSessionSpikeTrains: Updated to Baldwin's version.
+AutomatedScript: Deleted as per Baldwin's changes.
+BatchPreProcessor: Added as per Baldwin's changes.
+ChannelIndex: Updated to Baldwin's version (changes in comments that 
+	were not documented in Baldwin's change log).
+GroupSignals: Updated to Baldwin's version.
+ProcessDay: Updated to Baldwin's version.
+ProcessEyeSessions: Updated to Baldwin's version.
+ProcessSession: Updated to Baldwin's version.
+nptPWD: Updated to Baldwin's version (changes in comments that were not 
+	documented in Baldwin's change log).
+ReadStimulusHeader: Updated to Baldwin's version (changes in comments 
+	that were not documented in Baldwin's change log).
+InspectSpikes: Updated to Baldwin's version.
+InspectSpikesOnEyes: Updated to Baldwin's version.
+create_points: Updated to Baldwin's version (changes in comments that 
+	were not documented in Baldwin's change log).
+nptWriteSorterHdr: Updated to Baldwin's version (changes in comments 
+	that were not documented in Baldwin's change log).
+nptAddPath: Added revcorr directory.
+
+December 23, 2001
+nptEyecoil2Screen: Updated to Baldwin's version (changes in comments 
+	that were not documented in Baldwin's change log).
+pixel2degree: Updated to Baldwin's version (changes in constants like 
+	screen_width, screen_height, movie_width, movie_height that 
+	were not documented in Baldwin's change log).
+GenerateSpikeTrains: Updated to Baldwin's version.
+ProcessEyeSessions: Updated to Baldwin's version.
+ProcessSession: Updated to Baldwin's version.
+read_init_info: Updated to Baldwin's version.
+InspectSpikes: Updated to Baldwin's version.
+
+December 24, 2001
+nptAddPath: Modified so it figures out which subdirectories are present 
+	and needs to be added to the path. This way we won't have to update
+	nptAddPath if we add or remove subdirectories in npt.
+nptDir: Modified so it always calls DIR and just checks to see if the 
+	first entry is '.', and if so, it removes the first two entries.
+				
+December 27, 2001
+nptDir: Fixed bug that failed to return argument when nothing needs to 
+	be done.
+nptParseStreamerHeader: New function that reads the header and moves the 
+	file pointer to the end of the header.
+nptReadStreamerFile: Now uses nptParseStreamerHeader.
+nptReadStreamerFileHeader: New function that just returns the header 
+	without	reading the data.
+
+January 2, 2002
+@event: New class used to keep track of event number.
+@event/Decrement: Method used to decrease event number.
+@event/DoEventNumber: Method used to execute specific event number.
+@event/DoNextEvent: Method used to increment event number and execute 
+	event.
+@event/DoPreviousEvent: Method used to decrement event number and 
+	execute event.
+@event/event: Constructor function for event class.
+@event/GetEventNumber: Method to return current event number.
+@event/Increment: Method to increase event number.
+@event/SetEventNumber: Method to set event number to a specific number.
+@waveforms: New class used to store waveforms.
+@waveforms/display: Method to display objects from the class waveforms 
+	on the command line.
+@waveforms/get: Method to return properties of waveforms object.
+@waveforms/waveforms: Constructor function for waveforms object.
+@streamer: New class used to store streamer session.
+@streamer/display: Method to display objects from the class steamder on 
+	the	command line.
+@streamer/get: Method to return properties of streamer object.
+@streamer/streamer: Constructor function for streamer object.
+@ispikes: New class used to store interleaved spike trains.
+@ispikes/display: Method used to display objects from the class ispikes 
+	on command line.
+@ispikes/get: Method to return properties of ispikes object.
+@ispikes/ispikes: Constructor function for ispikes object.
+@viewwaveforms: New class used to view waveforms.
+@viewwaveforms/viewwaveforms: Constructor function for viewwaveforms 
+	class.
+@viewwaveforms/DoEvent: Method that plots waveforms.
+@viewstreamer: New class used to view streamer session.
+@viewstreamer/viewstreamer: Constructor function for viewstreamer class.
+@viewstreamer/DoEvent: Method that plots streamer trials.
+@viewispikes: New class used to view sorted spike trains.
+@viewispikes/viewispikes: Constructor function for viewispikes class.
+@viewispikes/DoEvent: Method that plots sorted spike trains on top of 
+	raw data.
+Inspect: New function that makes use of new view classes to display 
+	data.
+InspectDatFile: Now instantiates the waveforms class and uses the 
+	Inspect	function to display waveforms.
+InspectStreamerSession: Now instantiates the streamer class and uses the
+	Inspect function to display raw data.
+InspectGUI: New GUI that makes use of new view classes to display data.
+InspectCB: Contains callback functions for InspectGUI.
+CreateViewObject: Creates view objects when given either data objects or 
+	creates data objects and then view objects when given 
+	filenames.
+
+January 3, 2002
+nptAddPath: Updated to avoid adding class directories. Now also checks
+	to make sure directory listings are not empty.
+@viewwaveforms: Removed class.
+@viewstreamer: Removed class.
+@viewispikes: Removed class.
+@event/Increment: Modified to return event number along with the object.
+@event/Decrement: Modified to return event number along with the object.
+@waveforms/get: Renamed TotalWaveForms property to Number which is now 
+	consistent throughout all data classes so Inpsect and 
+	InspectGUI can make use of it transparently.
+@waveforms/plot: Renamed viewwaveforms/DoEvent. Now takes an input 
+	argument that specifies the trial to be plotted. Also replaced use 
+	of get since the function now has access to the waveforms 
+	data structure. 
+@streamer/streamer: Added another constructor method that takes the 
+	number of trials as an input argument so ispikes can make use of
+	that in its constructor.
+@streamer/get: Renamed TotalTrials property to Number.
+@streamer/plot: Renamed viewstreamer/DoEvent. Now takes an input 
+	argument that specifies the trial to be plotted. Also replaced use 
+	of get since the function now has access to the streamer 
+	data structure. 
+@ispikes/ispikes: Modified constructor to instantiate streamer object 
+	and	then inherit ispikes from it so we can make use of the plot 
+	method in the streamer class.
+@ispikes/get: Renamed TotalTrials property to Number.
+@ispikes/plot: Renamed viewispikes/DoEvent. Now takes an input argument
+	that specifies the trial to be plotted. Also replaced use 
+	of get since the function now has access to the ispikes 
+	data structure. Also makes use of plot method in streamer
+	class. Changed last axis command to allow spike trains to 
+	be visible.
+Inspect: Modified to instantiate event object internally and take just
+	data objects as input argument. Now calls plot method 
+	of input object with a number argument instead of DoEvent. 
+	Function can also take input strings and create data objects 
+	using CreateDataObjects.
+InspectGUI: Modified to instantiate event object internally and take 
+	just data objects as input argument. The event object and the 
+	data object are now added to a structure and stored in the
+	UserData field in the figure. Function can also take input 
+	strings and create data objects using CreateDataObjects.
+InspectCB: Now calls plot method of input object with a number argument 
+	instead of DoEvent. Function can also take input 
+	strings and create data objects using CreateDataObjects
+	when the load callback is executed.
+CreateDataObject: Replaces CreateViewObject. Now checks to see if 
+	argument is a string and then proceeds to try to create data object. 
+	Also now checks if the plot method exists for the input 
+	object if an object is passed to the function.
+				
+Jan 4, 2002
+nptReadGDFFile: New function to read GDF files that will also return 
+	some information about number of clusters and number of spikes
+	as well as number of spikes per cluster.
+CreateDataObject: Now prompts user to provide additional information in 
+	order to create new objects. 
+
+Jan 13, 2002
+ismethod: New function to check to see if a method is defined for an 
+	object.
+@limits: New class to keep track and return max and min limits.
+@limits/limits: Constructor function for limits object.
+@limits/update: Method to pass max and min values and return updated max 
+	and	min values.
+@event/event: Updated comments.
+@nptdata: New base class for all data classes. Contains Number and 
+	AxisHold properties common to all data classes and used by Inspect 
+	and InspectGUI which are now methods of the nptdata class.
+@nptdata/nptdata: Constructor function for nptdata object.
+@nptdata/get: Returns Number and AxisHold properties for nptdata 
+	objects.
+@nptdata/set: Sets Number and AxisHold properties for nptdata objects.
+@nptdata/Inspect: Inspect method that used to be stand-alone Inspect 
+	function. Now checks object's HoldAxis property as well as the 
+	argument list passed to the function to see if we need to hold the 
+	axis. Uses the new limits object to keep track of max and min values 
+	of the y-axis.
+@nptdata/InspectGUI: InspectGUI method that used to be stand-alone 
+	InspectGUI function. Now checks object's HoldAxis property as well 
+	as the argument list passed to the function to see if we need to 
+	hold the axis. Uses the new limits object to keep track of max and 
+	min values of the y-axis. Now also checks for number of arguments to 
+	allow for calling InspectGUI with no arguments.
+npt/scripts/view/gui: New directory added to npt path to store GUI mat 
+	files and callback functions. (NB: nptAddPath needs to be run and 
+	the path saved!)
+InspectCB: Moved to gui directory. Updated to use new limits object to 
+	keep track of max and min values of the y-axis.
+InspectGUI: Wrapper function that now creates a dummy nptdata object if 
+	called with no arguments so that Matlab knows which InspectGUI to 
+	call.
+@waveforms/waveforms: Updated to inherit from nptdata class and to set 
+	AxisHold property to 1.
+@waveforms/get: Removed Number property since that is now inherited from 
+	nptdata. Now passes any unknown properties to get method in nptdata 
+	base class.
+@streamer/streamer: Updated to inherit from nptdata class and set 
+	AxisHold property to 1.
+@streamer/get: Removed Number property since that is now inherited from 
+	nptdata. Now passes any unknown properties to get method in nptdata 
+	base class.
+@ispikes/ispikes: Sets AxisHold property of inherited streamer object to 
+	0 so that spike trains always remain at the top of the plot.
+@ispikes/get: Removed Number property since that is now inherited from
+	nptdata through the inheritance from streamer. Now passes any 
+	unknown	properties to get method in streamer class, which will pass 
+	any unknown properties to get method in nptdata class.
+	
+Jan 14, 2002
+@ispikes/subsref: Changed numTrials to use get method of nptdata base 
+	class. Should change streamer switch statement to use subsref method 
+	instead of replicating code.
+@streamer/subsref: Changed numTrials to use get method of nptdata base 
+	class.
+@waveforms/subsref: Changed total to num_waves to be more informative 
+	and changed code to call the get method in nptdata base class to 
+	return number.
+@ispikes/display: Baldwin's version.
+@streamer/display: Baldwin's version.
+@waveforms/display: Baldwin's version. Changed total to num_waves to be 
+	more informative.
+@streamer/plot: Baldwin's version.
+@eyes: Baldwin's version.
+@eyes/eyes: Modified to use nptdata as base class. Set holdAxis to 1 and 
+	passed numTrials info to nptdata constructor.
+@eyes/get: Removed numTrials property and now passes any unknown 
+	properties to @nptdata/get.
+CreateDataObject: Baldwin's version.
+InspectCB: Added Baldwin's changes.
+
+Jan 15, 2002
+CreateDataObject: Changed isstr to ischar since the former is obsolete 
+	and	may be removed in future versions of Matlab.
+
+Jan 17, 2002
+@nptdata/plot: Virtual method that does nothing so InspectGUI can be 
+	called without arguments.
+@nptdata/InspectGUI: Removed check for no arguments since that can never
+	happen.
+
+@trialwaves: New class that breaks up the waveforms class into trials. 
+@trialwaves/trialwaves: Constructor function for trialwaves object.
+@trialwaves/get: Method to return properties of trialwaves object.
+@trialwaves/display: Method to display properties of trialwaves object.
+@trialwaves/subsref: Method to index trialwaves object. Calls subsref 
+	method of the waveforms class.
+@trialwaves/ToWaveNumber: Method to convert trial and wave number to 
+	waveform number in waveforms object.
+@trialwaves/InspectGUI: GUI with trial and wave number widgets used by 
+	the trialwaves object.
+gui/twInspectGUI.mat: MAT file for @trialwaves/InspectGUI.
+gui/twInspectCB: Callback function for @trialwaves/InspectGUI.
+
+Jan 18, 2002
+@waveforms/waveforms: Changed constructor to take groupname instead of 
+	filename to make it more consistent with the other data types.
+@trialwaves/trialwaves: Changed call to waveforms to use groupname 
+	instead of filename.
+CreateDataObject: Addded option to create trialwaves object. Changed 
+	call to waveforms constructor to use groupname instead of filename.
+gui/InspectCB: Now checks to see if we should continue using the current 
+	gui or a more specific gui to inspect object created by 
+	CreateDataObject.
+gui/twInspectCB: Now checks to see if we should continue using the 
+	current gui	or a different gui to inspect object created by 
+	CreateDataObject. Updated Load function to create necessary data 
+	structure for trialwaves.
+InspectDatFile: Updated to call waveforms constructor with groupname 
+	instead of filename.
+	
+Jan 23, 2002
+@nptdata/specificInspectGUI: New method of base class that always 
+	returns 0 to distinguish objects that do not have a specific version 
+	of InspectGUI since	which('InspectGUI(obj)') does not seem to work 
+	properly.
+@trialwaves/specificInspectGUI: New method that returns 1 to indicate 
+	that this object uses a specfic InspectGUI.
+gui/InspectCB: Modified to use 'specificInspectGUI' method instead of 
+	'which' to check if we can reuse the GUI.
+gui/twInspectCB: Modified to use 'specificInspectGUI' method instead of 
+	'which' to check if we can reuse the GUI.
+
+Jan 30, 2002
+@waveforms/subsref: Changed array references from {1} to {:}. Added help 
+	comments.
+@trialwaves/subsref: Changed array references from {1} to {:}. Added 
+	help comments.
+@streamer/subsref: Added help comments.
+@ispikes/subsref: Changed array references from {1} to {:}. Added help 
+	comments.
+@eyes/subsref: Added help comments.
+
+Feb 12, 2002
+@eyes/plot: Baldwin's version, which also now calls pixels2degrees, 
+	plots multiple channels, and adds labels to the axes.
+@ispikes/display: Baldwin's version.
+@ispikes/get: Baldwin's version.
+@ispikes/ispikes: Baldwin's version.
+@ispikes/subsref: Baldwin's version.
+CreateDataObject: Baldwin's version.
+
+Mar 19, 2002
+nptReadSyncsFile: New function to read syncs file from DataStreamer.
+
+April 22, 2002
+nptLowPassFilter: Updated comments and added ability to pass different 
+	resampling rates, low and high frequency cutoffs.
+nptHighPassFilter: Renamed from nptHighPass. Updated comments and added
+	ability to pass different sampling rates, low and high frequency 
+	cutoffs.
+contents: Updated name of nptHighPassFilter and nptLowPassFilter.
+ProcessSession: Updated calls to nptHighPassFilter.
+ecorrige50.m: code from Pedro to remove line noise from signal.
+algorithms/filters/nptRemoveLineNoise: New function derived from Pedro's 
+	code to remove line noise. Changed line noise to 60 Hz.
+algorithms/nptFFT: New function derived from plotFFT to compute FFT, 
+	compute	magnitude, and shift the points accordingly.
+algorithms/ComputeAllTrialsFFT: New function to average FFT's across 
+	trials.
+
+May 23, 2002
+nptRemoveLineNoise: Modified code to keep all data points at the right 
+	phase when duplicating data to get rid of end effects.
+
+May 28, 2002
+nptReadStreamerFileHeader: Fixed bug that failed to do a fclose before 
+	exiting.
+nptReadSyncsFile: Fixed bug that failed to do a fclose before exiting.
+nptRemoveLineNoise: Modified code to create duplicated data of the 
+	necessary length only.
+
+June 21, 2002
+nptReadStreamerFile: Modified code so that points is not a float when
+	the wrong number of channels is recorded in the header.
+
+June 24, 2002
+nptReadStreamerFile: Modified code to check to make sure the number of 
+	points in the data file is a multiple of the number of channels in 
+	the header. If there is a mismatch, the data is read in again as 1 
+	row (so we can grab all	the data points), padded with zeros to 
+	create a matrix with an even number of rows and cols, and a warning 
+	is printed to the screen.
+
+June 26, 2002
+scripts/miscellaneous/nptReshapeData: New function to reshape data if it 
+	has the wrong number of channels.
+
+June 27, 2002
+scripts/miscellaneous/nptComputeSyncStats: New function to compute 
+	max and min intervals between syncs using data from the sync 
+	monitor.
+scripts/miscellaneous/nptComputeSyncDataStats: New function to compute 
+	max and min intervals between syncs using acquired data instead of 
+	the sync monitor.
+
+June 28, 2002
+nptComputeSyncStats: Modified to return sync intervals.
+nptComputeSyncDataStats: Modified to call nptComputeSyncStats and to 
+	return syncs.
+
+July 11, 2002
+scripts/miscellaneous/DataView: script (not function) to look at trigger
+	channel for normal acquisition and single-trial acquisition. It also
+	plots the function generator signal to check for data interleaving.
+scripts/miscellaneous/TrigInterval: Troy's script for looking at 
+	single-trial acquisition data and normal acquisition.
+scripts/miscellaneous/CheckEndPoints: script to look for interleaved 
+	data.
+scripts/nptCheckEndData: new function that returns true if it looks like 
+	there is some interleaved data.
+scripts/nptCheckExpSystem: new function that computes summary data for 
+	a session, checking for number of channels, trial durations, trigger
+	lengths, sync intervals, end triggers, and interleaved data.
+nptComputeSyncDataStats: Modified to use diff function.
+nptComputeSyncStats: Modified to use diff function. Fixed bug that
+	failed to return sIntervals when there are no syncs.
+nptReadSyncsFile: Modified to frewind and fseek to the end of the 
+	headersize so it will work even if the header size is changed.
+
+July 12, 2002
+nptCheckExpSystem: Renamed imins and pmins and associated variables to
+	dmins (for mins computed from data) and mmins (mins computed from
+	sync monitor). Moved plot of interleaved data to plot of end trigger 
+	value.
+nptParseStreamerHeaderFile: Added error checking.
+nptReadStreamerFile: Added error checking. Now returns after error 
+	instead	of continuing.
+nptReadStreamerChannel: Added error checking.
+nptReadStreamerFileHeader: Added error checking.
+nptComputeSyncStats: Return iminInt as 0 instead of [] when there is an 
+	error show that it will show up in nptCheckExpSystem.
+
+July 18, 2002
+nptReadSyncsFile: Modified to read till end of file instead of reading 
+	the number of syncs specified in the header. Will also print
+	error to screen when there is a mismatch between header and 
+	data. Now returns number of syncs in the data if there is a
+	mismatch.
+	
+July 25, 2002
+nptReadSyncsFile: Added end of line character to error message.
+
+July 28, 2002
+nptReadStreamerFile: Changed call to mod to rem so script will work 
+	with Octave.
+nptCheckExpSystem: Changed argument list to include session and trial
+	explicitly and leave everything else to varargin. Replaced use of 
+	end indexing and num2str so script will work with Octave.
+nptCheckEndData: Replaced use of end indexing so script will work with 
+	Octave.
+nptReadSyncsFile: Changed char call to sprintf so script will work with 
+	Octave. Added semi-colon to end of frewind call.
+
+August 1, 2002
+nptCheckExpSystem: Added overplot in plot of trial durations to identify
+	trials without end triggers. Added number of inteleaved trials to 
+	the	screen output. Screen output now formatted properly.
+
+August 5, 2002
+nptReadStreamerFile: Added optional argument to over-ride number of
+	channels specified in the header.
+	
+August 6, 2002
+ProcessDay: Modified script to get path to tolower.tcsh before calling
+	shell command to execute it.
+
+August 7, 2002
+ReadDescriptor: Renamed to ReadDescriptorOld and replaced with 
+	ReadDescriptorNew. Function written by Bruno works better with
+	Unix systems.
+ProcessSession: Replaced calls to check descriptor_info to work better
+	with strings returned by new ReadDescriptor function.
+
+August 8, 2002
+batch_processor/MoveRawSessionFiles: New function to move files using
+	shell script, dos bat file or matlab functions depending on the 
+	computer.
+batch_processor/moverawfiles.tcsh: Shell script to move raw files.
+batch_processor/MoveProcessedFiles: New function to move processed files
+	using either a shell script, dos bat file, or matlab functions 
+	depending on the computer.
+batch_processor/moveprocessedfiles.tcsh: Shell script to move processed 
+	files.
+ProcessDay: Replaced code to move files with call to MoveRawSessionFiles
+	and MoveProcessedFiles. Made a couple of changes to reduce 
+	redundancy.
+nptReadSyncsFile: Added printout to screen of the number of syncs in the
+	header and in the data when there is a mismatch.
+	
+August 9, 2002
+ProcessDay: Added code to call to tolower.tcsh to suppress stderr 
+	output.
+algorithms/eye/nptRemoveNoiseSpikes: New function from Baldwin (not
+	documented in BaldwinChangeLog).
+read_files/CreateChannelFile: New function from Baldwin (not documented
+	in BaldwinChangeLog).
+
+August 12, 2002
+nptReadSyncsFile: Added code to check for invalid headerSizes.
+miscellaneous/PlotExpSystemResults: New function to plot results
+	from nptCheckExpSystem.
+nptCheckExpSystem: Modified so that it now only computes the data  
+	and leaves the plotting PlotEx[SystemResults. 
+CheckExpSystem: New function that calls nptCheckExpSystem as well as
+	PlotExpSystemResults.
+MoveRawSessionFiles: Removed dos bat file option since I could not get 
+	it to work.
+MoveProcessedFiles: Removed dos bat file option since I could not get
+	it to work.
+	
+August 13, 2002
+nptCheckExpSystem: Fixed bug that failed to set points=0 when there
+	was a problem with the data file.
+PlotExpSystemResults: Removed trial argument since we can get that from
+	the first column in results.
+CheckExpSystem: Removed trial argument when calling PlotExpSystem.
+miscellaneous/ExpSystemProcessDay: New function to run nptCheckExpSystem
+	for all sessions in a day.
+
+August 14, 2002
+nptCheckExpSystem: Moved processing of optional arguments from 
+	CheckExpSystem to this function so other functions can call this
+	function with optional arguments. Changed trials to optional 
+	argument and moved fgChannels to be second optional argument since
+	it is changed more than the other arguments.
+CheckExpSystem: Moved processing of optional arguments to 
+	nptCheckExpSystem. Added default values and argument processing in 
+	order to pass arguments to PlotExpSystemResults. 
+ExpSystemProcessDay: Now passes optional arguments to nptCheckExpSystem.
+
+August 15, 2002
+ReadDescriptor: Replaced strread with sscanf for compatability with
+	Matlab 5.3.
+read_init_info: Fixed problems with ini files from newer versions of 
+	Presenter, and especially with the ini files generated by the Gabor 
+	Contours task.
+ProcessSession: Replaced char call with sprintf.
+	
+August 16, 2002
+ExpSystemProcessDay: Added check to call function only on directories. 
+	Now use directory listing instead of forming session name within
+	the loop.
+
+August 21, 2002
+CheckExpSystem: Fixed bug that was not processing threshold argument.
+PlotExpSystem: Made trigLength and threshold arguments optional.
+
+August 22, 2002
+nptReadSyncsFile: Added function name to error message and changed
+	error to refer to syncs instead of data to avoid confusion with
+	nptReadStreamerFile.
+
+August 28, 2002
+ProcessDay: Fixed bug that failed to pass required arguments to 
+	MoveProcessedFiles function.
+
+August 29, 2002
+MoveProcessedFiles: Fixed bug that failed to grab current directory.
+nptCheckExpSystem: Added code to compute trial duration from Presenter
+	trigger. Additional optional argument added to specify Presenter 
+	trigger channel.
+CheckExpSystem: Added argument for Presenter trigger channel in help
+	section.
+nptComputeSyncDataStats: Moved output arguments syncs and sIntervals to
+	be the first two output arguments.
+nptComputeSyncStats: Moved output argument sIntervals to be the first
+	output argument.
+
+September 3, 2002
+ProcessDay: Added nomove argument so that we can move the processed 
+	files using cygwin, which is faster and more reliable.
+
+September 4, 2002
+miscellaneous/nptComputeTrigDurations: New function to compute trigger
+	durations from data acquired in a single trial.
+
+September 6, 2002
+nptComputeTrigDurations: Modified function to reduce memory usage. Now
+	no longer calls nptComputeSyncDataStats.
+
+September 9, 2002
+nptCheckExpSystem: Removed references to Presenter trigger. Trial 
+	durations now computed from length of streamer file. Fixed bug that 
+	did not set nc = 0 when there is an error.
+CheckExpSystem: Removed references to Presenter trigger.
+TrigInterval: Now calls nptComputeSyncDataStats. 
+
+October 7, 2002
+@eyes/plot: Changed timescale to start from 0 instead of 0+timestep.
+@streamer/plot: Used datalength to determine how many points in timev 
+	will be plotted instead of trying to calculate the exact length.
+
+
+October 8, 2002
+Merged with Baldwin's version.
+Files changed: 
+nptRemoveNoiseSpikes.m -> nptRemoveNoiseSpike.m
+pizels2degree.m
+nptThreshold.m (new)
+ProcessSession.m
+nptReadStreamerFileHeader.m
+CreateDataObject.m
+HistGUI.m (new)
+HistGUI.mat (new)
+histInspectGUI.m (new)
+histInspectCB.m (new)
+InspectGUI.m
+
+October 9, 2002
+miscellaneous/MarkerCompare: New function written by Troy to look at 
+	Control timing.
+miscellaneous/PlotExpSystemMarkerResults: New function written by Troy
+	to look at Control timing.
+miscellaneous/isvector: New function to check to see if argument is
+	a vector. Useful check to have when making functions parallel.
+miscellaneous/isrowvector: New function to check to see if argument is
+	a row vector. Useful check to have when making functions parallel.
+miscellaneous/nptFindThresholdCrossings: New function that used to be
+	part of nptComputeSyncDataStats.
+
+October 10, 2002
+miscellaneous/veccat: New function to append value to either row or 
+	column vector.
+algorithms/nptThresholdCrossings: Renamed from 
+	nptFindThresholdCrossings.
+nptComputeSyncDataStats: Now uses nptThresholdCrossings.
+ProcessSession: Commented out RemoveNoiseSpikes while waiting for more 
+	testing. Added option to check first Control trigger duration, get 
+	Presenter trigger onsets, and Presenter's vertical sync onsets.
+concatenate: Modified to pad with optional argument instead of NaN.
+batch_processor/ProcessDays: Renamed from BatchPreProcessor.
+
+October 11, 2002
+ProcessSession: Fixed saving of timing data. Added fprintf to indicate 
+	timing processing. Added reading of sync monitor files when 
+	processing timing.
+miscellaneous/nptGetSessionName: New function to return session name 
+	from current directory. Can be used by function so that we don't 
+	have to keep passing the session name. Should probably use filenames 
+	of files in the current directory to be more flexible.
+
+October 15, 2002
+@eyes/get: Added option to return data for a specified trial. Added code 
+	for variable number of outputs.
+@waveforms/get: Modified code to use varargin instead of set number of 
+	inputs.
+
+October 18, 2002
+ProcessDays: Added 'timing' as valid option.
+ProcessDay: Added check for Eyes directory and will now move files out 
+	of that directory if found, and delete the Eyes directory. Now use 
+	system call	instead of using eval.
+batch_processor/tolower.tcsh: Added status messages.
+ReadDescriptor: Changed function layout to be more similar to other 
+	functions.
+	
+October 19, 2002
+nptDir: Modified to remove any entries with a period as the first 
+	character. Added so that SMB files created by Mac OS X won't be 
+	processed.
+ProcessSession: Replaced dir calls with nptDir.
+ProcessDay: Added movefiles option.
+ProcessDays: Added movefiles option.
+
+October 21, 2002
+ProcessDays: Removed animal name option. Function will now pass all 
+	arguments to ProcessDay.
+ProcessDay: Added status message when moving files out from Eyes 
+	directory. Added call to ContoursMoveEyesFiles when mv fails. 
+	Replaced for loop with while loop so we can remove non-directory 
+	entries from sessions.
+MoveRawSessionFiles: Added status message when moving files.
+
+October 23, 2002
+ProcessSession: Reduced spaces between status messages to reduce message
+	length.
+
+October 24, 2002
+@nptdata/subsref: New function to access nptdata object.
+@nptdata/subsasgn: New function to assign nptdata object.
+@streamer/streamer: Updated object fields in help comments.
+@streamer/display: Added holdaxis option.
+@streamer/subsref: Modified to pass unknown fieldsd to parent object.
+@streamer/subsasgn: New function to access streamer object.
+@eyes/eyes: Updated object fields in help comments.
+@eyes/display: Added holdaxis option.
+@eyes/subsref: Modified to pass unknown fields to parent object. 
+	Replaced call to get with subsref.
+@eyes/subsasgn: New function to access eyes object.
+
+October 25, 2002
+@waveforms/waveforms: Updated object fields in help comments.
+@waveforms/display: Added holdaxis option. Renamed num_waves to 
+	numWaves.
+@waveforms/subsref: Changed num_waves to numWaves. Added code to pass 
+	unknown fields to parent object.
+@trialwaves/trialwaves: Updated object fields in help comments.
+@trialwaves/display: Added holdaxis option.
+@trialwaves/subsref: Added code to pass unknown fields to parent object.
+@ispikes/ispikes: Moved GenerateSessionSpikeTrains to private function.
+	Updated object fields in help comments.
+@ispikes/display: Added channel option.
+@ispikes/subsref: Added code to pass unknown fields to parent object.
+ProcessDay: Fixed bug that failed to initialize nomove when called 
+	without	arguments.
+
+October 27, 2002
+nptDir: Made function case insensitive by default.
+
+October 28, 2002
+@ispikes/subsref: Fixed bug that initialized myerror to 1.
+@waveforms/subsref: Fixed bug that used = instead ==. Fixed bug that 
+	left out semi-colon.
+@trialwaves/trialwaves: Updated call to num_waves in waveforms to 
+	numWaves.
+ProcessDay: Added code to copy dxy files from other days if there were 
+	no eye calibration sessions for a certain day.
+nptDir: Made function case sensitive by default since there are many 
+	calls to nptDir that use numbers, which is tricky to handle 
+	automatically. Changed optional argument to CaseInsensitive.
+ProcessSession: Added CaseInsensitive argument to selected nptDir calls.
+
+October 29, 2002
+ProcessDay: Fixed bug that failed to return to right directory while
+	checking to see if we need to copy dxy files from other directories.
+	Fixed bug that used fprintf instead of sprintf with the system call.
+	Fixed bug in determining size of eyeSessions.
+
+October 30, 2002
+miscellaneous/removeargs: New function to remove arguments from varargin
+	before passing on to subsequent function.
+ProcessDay: Modified code so when we copy dxy files to fake sessions, we 
+	increment from the last session number, instead of the number of 
+	sessions. This will allow the code to work on days where we deleted 
+	certain sessions because of problems. Now calls removeargs. Added 
+	code to process just selected sessions. Updated help comments. 
+	Removed	movefiles argument. Argument 'nomove' now removed from 
+	argument list before being passed to ProcessSession.
+ProcessDays: Added code to process just selected days. Updated help
+	comments.
+
+October 31, 2002
+Removed files convertfileformat.tcsh and convertfileformat2.tcsh from
+	npt directory.
+nptDir: Replaced ispc with ~isunix since ispc does not exist on Matlab 
+	5.3.
+
+November 12, 2002
+ProcessEyeSessions: Added 'reusefilt' optional argument to use files in
+	eyefilt directory to generate eye files.
+
+November 13, 2002
+MoveRawSessionFiles: Added 'CaseInsensitive' argument to selected calls 
+	to nptDir. Added 'CaseInsensitiveSuffix' argument to nptDir calls
+	with filename characters that might be case sensitive.
+nptDir: Added optional argument 'CaseInsensitiveSuffix' to look for 
+	suffix regardless of case.
+ProcessDays: Fixed bug that failed to initialize dlist to {}. Fixed bug
+	that skipped days when dlist was empty.
+ProcessDay: Fixed bug that failed to initialize slist to {}. Fixed bug
+	that skipped sessions when slist was empty.
+
+November 14, 2002
+nptdata/ProcessDays: New method that can be inherited by children of 
+	this class to perform batch processing.
+nptdata/ProcessDay: New method that can be inherited by children of this
+	class to perform batch processing.
+nptdata/ProcessSession: New method that should be overloaded by children 
+	of this class to perform batch processing.
+nptdata/ProcessTrial: New method that should be overloaded by children 
+	of this class to perform batch processing.
+
+December 11, 2002
+nptReadSyncsFile: Modified by Troy to check for empty headers.
+
+January 27, 2003
+read_files/ReadMarkerFile: New function to read markers from marker 
+	file.
+@eyes/plot: Modified to label y-axis according to units used to 
+	instantiate eyes object.
+
+February 3, 2002
+@nptdata/subsref: Now returns error status when called by other
+	functions and prints error only when called directly to support
+	multiple inheritance.
+@eyes/subsref: Now returns error status when called by other
+	functions and prints error only when called directly to support
+	multiple inheritance.
+@eyes/displayfields: New function to display fields of object.
+
+February 11, 2003
+@nptdata/ProcessTrial: Modified to return object instead of data cell
+	array.
+@nptdata/ProcessSession: Modified to return object instead of data
+	cell array.
+@nptdata/ProcessDay: Modified to return object instead of data cell
+	array.
+@nptdata/ProcessDays: Modifed to return object instead of data cell
+	array.
+
+February 12, 2003
+@nptdata/ProcessSession: Modified to add to input object.
+@nptdata/ProcessDay: Modified to add to input object.
+@nptdata/ProcessDays: Modified to add to input object.
+miscellaneous/nptFileParts: Fixed case of function name in the help 
+	comments. Clarified that it works differently only on Classic Mac 
+	OS.
+miscellaneous/ispresent: New function that checks for the existence of
+	files and directories.
+@nptdata/InspectGUI: Modified code that parses optional arguments. Now 
+	passes unknown arguments to object.
+
+February 13, 2003
+@nptdata/InspectGUI: Now stores optional arguments for plot calls in
+	InspectCB.
+@nptdata/InspectCB: Added optional arguments to plot commands.
+
+February 16, 2003
+nptCheckExpSystem: Fixed help comments to remove extra output arguments.
+@checksystem: New class to view CheckExpSystem results.
+@checksystem/checksystem: Constructor funtion for new checksystem
+	class.
+@checksystem/plus: Function to add checksystem objects together.
+
+February 17, 2003
+@checksystem/checksystem: Now checks for checksystem.mat unless redo
+	is specified. Created separate function CreateCheckSystem to create
+	checksystem object. Now uses *.0001 to get session name.
+@checksystem/plot: Plot function for new checksystem class.
+@checksystem/subsref: Subsref function for new checksystem class.
+@checksystem/display: Display function for new checksystem class.
+PlotExpSystemResults: Changed clf call to cla calls to allow function
+	to be used with InspectGUI.
+ispresent: Fixed to handle filenames with suffixes.
+@nptdata/ProcessDay: Added check for characters before processing 
+	varargin.
+
+February 18, 2003
+ExtractorWrapper: Updated with Baldwin's version.
+nptExtructor: Updated with Baldwin's version.
+nptRemoveNoiseSpike: Updated with Baldwin's version.
+nptSpike2Sound: Updated with Baldwin's version.
+CreateCatTrials: Updated with Baldwin's version.
+ProcessDay: Updated with Baldwin's version.
+ProcessSession: Updated with Baldwin's version.
+nptReadDatFile: Updated with Baldwin's version.
+nptReadMCLUSTFile: Updated with Baldwin's version.
+nptReadSorterHdr: Updated with Baldwin's version.
+@ispikes/plot: Updated with Baldwin's version.
+@ispikes/private/GenerateSessionSpikeTrains: Updated with Baldwin's 
+	version.
+@streamer/plot: Updated with Baldwin's version.
+@waveforms/plot: Updated with Baldwin's version.
+CreateDataObject: Updated with Baldwin's version.
+nptWriteSorterHdr: Updated with Baldwin's version.
+MoveProcessedFiles: Added default value for output variable.
+
+February 19, 2003
+ProcessEyeSessions: Now gets a list of files in the eyefilt directory 
+	using a more specific file pattern.
+
+February 20, 2003
+@nptdata/checkMarkers: New function that checks to see if markers are 
+	present.
+@nptdata/useProcessedMarkers: New function that indicates whether 
+	processed markers are used.
+@nptdata/createProcessedMarker: New function that creates a processed
+	marker.
+@nptdata/ProcessSession: Modified to use checkMarkers and 
+	createProcessedMarker.
+@nptdata/ProcessDay: Modified to use checkMarkers and 
+	createProcessedMarker.
+@nptdata/ProcessDays: Modified to use checkMarkers and 
+	createProcessedMarker.
+@checksystem/useProcessedMarker: Added new function to indicate that the
+	checksystem class does not use a processed marker file.
+@checksystem/ProcessSession: Modified to use checkMarkers. Added check
+	for checksystem.mat.
+@checksystem/checksystem: Moved check for checksystem.mat to 
+	ProcessSession.
+
+February 21, 2003
+@nptdata/ProcessDays: Added check for ischar when parsing arguments. 
+	Fixed bug in typo of checkMarkers.
+@nptdata/ProcessSession: Added check for ischar when parsing arguments.
+
+February 28, 2003
+ispresent: Added CaseInsensitive optional argument.
+nptDir: Updated help comments.
+
+March 3, 2003
+@checksystem/checksystem: Modified to create empty object when there are
+	no arguments so load will work properly. Now uses 'auto' argument
+	when we want it to figure out the session name.
+@checksystem/ProcessSession: Modified to work with new constructor. Also
+	updated help comments.
+ispresent: Added additional output argument that returns actual name
+	when 'CaseInsensitive' argument is used. Added 
+	'CaseInsensitiveSuffix'	option.
+
+March 18, 2003
+@datafile: New class to inspect files using nptReadDataFile.
+@datafile/datafile: Constructor function for new datafile class.
+@datafile/display: Display method for new datafile class.
+@datafile/get: Get method for new datafile class.
+@datafile/plot: Plot method for new datafile class.
+@datafile/subassgn: Subassgn method for new datafile class.
+@datafile/subsref: Subsref method for new datafile class.
+
+April 04, 2003
+@nptdata/ProcessDays: Now calls plus function literallly so that we can 
+	pass ignorediff optional argument.
+@nptdata/ProcessDay: Now calls plus function literallly so that we can 
+	pass ignorediff optional argument.
+
+April 08, 2003
+nptGaussianConv: Corrected spelling of function from nptGaussainConv.
+	Corrected spelling of gaussian in function.
+ProcessSession: Corrected spelling of nptGaussianConv function.
+
+April 13, 2003
+nptThresholdCrossings: Added option to skip first point.
+miscellaneous/pan: New function to pan forward and backward through the
+	current figure in user specified step sizes.
+
+April 18, 2003
+miscellaneous/panGUI: New function to pan through data using a GUI.
+
+April 27, 2003
+algorithms/spcorr: New function to compute non-parametric Spearman
+	rank correlation.
+
+April 28, 2003
+MoveRawSessionFiles: Fixed bug that failed to initialize myerror
+	variable.
+
+April 29, 2003
+ProcessSession: Added check for data files with 0 data points. Will now
+	create skip.txt in the session and move on. Added check for trigger 
+	dropping below threshold more than once (e.g. when values at the end
+	of the trial are set to 0).
+
+April 30, 2003
+ProcessEyeSessions: Fixed bug that failed to initialize reuse variable.
+ProcessSession: Added intialization of trial data outside loop over 
+	trials in case we don't enter the loop (i.e. if no data files were 
+	present in the session directory).
+nptThresholdCrossings: Fixed bug that never executed the 'both' 
+	condition. Updated help comments to explain that optional arguments 
+	'falling', 'rising', and 'separate' are mututally exclusive.
+ispresent: Fixed bug that failed to return proper aname on PCs.
+
+May 1, 2003
+@checksystem/plus: Added varargin input argument to be compatible with
+	@nptdata/ProcessDay(s).
+
+May 6, 2003
+@nptdata/ProcessDays: Added code to create empty object when calling
+	ProcessDay so that the input object is not added multiple times.
+@nptdata/ProcessDay: Added code to  create empty object when calling
+	ProcessSession so that the input object is not added multiple times.
+ispresent: Improved code by moving if (ignorecase | ignoresuffixcase) 
+	out of for loop. 'CaseInsensitive' and 'CaseInsensitiveSuffix' 
+	optional arguments now apply to Windows systems since the filenames 
+	returned by dir are case sensitive.
+
+May 8, 2003
+@checksystem/checksystem: Updated comments and fixed typos.
+
+May 9, 2003
+@nptdata/InspectGUI: Added check for strings when parsing optional
+	arguments.
+@eyes/plot: Added code to plot eye traces in 2D, along with the grids 
+	for	cubic and v4 interpolation.
+algorithms/eye/nptEyecoil2Screen: Now uses 'v4' method for griddata so 
+	that points just outside the range of the calibration will return a 
+	pixel value.
+
+May, 28, 2003
+miscellaneous/histcie: New function that modifies histc to add counts
+	equal to the last value of edges to be merged with the second last
+	value, which seems more intuitive. This function also behaves more
+	like hist in that it will create a plot if no output arguments are
+	specified.
+
+June 12, 2003
+Merged with Baldwin's version.
+Files changed: 
+algorithms/extraction/CleanData.m
+algorithms/extraction/ExtractorWrapper.m
+algorithms/extraction/nptExtructor.m
+algorithms/nptFindPeak.m
+scripts/batch_processor/CreateCatTrials.m
+scripts/batch_processor/MoveProcessedFiles.m
+scripts/batch_processor/ProcessDay.m
+scripts/batch_processpr/StretchTimes.m
+scripts/miscellaneous/ConvertMClustFeatureFiles.m
+scripts/miscellaneous/ConvertMClustFeatureFiles2.m
+scripts/miscellaneous/ConvertTimes.m
+scripts/miscellaneous/ConvertWaveforms.m
+scripts/miscellaneous/CreatePhotoSpikes.m
+scripts/miscellaneous/MClustConvertWrapper.m
+scripts/miscellaneous/Waveform32to64.m
+scripts/miscellaneous/extract_varargin.m
+scripts/miscellaneous/findindex.m
+scripts/miscellaneous/nptSubplot.m
+scripts/read_files/IsEyeCalib.m
+scripts/read_files/ReadCUTFile.m
+scripts/read_files/ReadExtraSyncsFile.m
+scripts/read_files/ReadEyeCalibIni.m
+scripts/read_files/ReadIniFileWrapper.m
+scripts/read_files/ReadRevCorrIni.m
+scripts/read_files/ReadWaveformsFile.m
+scripts/read_files/ReadWaveformsHeader.m
+scripts/read_files/nptReadDatFile.m
+scripts/read_files/nptReadSorterHdr.m
+scripts/read_files/nptReadStreamerFileChunk.m
+scripts/read_files/read_init_info.m
+scripts/read_files/read_seq.m
+scripts/view/@event/Increment.m
+scripts/view/@ispikes/ispikes.m
+scripts/view/@ispikes/plot.m
+scripts/view/@ispikes/private/GenerateSessionDatSpikeTrains.m
+scripts/view/@ispikes/private/GenerateSessionSpikeTrains.m
+scripts/view/@streamer/plot.m
+scripts/view/@trialwaves/trialwaves.m
+scripts/view/@waveforms/plot.m
+scripts/view/@waveforms/waveforms.m
+scripts/view/@waveforms/subsref.m
+scripts/view/CreateDataObject.m
+scripts/write_files/CreateIspikesFiles.m
+scripts/write_files/MClustConvertWrapper.m
+scripts/write_files/MClustConvertWrapper2.m
+scripts/write_files/Waveform32to64.m
+scripts/write_files/WriteWaveformsHeader.m
+scripts/write_files/nptWriteSorterHdr.m
+
+Files merged:
+scripts/batch_processor/ProcessSession.m: Changed nptGaussainConv to 
+	nptGaussianConv. Added data intialization outside of loop in case
+	we never enter the loop. Added checks for trials with 0 data points 
+	as well as trigger channel data with more than 1 threshold 
+	crossings.
+
+Files deleted:
+scripts/read_files/nptReadMCLUSTFile.m
+
+ProcessSession: Fixed bug that tried to access init_info.Calibration 
+	even when no init_info structure was created if session is not an 
+	eye	calibration session. Now checks the status returned by the 
+	IsEyeCalib function before proceeding.
+IsEyeCalib: Changed return status to 0 if not eye calibration session to
+	make it easier to use in ProcessSession.
+
+July 11, 2003
+ProcessSession: Added default values to threshold and sort_algo in help
+	comments.
+nptdata/ProcessDays: Fixed bug in checking for presence of specific 
+	days in argument.
+
+July 16, 2003
+moreprocessedfiles.tcsh: Added code to move FD directory.
+
+July 18, 2003
+@ispikes/private/GenerateSessionSpikeTrains: Added check to remove 
+	"_highpass" from the session name of a broadband recording before
+	trying to open the waveforms file.
+@ispikes/ispikes: Fixed type in the help comments.
+
+July 21, 2003
+@ispikes/private/GenerateSessionSpikeTrains: Added code to add trials
+	with no spikes so that the number of trials will match up with
+	the number of trials in the raw or highpass data files.
+@ispikes/plot: Added code to check for non-zero spikecounts before
+	trying to plot the spike times.
+
+July 23, 2003
+ProcessSession: Added code to create files in the session directory 
+	instead of the highpass directory when extracting broadband
+	signals.
+
+August 20, 2003
+ProcessSession: Renamed sigma used in the threshold argument to 
+	extract_sigma since it conflicts with an argument used in the
+	eye calibration computation.
+@nptdata/ProcessSession: Added ability to execute arbitrary code 
+	for each session.
+@nptdata/plus: New function that acts as virtual function for derived
+	classes.
+
+December 20, 2003
+miscellaneous/parseArgs: New function downloaded from Matlab Central
+	that parses optional arguments.
+
+December 21, 2003
+view/nptdata/InsepctGUI.m: Fixed bug that was not passing optional 
+	arguments correctly.
+view/gui/InspectCB.m: Fixed bug that was not passing optional arguments
+	correctly.
+
+January 5, 2004
+scripts/batch_processor/moveprocessedfiles.tcsh: Modified to check
+	for existence of old directories and remove them if necessary.
+	Also now prints more informative messages.
+
+January 6, 2004
+Created branch called syen-version.
+scripts/view/@nptdata/InspectGUI: Added optional argument named 
+	addObjs. Removed requirement for optArgs for backward
+	compatibility. Added code to make sure function doesn't crash
+	if optional arguments like dir are left out when multiple 
+	objects are used. Removed several redundant function calls.
+scripts/batch_processor/ProcessSession: Added Baldwin's changes
+	for version 1.11 except reverted the default of 'sort_algo'
+	to 'KK'.
+scripts/miscellaneous/linkedzoom: Renamed from linkedZoom.M.
+
+January 7, 2004
+scripts/miscellaneous/getOptArgs: Renamed from parseArgs.m. Modified 
+	to take optional arguments in the form param,value. Fixed code to 
+	process aliases properly. Now skips any unknown arguments by
+	default, which can be changed using the optional input argument
+	'stopOnError'.
+
+January 8, 2004
+scripts/miscellaneous/getOptArgs: Changes parseArgs to getOptArgs
+	in help comments.
+scripts/view/@nptdata/InspectGUI: Now passes optional arguments
+	using s.optargs{i}{:} instead of first storing it in a local 
+	variable.
+
+January 13, 2004
+scripts/batch_processor/ProcessDay: Added option to use cygwin to
+	move processed files. Added some explanations to code that 
+	converted from old data hierarchy. Substituted use of function
+	'exist' with 'ispresent'.
+scripts/view/@nptdata/useProcessedMarker: Changed default to 0.
+scripts/miscellaneous/getOptArgs: Fixed bug in processing length of 
+	Aliases argument.
+scripts/miscellanoues/panGUI.m: Updated help comments.
+scripts/view/@nptdata/InspectGUI.m: Updated help comments.
+scripts/view/@nptdata/useProcessedMarker.m: Changed default to not
+	create markers otherwise if we try to use nptSessionCmd, it 
+	might fail.
+
+January 14, 2004
+scripts/batch_processor/cygwincmd.tcsh: Renamed from 
+	cygwinmoveprocessedcmds. Now can take any tcsh script in as
+	argument and run it.
+scripts/batch_processor/ProcessDay: Now uses cygwincmd instead of
+	cygwinmoveprocessedcmds to run moveprocessedfiles.tcsh.
+
+January 15, 2004
+scripts/batch_processor/vecc: New function to return column vector.
+scripts/batch_processor/vecr: New function to return row vector.
+scripts/batch_processor/ProcessDay: Updated code to use cygwin to 
+	move processed files now that tcsh works as expected on 
+	STREAMERB. Now checks if input argument is character before
+	switch statement.
+scripts/batch_processor/ProcessDays: Now checks if input argument
+	is character before switch statement.
+scripts/batch_processor/ProcessSession: Now checks if input 
+	argument is character before switch statement.
+scripts/batch_processor/ProcessEyeSessions: Now checks if input 
+	argument is character before switch statement.
+
+January 23, 2004
+scripts/miscellaneous/getOptArgs: Removed NumericArguments field 
+	from output data structure.
+scripts/view/gui/InspectCB: Now passes optional arguments using 
+	s.optargs{i}{:} instead of first storing it in a local variable.
+BaldwinChangeLog.txt: Updated using version from main trunk.
+scripts/view/@ispikes/plot: Updated using version from main trunk.
+scripts/miscellaneous/nptDefaultColors: New file from main trunk.
+scripts/write_files/WriteWaveformsFile.m: New file from main trunk.
+scripts/batch_processor/ProcessDay: Modified to copy just the dxy 
+	files when using the optional eyeSessions input argument.
+
+January 27, 2004
+scripts/miscellaneous/getOptArgs: Fixed bug that failed to initialize
+	l to NumArgCount.
+
+February 16, 2004
+scripts/miscellaneous/nptDir: Added help comments for 
+	'CaseInsensitiveSuffix' option.
+
+February 20, 2004
+scripts/view/@nptdata/nptdata: Added sessiondirs field. Added code
+	to pass sessiondirs in as a cell array or in a text file.
+scripts/view/@nptdata/loadobj: New function to update old saved
+	npdata objects.
+scripts/view/@nptdata/plot: Modified to go through sessiondirs and
+	load and plot specified objects.
+scripts/miscellaneous/nptSubplot: Modified to return rows and cols.
+
+February 23, 2004
+scripts/batch_processor/ProcessSession: Added optional input argument
+	to pass arguments to RunClustBatch.
+
+February 24, 2004
+scripts/miscellaneous/deg2rad: New function that converts between
+	degrees and radians.
+scripts/miscellaneous/rad2deg: New function that converts between
+	radians and degrees.
+scripts/miscellaneous/histcie: Added optional input argument 'DropLast'
+	to drop the last value in N which is always 0. Added help comments
+	that described modifications to output argument BIN. Modified
+	code to handle matrices.
+scripts/miscellaneous/vecc: Modified to work only with vectors with
+	single row.
+scripts/miscellaneous/vecr: Modified to work only with vectors with
+	single column.
+scripts/view/@pntdata/plot: Added try-catch block to catch errors
+	loading objects or plotting objects.
+
+February 25, 2004
+scripts/@nptdata/nptdata: Added 'Eval' optional input argument that
+	evaluates command string to see if current directory is to be
+	used to create a nptdata object.
+scripts/@nptdata/ProcessSession: Added help comments to illustrate
+	the use of the output argument when using 'nptSessionCmd'. 
+scripts/@nptdata/plus: Added code to actually add nptdata objects.
+
+March 2, 2004
+scripts/batch_processor/getEyeCalData: New function that contains
+	code that used to be in ProcessEyeSessions. Also used by new
+	code in eyes class. Now also checks for skip.txt before trying
+	to use dxy file.
+scripts/batch_processor/ProcessEyeSessions: Now uses getEyeCalData.
+scripts/read_files/nptReadDXYFile: New function that reads DXY
+	files.
+scripts/view/@eyes/private/addData2DFields: New function that
+	computes and stores data for displaying calibration data in 2D.
+scripts/view/@eyes/eyes: Added new fields and calls to 
+	addData2DFields.
+scripts/view/@eyes/loadobj: New function that adds new fields to 
+	previously saved objects.
+scripts/view/@eyes/plot: Added code to display data along with
+	calibration grid in 2D.
+
+March 3, 2004
+scripts/batch_processor/ProcessEyeSessions: Fixed bug that failed 
+	to generate dirlist. Fixed bug that incorrectly named screencoords
+	as ec.screencoords. Reformatted to remove extremely long lines.
+scripts/batch_processor/getEyeCalData: Reformatted to remove
+	extremely long lines.
+	
+March 4, 2004
+scripts/batch_processor/getDXYData: Renamed from getEyeCalData.
+scripts/view/@eyes/eyes: Removed fields added recently as we
+	don't want to load the DXY files for every object that inherits
+	from the eyes class.
+scripts/view/@eyes/loadobj: Removed since data structure has reverted
+	back to original form.
+scripts/view/@eyes/plot: Now takes data structure returned by
+	getEyeCalData as optional input argument to do 2D plots.
+scripts/view/@eyes/private/addData2DFields: Renamed function to
+	scripts/miscellaneous/getEyeCalData.
+scripts/miscellaneous/getEyeCalData: Renamed from addData2DFields.
+	Added code to pass optional input arguments to specify directory
+	location, gridsteps and interpolation algorithm.
+
+March 5, 2004
+scripts/view/@nptdata/name2index: New function that returns session
+	index given session name or part of session name.
+scripts/view/@event/SetEventNumber: Now checks to make sure new
+	number is within range. If not, old number is retained and is
+	now returned as well.
+scripts/view/gui/InsepctCB: Now calls name2index for object when
+	something other than a number is entered in the edit box. Also
+	uses number returned by SetEventNumber when number is out of
+	range so the 0 returned by name2index when no matches are found
+	will not cause function to crash.
+
+March 8, 2004
+scripts/view/@nptdata/name2index: Fixed bug in returning total number
+	of sessions.
+scripts/batch_processor/ProcessSession: Added code that saved
+	trigDurations, presTrigOnsets and syncOnsets in milliseconds in
+	the second column of trigDurations, in the new variables 
+	presTrigOnsetsMS and syncOnsetsMS respectively. Since we have access
+	to the sampling_rate, this is easier to do here.
+
+March 9, 2004
+scripts/view/@nptdata/name2index: Fixed bug in converting name to
+	index.
+scripts/view/gui/InspectCB: Now checks if search string contains
+	's:' which allows the user to denote numbers as search string.
+
+March 15, 2004
+scripts/miscellaneous/getOptArgs: Added code to subtract and remove 
+	optional arguments.
+
+March 16, 2004
+scripts/view/@eyes/plot: Added 'DataStart', 'DataEnd', 'AxisZoom'
+	optional input arguments.
+scripts/view/@ispikes/separate: New function to separate multiple 
+	clusters into separate ispikes objects.
+
+March 18, 2004
+scripts/miscellaneous/getPositionMeanStd: New function to compute
+	mean and standard deviation of x- and y-signals.
+scripts/view/@eyes/getMeanStd: New function that reads in datafile
+	and calls getPositionMeanStd.
+scripts/view/@eyes/plot: Added separate 'XY' flag that does not
+	plot eye cal grid. Added 'XYStd' option that plots eye positions
+	as well as the histogram of the distances from the mean in a
+	separate plot. The std for the distribution is also included in 
+	the title of second plot. Added hardcoded vchan and hchan since
+	we don't necessarily use structure passed in by Data2D.
+
+March 22, 2004
+scripts/view/@eyejitter/eyejitter: Constructor for new class that 
+	analyzes jitter in eye position.
+scripts/view/@eyejitter/plot: Plot command for new eyejitter class.
+scripts/view/@eyes/eyes: Added code to create object automatically.
+scripts/view/@eyes/isempty: New function that returns 1 if object
+	is empty.
+scripts/view/@ispikes/getSpikeCounts: New function that calls
+	histcie on spike times.
+scripts/miscellaneous/getOptArgs: Modified help comments to add
+	description of second output argument.
+scripts/miscellaneous/histcie: Added code to make sure data is column
+	vector if 1 of the dimensions is 1.
+
+March 23, 2004
+scripts/read_files/ReadIniRF: New function to read RF info from INI
+	files.
+scripts/view/@eyejitter/eyejitter: Fixed bug that failed to initialize
+	nooffsets.
+scripts/view/@eyejitter/plot: Added square brackets in help comments
+	to indicate choice between 'All' and 'Trials' optional input
+	arguments. Added code to create 3D plots of interpolated surface.
+	Cleaned up code that checked for matching lengths of Trials
+	and Responses arguments.
+scripts/view/@eyes/eyes: Fixed bug that failed to create proper
+	nptdata object in CreateEmptyEyesObject.
+
+March 24, 2004
+scripts/miscellaneous/getOptArgs: Added code to use shortcuts. Cleaned
+	up help comments.
+scripts/view/@fields/fields: New function to display receptive fields.
+
+March 26, 2004
+scripts/batch_processor/tolower.tcsh: Modified to take directory
+	argument.
+scripts/batch_processor/cmpCD: New shell script to compare data on
+	disk to CD.
+@scripts/view/@mapfields: Renamed from @fields since fields is built-in
+	Matlab function.
+
+March 29, 2004
+scripts/batch_processor/cmpCD: Removed from CVS and copied to local 
+	machine.
+
+March 30, 2004
+scripts/miscellaneous/getOptArgs: Added option to keep numeric 
+	arguments.
+scripts/view/@mapfields/plot: New plot function for mapfields object.
+scripts/view/@mapfields/subsref: New subsref function for mapfields 
+	object.
+
+March 31, 2004
+scripts/miscellaneous/getOptArgs: Fixed bug in processing shortcuts.
+scripts/view/@mapfields/mapfields: Added code to save object.
+scripts/view/@mapfields/plot: Added code to clear axis by default or
+	else plots keep getting added.
+
+April 1, 2004
+scripts/view/@eyejitter/eyejitter: Added code to change HoldAxis to 0.
+scripts/view/@eyejitter/hist: New function plot 2D-histogram of eye
+	positions.
+scripts/miscellaneous/histn: New function downloaded from Matlab 
+	Central that computes histogram in n-dimensions.
+scripts/miscellaneous/getOptArgs: Fixed bug in not initializing 
+	ShortCuts variable.
+
+April 2, 2004
+scripts/miscellaneous/getOptArgs: Fixed typo in help comments for 
+	shortcuts. Now uses 'exact' argument for all strmatch calls.
+scripts/view/@eyejitter/eyejitter: Now uses 'shortcuts' argument when
+	calling getOptArgs for 'redo' and 'save'. Changed fieldnames in 
+	Args struct to include uppercase characters to enable abbreviations.
+scripts/view/@eyejitter/hist: Added colorbar to imagesc plot.
+scripts/view/@eyejitter/plot: Now uses 'keepnumeric' when calling
+	getOptArgs so the 2nd input argument is no longer required to be a
+	number. Clarified help comments. Added 'hist' option to plot eye
+	position histogram.
+scripts/view/@mapfields/plot: Modified so 'All' input argument is
+	processed even in presence of numeric 2nd argument so this function
+	can be used with InsepctGUI.
+
+April 5, 2004
+scripts/miscellaneous/panGUI.fig: Modified to allow axis to rescale 
+	with figure resize.
+
+April 7, 2004
+nptAddPath: Modified to skip CVS directories and directories with . 
+	at the beginning of the name.
+scripts/miscellaneous/nptDir: Cleaned up code that removes files or
+	directories with . at the beginning of the name.
+
+April 8, 2004
+nptAddPath: Fixed bugs in new code added yesterday.
+
+April 9, 2004
+PlotFFT: Modified to handle matrices as inputs and compute FFT for each
+	column and plot the mean and standard deviation of the magnitudes.
+nptFFT: Modified to handle matrices as inputs and compute FFT for each
+	column.
+nptPlotFFT: New function to replace PlotFFT that calls nptFFT so we
+	will not need to maintain two separate functions that compute FFTs.
+
+April 12, 2004
+algorithms/nptFFTMag: Renamed from nptFFT. Now skips multiplying all
+	frequencies between DC and Nyquist by 2. Replaced use of length(x)
+	with size(x,1) to be explicit that the data is supposed to be in 
+	columns.
+algorithms/nptSpikeTimesFFT: New function that computes the histogram
+	of spike times and breaks the signal into segments before computing
+	the FFT in order to increase the size of the frequency bins. 
+algorithms/welch: New function that returns a Welch window.
+algorithms/nptFFT: Renamed to nptFFTMag.
+
+April 13, 2004
+algorithms/nptSpikeTimesFFT: Added code to skip segment code if there 
+	is only one segment to avoid out of memory errors. 
+scripts/miscellaneous/histcie: Added code to make sure output of histc
+	is a column vector to prevent problems with 1x1 inputs. Cleaned up
+	code which replaced input with a variable with the same name.
+scripts/view/@nptdata/InspectGUI: Commented out title command that uses
+	a sessionname field since that should be the responsibility of the 
+	particular object.
+scripts/view/gui/InsepctCB: Commented out title command that uses a 
+	sessionname field since that should be the responsibility of the 
+	particular object.
+
+April 21, 2004
+Updated from main trunk:
+scripts/read_files/nptReadStreamerFileChunk.m
+scripts/view/@trialwaves/trialwaves.m
+
+Added files from main trunk:
+algorithms/ContourArea.m
+algorithms/filters/TwoDimGaussFilter.m
+scripts/miscellaneous: max2.m
+scripts/miscellaneous: min2.m
+scripts/write_files/nptAppendStreamerFile.m
+scripts/write_files/nptWriteStreamerFileHeader.m
+
+Merged from main trunk:
+scripts/batch_processor/ProcessSession: Added code for handling single
+	trials. Fixed putative bug that was only looping over 2 trials.
+
+nptdiffs.txt: New file containing current known differences between
+	main trunk and this branch. Do "diff -rw -x CVS -x \.DS_Store npt
+	npt-cvs > ndiffs.txt" and then "diff nptdiffs.txt ndiffs.txt" to
+	identify new differences.
+
+April 22, 2004
+scripts/miscellaneous/cell2array: New function that converts from
+	cell arrays to matrices that are padded to the right lengths.
+scripts/view/@eyejitter/eyejitter: Fixed help comments to substitute
+	references to BIAS with EYEJITTER.
+
+April 23, 2004
+Updated from main trunk:
+BaldwinChangeLog.txt
+algorithms/ContourArea.m
+algorithms/filters/TwoDimGaussFilter.m
+scripts/read_files/ReadExtraSyncsFile.m
+scripts/read_files/ReadRevCorrIni.m
+scripts/read_files/read_init_info.m
+
+Added file from main trunk:
+scripts/miscellaneous/max3.m
+scripts/miscellaneous/min3.m
+
+Merged from main trunk:
+scripts/view/@nptdata/ProcessDay.m
+
+Removed from main trunk:
+scripts/view/MSeqframe.m
+scripts/view/createMSeqMovie.m
+
+April 25, 2004
+scripts/miscellaneous/cell2array: Modified to take cell array of rows 
+	as well as columns. Now returns error if one of the dimensions of
+	the cell array is not 1.
+scripts/view/@nptdata/InspectGUI: Now calls get with varargin so the
+	overloaded form of the get function can be used instead of the get
+	function in @nptdata.
+scripts/view/@nptdata/ProcessDay: Removed changes from main trunk that
+	was causing problems.
+
+April 26, 2004
+scripts/view/@nptdata/get: Added varargin to input arguments so it 
+	will work with changes to InspectGUI.
+
+April 27, 2004
+scripts/miscellaneous/logbar: New function that creates bar plots with
+	log scale on the y-axis.
+scripts/view/@nptdata/plot: Added code to only call subplot when
+	neccessary.
+
+May 5, 2004
+Updated from main trunk:
+BaldwinChangeLog.txt
+scripts/read_files/ReadRevCorrIni
+scripts/read_files/ReadIniFileWrapper
+scripts/read_files/ReadRevCorrIniJonathan
+
+Merged from main trunk:
+scripts/batch_processor/ProcessEyeSessions: Added redoValue optional
+	input argument.
+scripts/batch_processor/ProcessSession: Added check for sort_algo
+	equal to 'none'.
+scripts/view/gui/InspectCB: Added return statement to quit callback.
+
+scripts/miscellaneous/dividBins: New function to sub-divide bins.
+
+May 7, 2004
+Updated from main trunk:
+BaldwinChangeLog.txt
+scripts/read_files/ReadRevCorrIni
+
+scripts/batch_processor/ProcessSession: Removed code that set trials
+	to 2 for single trial sessions.
+
+May 10, 2004
+@nptdata/ProcessDay: Now uses getOptArgs to parse input arguments. Fixed
+	incorrect behavior in the use 'nptDayCmd'. 
+@nptdata/ProcessDays: Now uses getOptArgs to parse input arguments. 
+	Added RedoValue input argument to standardize with ProcessDay.
+@nptdata/ProcessSession: Now uses getOptArgs to parse input arguments. 
+	Added RedoValue input argument to standardize with ProcessDay. Added
+	SessionCells optional input argument to loop over cells in a 
+	session.
+@nptdata/ProcessCell: New function that will loop over cells within a 
+	session.
+doc/view-nptdata-usage.txt: Added descriptions using the new 
+	SessionCells option in @nptdata. Added section with tips for 
+	creating classes.
+
+May 12, 2004
+scripts/miscellaneous/getOptArgs: Now keeps numeric arguments by 
+	default. Fixed code that removed arguments that were of the flag
+	type.
+Merged changes on branch syen-version to main trunk. Had to add 
+	following files for some reason:
+scripts/view/@eyejitter/eyejitter.m
+scripts/view/@eyejitter/plot.m
+scripts/view/@eyejitter/hist.m
+scripts/view/@mapfields/mapfields.m
+scripts/view/@mapfields/plot.m
+scripts/view/@mapfields/subsref.m
+
+May 13, 2004
+scripts/view/@nptdata/plot: Now prints out error when there is a problem
+	calling the plot function of objects.
+
+May 14, 2004
+scripts/view/@nptdata/plot: Now prints out error on a new line when 
+	there is a problem calling the plot function of objects.
+
+May 18, 2004
+scripts/view/@nptdata/ProcessSession: Added option to process selected
+	cells.
+scripts/miscellaneous/histn: Updated references to histmulti5 to histn.
+
+May 19, 2004
+scripts/view/@nptdata/ProcessDays: Added option to skip directories.
+scripts/view/@nptdata/ProcessDay: Added option to skip directories
+	which will always contain eyecal. Now calls ProcessSite instead of 
+	ProcessSession unless the NoSites option is used.
+scripts/view/@nptdata/ProcessSite: New function that gets called by 
+	ProcessDay and in turn calls ProcessSession.
+scripts/view/@nptdata/ProcessSession: Added option to skip directories
+	and now calls ProcessGroup instead of ProcessCell. Changed default
+	to call ProcessCell but can still can ProcessTrial with the 
+	'SessionTrials' option.
+scripts/view/@nptdata/ProcessGroup: New function that gets called by
+	ProcessSession and in turn calls ProcessCell.
+
+May 24, 2004
+scripts/view/@nptdata/get: Added option to access sessiondirs.
+scripts/view/@nptdata/plus: Fixed bug in adding sessiondirs together.
+
+May 25, 2004
+scripts/view/@nptdata/plus: Fixed another bug in adding sessiondirs 
+	together.
+
+May 26, 2004
+algorithms/spcorr: Fixed bug that was not computing correlations
+	properly when X and Y are passed in as seperate arguments instead
+	of a single matrix.
+
+May 27, 2004
+scripts/miscellaneous/divideBins: Removed keepNumeric argument in call
+	to getOptArgs.
+scripts/view/@mapfields/plot: Removed keepNumeric argument in call to
+	getOptArgs.
+scripts/view/@mapfields/mapfields: Fixed bug in creating empty object.
+scripts/batch_processor/ProcessSession: Fixed bug in processing groups
+	optional input argument.
+scripts/miscellaneous/mtpsd: New function from Zane to calculate
+	spectrum using multi-tapers.
+scripts/miscellaneous/mtspec: Modified function from Zane to create
+	time-frequency plots using multi-tapers.
+
+May 28, 2004
+scripts/view/@eyes/plot: Added Calib flag which tells the function to
+	generate the eye calibration grid by calling getEyeCalData. Added
+	CalibDir argument to over-ride default of going up 2 directories.
+	Changed Data2D flag to CalibData.
+scripts/view/@ispikes/separate: Now uses the obj.data structure added
+	by Baldwin.
+	
+May 30, 2004
+scripts/view/@eyejitter/plot: Removed keepnumeric option.
+scripts/view/@ispikes/separate: Added code to change numClusters to 1.	
+scripts/view/@ispikes/display: Now uses the obj.data.structure added
+	by Baldwin.
+scripts/view/@ispikes/get: Now uses the obj.data.structure added
+	by Baldwin.
+scripts/view/@ispikes/getSpikeCounts: Now uses the obj.data.structure 
+	added by Baldwin.
+scripts/view/@ispikes/subassgn: Now uses the obj.data.structure added
+	by Baldwin.
+
+May 31, 2004
+scripts/view/@ispikes/ispikes: Replaced s.duration, s.sessionname, 
+	and s.signal with s.data.duration, s.data.sessionname, and 
+	s.data.signal in null constructor.
+scripts/view/@ispikes/loadobj: Added feedback so we know when objects
+	are being converted.
+scripts/view/@ispikes/separate: Added code to name cells after
+	separation.
+scripts/view/@ispikes/subsref: Added object name to function title in
+	help comments.
+scripts/view/@eyejitter/eyejitter: Added code to get onsets from 
+	timing.mat file created by ProcessSession. Added option to specify
+	duration instead of just onsets and offsets.
+scripts/view/@eyejitter/plot: Removed redundant 'All' option.
+scripts/view/@eyejitter/subsref: New function to access object data.
+
+June 1, 2004
+doc/view-nptdata-usage.txt: Removed 'SessionCells' argument in
+	examples.
+scripts/batch_processor/ProcessSession: Moved conversion of 
+	trigDurations to time out of loop and into section where other
+	variables are converted.
+scripts/view/@nptdata/ProcessDirs: New function that changes directories
+	to each of the sessiondirs contained in a nptdata object and
+	evaluates a user-specified command.
+scripts/view/@eyejitter/hist: Modified min and max calls to always take	
+	min and max across rows.
+scripts/view/@nptdata/plot: Added 'Instantiate' option to create object
+	using the 'auto' option instead of loading.
+
+June 2, 2004
+scripts/view/@eyejitter/eyejitter: Added code to correctly convert
+	onsets and offsets, which are specified in ms, to indices when
+	extracting data to be analyzed.
+
+June 3, 2004
+scripts/view/@eyejitter/plot: Added sessionname to plot.
+scripts/view/@eyejitter/hist: Added option to do contour plot. Now only
+	reverses the Y-axis for imagesc and contour plots.
+scripts/miscellaneous/deleteOutliers: New function from Matlab Central
+	to delete outliers from data using the Grubb's Test for Outliers.
+scripts/miscellaneous/getStableMean: New function that iteratively
+	removes points beyond a specified standard deviation threshold and
+	returns the mean when the change in the mean is smaller than a 
+	specified threshold.
+
+June 4, 2004
+scripts/miscellaneous/getStableMean: Added code to return std along with
+	the mean.
+doc/view-nptdata-usage.txt: Added example of creating nptdata object 
+	with 'Eval'	when objects are stored in sub-directories. Added tip on
+	writing subsref functions for objects that inherit from other
+	objects that also store all their data in the data field of their
+	structure.
+scripts/miscellaneous/deleteOutliers: Added modification to reduce 
+	redundancy in computing deviation from mean.
+scripts/view/@eyejitter/hist: Removed commented code that attempted to
+	look for center of mass.
+scripts/view/@ispikes/getSpikeCounts: Now able to take vector of
+	DataStart and DataEnd values to allow different values to be used
+	for different trials.
+ToDo.txt: New file added to record ideas and possible improvements.
+
+June 6, 2004
+scripts/view/@nptdata/plot: Removed code that loaded objects for
+	plotting. Now instantiates objects by default instead of only when 
+	the	'Instantiate' argument is present. Using instantiation allows
+	objects that are not saved in the session directory to be used more
+	easily.
+
+June 7, 2004
+scripts/view/@nptdata/ProcessDay: Added temporary fix to have ProcessDay
+	call ProcessSession by default until new data hierarchy is
+	implemented.
+
+June 10, 2004
+scripts/view/@eyejitter/hist: Added optional input arguments to specify
+	parameters of contour plots as well as to experiment with finding
+	center of mass of eye positions. Added option to find centroid of 
+	oversmapled, smoothed and thresholded regions of the eye positions.
+	Now also returns center x,y position.
+scripts/view/gui/InspectCB: Replaced redundant calls to determine length
+	of objects with variable that stores the result after 1 call.
+
+June 11, 2004
+scripts/view/@eyejitter/hist: Now rounds x- and y-mean before plotting
+	and returning it. Now correctly converts center x,y to screen coords
+	before returning it.
+
+June 13, 2004
+scripts/view/@nptdata/ProcessDay: Added code so that the optional input
+	arguments 'Sessions' and 'SkipSessions' will work as before. This
+	code added for backward compatability until new data hierarchy
+	becomes permanent.
+
+June 15, 2004
+scripts/view/@nptdata/ProcessGroup: Fixed typo in parsing selected
+	directories.
+scripts/view/@eyejitter/hist: Added contour plot of centroid region if
+	Centroid argument is used. Now over-samples GaussianSize by 
+	Oversample argument to make it easier to use. Changed defaults of
+	Percentile from 99 to 95, GaussianSize from 5 to 10.
+scripts/view/@nptdata/ProcessDirs: Added code to return arbitrary data
+	without need for creating object.
+doc/view-nptdata-usage.txt: Added example of new ProcessDirs 
+	functionality that returns arbitrary data.
+
+June 16, 2004
+scripts/read_files/ReadIniRF: Now adds the sessionname to the data
+	structure.
+scripts/view/@mapfields/mapfields: Added sessionname to default
+	data structure.
+scripts/view/@mapfields/plot: Now labels each RF with a number and
+	adds a line to illustrates the orientation. Now ensures that the 
+	fields argument	to drawfields is a column vector when drawing all 
+	fields so that the RF labels will be added properly.
+scripts/view/@nptdata/plot: Removed numeric second argument when
+	calling plot function of object since it is redundant and it was
+	conflicting with functions that used the numeric second argument 
+	for other purposes.
+
+June 17, 2004
+scripts/read_files/ReadIniRF: Fixed bug that wasn't skipping properly
+	over key names for receptive fields when there were more than 10 
+	RFs.
+scripts/view/@mapfields/mapfields: Moved initialization of empty data
+	structure to createEmptyObject function so that function can be
+	from within createObject without having to first initialize data.
+	Removed argument to createEmptyObject as a result.
+scripts/view/@nptdata/ProcessDay: Added message when day is skipped.
+scripts/view/@nptdata/ProcessSession: Added message when session is 
+	skipped.
+	
+June 21, 2004
+scripts/miscellaneous/inifile: New function from Matlab Central that
+	reads and writes INI files.
+scripts/read_files/ReadIniSession: New function to read just the
+	session info from ini files using the new inifile function.
+scripts/read_files/ReadIniGrating: New function to read just the
+	fields necessary for the grating stimuli.
+scripts/view/@gratings: New class that displays grating stimuli.
+scripts/view/@gratings/gratings: Constructor function for new gratings
+	class. Uses the new ReadIniGrating function to parse INI file.
+scripts/view/@gratings/subsref: Subsref function for new gratings
+	class.
+scripts/view/@gratings/plot: Plot function for new gratings class.
+scripts/view/@mapfields/getEccentricity: New function that computes
+	eccentricity of fields by computing the cartesian distance between
+	the fixation spot and all other fields.
+scripts/view/@nptdata/isempty: New function that should allow all
+	derived objects to go without creating their own isempty function.
+doc/view-nptdata-usage.txt: Added example of new ProcessDirs 
+	functionality that uses the variable i to keep track of computations
+	that may have variable number of rows per directory when computing
+	arbitrary data. Corrected typo in spelling of nptdata.
+scripts/read_files/ReadIniRF: Now stores the Presenter Version field.
+scripts/read_files/@mapfields/plot: Corrected typo in help comments from
+	"can not" to "cannot". Reduced the line indicating orientation of
+	fields to improve visibility when other objects are plotted. Now
+	turns on axis equal to make sure objects are drawn with the correct
+	aspect ratio.
+scripts/read_files/@mapfields/subsref: Now uses the data subfield to 
+	simply access to internal data structure.
+scripts/view/@nptdata/ProcessDirs: Added example of using the variable i
+	to keep track of arbitrary data.
+scripts/view/@streamer/get: Added varargin in order to work with 
+	nptdata/InspectGUI.
+
+June 22, 2004
+scripts/view/@nptdata/set: Added option to set sessiondirs field which 
+	also updates number field. Added description of argument type
+	in help comments.
+doc/view-nptdata-usage.txt: Modified subsref example to use gratings
+	and mapfields objects instead of bias and eyestarget, which are 
+	not in the nptdata directories. Added tip on saving number of 
+	events locally in objects. Removed extra quotes in ProcessGroup
+	example when instantiating eyejitter objects.
+
+June 23, 2004
+scripts/view/@eyejitter/eyejitter: Added hchan, vhcan and onsetArg 
+	fields to object structure to avoid confusing horizontal and 
+	vertical channels. The onsetArg field can be used to check to see
+	if a previously saved object matches the current arguments (not
+	completely implemented).
+scripts/view/@eyejitter/plot: Now uses the hchan and vhcan variables 
+	stored in the object structure instead of defining its own 
+	constants.
+scripts/view/@eyejitter/loadobj: New function to update old objects.
+scripts/view/@eyejitter/get: New function that returns computations on
+	the eyejitter data.
+
+June 24, 2003
+scripts/view/@mapfields/get.m: New function to make it easy to return
+	selected data.
+scripts/miscellaneous/histn.m: Added help comment specifying which 
+	column in the input data ends up in rows.
+scripts/view/@eyejitter/get.m: Changed 'Threshold' to 'MaxSD'. Added
+	code to call eyejitter/hist to return the center of the eye
+	jitter data. Now calls eyes/get when it does not recognize the
+	options.
+scripts/view/@eyejitter/hist.m: Changed 'EyeJitterThreshold' to 
+	'MaxSD' which is now passed to eyejitter/get so there is only
+	one place where the default MaxSD is specified. Now uses call to
+	eyejitter/get to get the means. Added code to switch the columns
+	of the means returned from the get function to make the result
+	more intuitive. Replaced constants in code with xcol and ycol
+	which are defined at the beginning of the function.
+scripts/view/@eyejitter/plot.m: Changed 'EyeJitterThreshold' to 
+	'MaxSD' which is now passed to eyejitter/get. Changed the
+	default behavior to hold plots and changed the option 'HoldPlot' 
+	to 'NoHoldPlot'. Fixed code to correctly plot trial-by-trial
+	data using numeric arguments. Removed code that used 
+	EyeJitterThreshold and replaced with code that uses call to get
+	function to figure out which trials to plot in what color.
+
+June 25, 2004
+scripts/miscellaneous/convex_intersect.m: New function from Web that 
+	finds the intersection of 2 polygons.
+scripts/miscellaneous/checkpoly.m: New function from Web that is used
+	by convex_intersect.
+scripts/miscellaneous/line_intersect.m: New function from Web that is 
+	used by convex_intersect.
+scripts/view/@datafile/get.m: Modified to use varargin and getOptArgs.
+scripts/view/@eyes/plot.m: Modified to insert eye directory prefix
+	before trying to open eye files so things will work even if the
+	current directory is the session directory and not the eye 
+	directory. The default directory name can be changed by using the
+	EyeDir optional input argument.
+scripts/view/@mapfields/get.m: Added option to return the number of RFs
+	satisfying specified constraints. Re-organized code to figure out
+	relevant trials before returning specified data.
+scripts/view/@nptdata/ProcessDirs.m: Added help comment to warn about 
+	using . to access fields in objects.
+scripts/view/@nptdata/get.m: Modified to use varargin and getOptArgs.
+scripts/view/@waveforms/get.m: Modified to use varargin and getOptArgs.
+scripts/view/@ispikes/get.m: Added varargin to avoid problems with 
+	InspectGUI, which calls get functions with varargin.
+scripts/view/@mapfields/plot.m: Added option to plot fields relative to
+	fixation spot. Also added options to turn off field orientation and
+	field number so we can create a plot of all fields relative to
+	fixation spot without too much other clutter. Added option to only
+	plot fields with specified mark value.
+
+June 27, 2004
+scripts/view/@nptdata/ProcessDirs: Added option to allow the user to 
+	initialize data to something other than [] so we can add objects in
+	selected directories (contained in a nptdata object) together. Added
+	help comments to describe initializing data to object.
+
+June 28, 2004
+scripts/view/@mapfields/plus: New function that allows mapfields objects
+	to be added together.
+scripts/view/@mapfields/loadobj: New function that converts existing 
+	mapfields objects to the new data structure which allows addition.
+scripts/view/@mapfields/mapfields.m: Modified to add sessions and 
+	numRFIndex fields to allow addition. Changed sessionname and 
+	presenterversion fields to cell arrays to allow addition.
+scripts/view/@mapfields/get.m: Modified to work with multi-event
+	objects. Added Field option to specify field number. Added 'Marked'
+	option to select fields with a non-zero mark. Added 'Indices' option
+	to return indices corresponding to selected fields. Added
+	'FixCenterXY' option to return fixation coordinates from the same 
+	session of specified fields. Added 'SessionRFNumber' option to
+	return the session field numbers. Fixed bug that called eye/get
+	instead of nptdata/get.
+scripts/view/@mapfields/plot.m: Modified to work with multi-event
+	objects. Now can plot all fields if no numeric argument specified.
+	Now uses get function to parse selected fields to reduce redundancy.
+	Now only plots orientations for non-fixation fields.
+scripts/view/@nptdata/ProcessDirs.m: Now uses the functional form of
+	plus to allow passing optional input arguments.
+
+June 29, 2004
+scripts/view/@gratings/get.m: New function to access data. Useful when
+	used inside eval statements, which don't seem to like statements of
+	the form obj.data.blah.
+scripts/read_files/ReadIniRF.m: Modified to call ReadIniSession to
+	return session info. Now returns session info fields in addition to
+	RF fields.
+scripts/view/@mapfields/get.m: Added option to return conversion factors
+	to go from pixels to degrees. This option is called by both plot and
+	getEccentricity functions. The screen dimensions are set to 40 x 30
+	degrees by default.
+scripts/view/@mapfields/getEccentricity.m: Modified to work with
+	multi-event objects. Now returns field number in OBJ instead of the
+	0-indexed number of the fields in each session. Added option to
+	compute eccentricities in degrees instead of pixels, which might not
+	be equivalent if the x- and y-conversion factors are not exactly the
+	same. Now calls get to figure out relevant fields.
+scripts/view/@mapfields/mapfields.m: Converts the session info 
+	character fields returned from ReadIniRF into cell arrays so they
+	can be added together.
+scripts/view/@mapfields/plot.m: Added ability to plot eccentricity
+	data, which calls getEccentricity to do the calculations. Added
+	option to plot data in degrees. Removed drawfields function since
+	there is only 1 call to that function after converting code to use
+	the get function to determine relevant fields. Code in drawfields
+	function now resides in the main function in plot. Added code to
+	make sure [0 0] is included in the axis range when plotting data
+	with the 'FromFix' option.
+scripts/view/@mapfields/plus.m: Fixed typo that was causing problems
+	when second argument was an empty object. Now adds fields returned
+	by ReadIniSession, which is now called by ReadIniRF. Now prints out
+	a warning if ScreenHeight and ScreenWidth are not the same in the
+	two object being added.
+scripts/view/@nptdata/ProcessDirs.m: Fixed bug that was missing a close
+	parenthesis. Code using the 'Object' optional input argument not
+	working due to problems passing varargin to eval function. Now uses
+	get function to get directories so we can use any object inherited
+	from nptdata.
+scripts/view/@nptdata/subsref: Added code to access sessiondirs field.
+doc/view-nptdata-usage.txt: Fixed typo in comment of last example.
+scripts/view/@mapfields/examples.txt: New file to illustrate use of 
+	mapfields objects.
+
+June 30, 2004
+scripts/view/@mapfields/get.m: Added code to remove fixation fields
+	when using the Mark option since in most cases, if the user
+	requests fields marked 0, they don't mean the fixation field. This
+	will help in finding fields which are not marked.
+scripts/view/@eyejitter/getTrialsInFields: New function that is used to
+	finds trials with stable eye positions within the limits of the
+	receptive fields. 
+scripts/view/@eyejitter/plot: Added InFields option to call 
+	getTrialsInFields with the optional input argument 'Plot'.
+scripts/view/@eyejitter/examples.txt: New file to illustrate plotting 
+	the distribution of included trials.
+scripts/view/@ispikes/ispikes: Fixed typo in example of loading 
+	previously saved ispikes object in help comments.
+scripts/view/@ispikes/separate: Added example usage in help comments.
+
+July 1, 2004
+scripts/view/@ispikes/separate: Removed 'cluster' from name in example
+	in help comments. Now checks for existing directories in the group
+	directory and prompts user to either delete the directories or
+	cancel. Added 'NoReplacePrompt' option to bypass warning. Fixed bug
+	that failed to assign the cell name when there is only 1 cluster.
+	Modified code to create directories to work more reliably.
+
+July 4, 2004
+scripts/view/@ispikes/ispikes.m: Removed extraneous \n in error string.
+
+July 5, 2004
+scripts/miscellaneous/histcie.m: Added code to return zero counts and 
+	empty bin assignments when input is empty instead of passing the
+	empty input to histc which will return an error.
+scripts/view/@ispikes/gather.m: New function to return a cell array of
+	all ispikes objects contained in session directory. This code used
+	to be in Contours/eyestarget/plotSalienceSpikes.m.
+scripts/view/@eyejitter/getTrialsInFields.m: Fixed bug in returning
+	excluded points when the 'Plot' argument is not used. Now the 
+	excluded points are calculated whether the 'Plot' argument is used.
+scripts/view/@ispikes/ispikes.m: Now removes '_highpass' from session
+	name before saving object. Fixed bug in saving object when a new 
+	object is created after attempting to load an old object. Now alters
+	Args.SaveLevels before calling createObject.
+scripts/view/@nptdata/ProcessSession.m: Added code to return arbitrary
+	data similar to @npdata/ProcessDirs.m.
+
+July 6, 2004
+doc/view-nptdata-usage.txt: Removed extraneous semi-colon in example of
+	using '~isempty' on an object to check if the directory should be
+	retained in the output nptdata object.
+scripts/view/@eyejitter/getTrialsInFields.m: Removed redundant comment
+	after code to find excluded points was moved.
+scripts/view/@nptdata/ProcessSession.m: Added option to specify part
+	of groupname to avoid going into certain directories which might
+	cause problems, e.g. avoiding the sort directories when the ispikes 
+	constructor is called.
+scripts/view/@streamer/loadobj.m: Retrieved from CVS and modified to
+	reverse the order of the fields chunkSize and numChunks. Also now
+	checks for presence of numChunks field for older streamer objects.
+
+July 7, 2004
+scripts/view/@ispikes/ispikes.m: Added 'Resave' option to allow 
+	previously saved objects to be converted without regenerating. This
+	is useful if the outdated object is the inherited streamer object.
+	Together with the use of streamer/loadobj, objects can be updated
+	and saved without regenerating, which is currently not possible for
+	ispikes objects in cluster directories. Added 'ShortName' option to
+	save ispikes objects as ispikes.mat instead of something like 
+	clark10100303g0002_ispike.mat. This allows the ispikes objects in 
+	cluster directories to be updated and saved properly.
+
+July 13, 2004
+scripts/batch_processor/ProcessSession.m: Replaced typo 'highpass' with
+	'highpassflag' in code that extracts spikes after computing mean
+	and standard deviation.
+scripts/view/@eyejitter/getTrialsInFields.m: Added option to specify
+	radius of inclusion instead of using receptive fields.
+scripts/view/@nptdata/plot.m: Added option to pass optional arguments
+	for the instantiation of objects before plotting. This allows 
+	objects to be regenerated on the fly if we want to test out
+	different parameters. Now also checks for the presence of optional
+	arguments so the user can leave them out if there are not being
+	used.
+scripts/view/@nptdata/ProcessCell.m: Fixed code that calls the
+	constructor for the input object along with any optional input
+	arguments. This removes the need for there to be a ProcessCell
+	method in each class. 
+scripts/view/@nptdata/ProcessDirs.m: Fixed code that calls the
+	constructor, along with any optional input argument using feval.
+	This simplifies the call when computing objects that are to be added
+	together and returned.
+doc/view-nptdata-usage.txt: Removed example of using the 'Instantiate'
+	optional input argument with nptdata/plot since that is now the 
+	default. Added tips on using the batch processing functionality of
+	the nptdata class.
+
+July 14, 2003
+scripts/view/@streamer/plot.m: Added code to search for .bin streamer
+	files in parent directories in case we are calling InspectGUI on
+	an ispikes object from the cluster directory. Need to add similar
+	code for trial-based streamer files. (Removed since we are going
+	to try to modify streamer object so it can figure out where its
+	data is located.)
+scripts/view/@nptGroup: New class for npt group data.
+scripts/view/@nptGroup/nptGroup.m: Constructor for new nptGroup class.
+scripts/view/@nptGroup/plot.m: Plot function for new nptGroup class.
+scripts/view/@nptGroup/subsref.m: Subsref function for new nptGroup
+	class.
+
+July 15, 2004
+scripts/view/@ispikes/get.m: Modified to use getOptArgs. Changed format
+	of calls so there might be problems with code that called it using
+	the old format. Did a grep to check npt, Contours and fvt and didn't
+	find any code that is using the old format. Added code to tell
+	nptGroup/plot to separate group plots.
+scripts/view/@ispikes/plot.m: Added code to format group plots, which 
+	get calls by nptGroup/plot. Fixed bug that was attempting to plot
+	streamer data even if the 'showStreamer' optional input argument was
+	not specified. Commented out code that was only plotting spikes with
+	times between axis points. Modifed code to plot spikes so it does
+	not use a for loop.
+scripts/view/@nptGroup/nptGroup.m: Added help comments. Changed
+	'GroupName' option to 'CellName' to correctly reflect use of the
+	variable.
+scripts/view/@nptGroup/plot.m: Removed 'Separate' optional input
+	argument. Now removes optional input arguments relevant only to this
+	function. Now correctly makes cellDirs a cell array. Added code to
+	sub-divide current axis into either horizontal or vertical sections
+	depending on the 'GroupPlotProperties' of the object being plotted.
+	Now passes group plot information to plot function of objects so
+	they can format the plots appropriately. Fixed typo in command to
+	set the title.
+scripts/view/@nptdata/get.m: Added code to handle 'GroupPlotProperties'
+	query from nptGroup/plot so all object inherited from nptdata will
+	work with nptGroup/plot.
+
+July 16, 2004
+scripts/view/@ispikes/createClusterNamesFile.m: New function that uses
+	directory structure created by previous calls to ispikes/separate
+	to generate the ClusterNames files if it is missing.
+scripts/view/@ispikes/ispikes.m: Fixed bug that was saving cell ispikes 
+	objects with the name for group ispikes objects. Added lastwarn
+	calls so that try-catch code will work when trying to load outdated
+	objects. Replaced call to ReadClusterNamesFile with textread as 
+	ReadClusterNamesFile was not working. Fixed code that was returning
+	the group ispikes object instead of the cell ispikes object when the
+	constructor was called from the cluster directory. Fixed typo in
+	comment about callling separate.
+scripts/view/@ispikes/loadobj.m: Re-added to convert saved objects that
+	were inherited from streamer to the new format.
+scripts/view/@ispikes/plot.m: Fixed code for plotting trial-based data.
+
+July 19, 2004
+scripts/view/@nptGroup/plot.m: Moved code to separate axis into separate
+	function separateAxis so it can be called by other functions.
+scripts/miscellaneous/separateAxis.m: New function to separate axis.
+scripts/view/@nptdata/InspectGUI.m: Moved parsing of optional arguments
+	before call to get event number so we will be using the right
+	object. Now also passes to the get function the optional arguments 
+	passed to the plot function so event number will be correct.
+scripts/view/@nptGroup/get.m: New function that gets the event number
+	from the object used for plotting to return to InspectGUI.
+
+July 20, 2004
+scripts/miscellaneous/mtspec.m: Fixed bug that was rounding instead of 
+	doing floor when computing number of windows in a time series.
+scripts/view/@nptdata/InspectGUI.m: Fixed bug in passing cell array 
+	contents of s.optargs when calling get. Moved call to get after 
+	code that initializes s.optargs when there is only 1 object.
+scripts/view/@nptGroup/plot.m: Added help comments to describe function.
+scripts/view/@nptdata/InspectGUI.m: Now correctly packages optional
+	arguments into s.optargs when not using the optArgs input argument.
+	Now correctly uses the first object instead of the i-th object in
+	call to get event number.
+scripts/view/@nptdata/plot.m: Modified cell array of objects so the 
+	object, the plot options and the constructor options are all
+	contained in one cell array. This correctly allows plot options and
+	constructor options to be optional. Updated help comments to reflect
+	new change.
+doc/view-nptdata-usage.txt: Updated to reflect changes in cell array
+	argument used in nptdata/plot.
+	
+July 23, 2004
+scripts/batch_processor/ProcessSession.m: Fixed bug that was trying to
+	extract spikes when the extraction flag is specified but there are 
+	no relevant signals present. Now exits if a data file is found to be
+	empty (possibly due to an incomplete session) so it won't encounter
+	problems trying to create subsequent files.
+scripts/view/@checksystem/plot.m: Added session name to plot. Now prints
+	out the name of the last trial so we can figure out if we all the
+	trials were analyzed. Now prints out the trial numbers of the trials 
+	with irregular sync intervals.
+scripts/batch_processor/MoveProcessedFiles.m: Moved code for unix
+	to ProcessDay so we can display output more easily instead of having
+	to add another ouput argument.
+scripts/batch_processor/ProcessDay.m: Added code for unix to move
+	processed files from MoveProcessedFiles.m. Now prints out the output
+	of moveprocessedfiles.tcsh so we can figure out what happened. Now
+	calls system instead of making separate calls to dos and unix when
+	using moveprocessedfiles.tcsh to move files on PCs or Unix.
+scripts/view/@nptGroup/get.m: Fixed bug that was overwriting plotObject
+	with the instantiated object. Now correctly adds 'Number' to call to
+	the get function of the instantiated object so there is no confusion
+	about what property is being requested. Now passes only the optional 
+	input arguments for the plot function to the get function to avoid 
+	confusion.
+scripts/view/@ispikes/get.m: Fixed bug that was not returning a value
+	when GroupPlotProperties is 1. Now correctly passes all arguments
+	in varargin to nptdata/get instead of just the first argument so
+	GroupPlotProperties will work properly.
+scripts/view/@ispikes/plot.m: Now correctly changes duration to 
+	milliseconds before using it to set the x-axis limits.
+
+July 26, 2004
+scripts/miscellaneous/dirLevel.m: Now returns the current directory when
+	it is unable to determine the directory structure so as to improve 
+	compatability with un-organized data.
+scripts/view/@ispikes/separate.m: CellNames is now an optional input
+	argument so if it is not specified, the function checks uses the
+	the ClusterNames file if it is present and returns an error 
+	otherwise. Updated help comments to reflect new change.
+scripts/view/@ispikes/ispikes.m: Now calls separate without CellNames
+	so the ClusterNames file will be read.
+scripts/view/@streamer/streamer.m: Fixed the order of the fields so it
+	is consistent across all the diffferent ways of creating an object.
+
+July 28, 2004
+scripts/view/@nptdata/nptdata.m: Added option to specify number and
+	session directory separately since the 'SessionDirs' option would
+	use the number of rows in SessionDirs to overwrite the number field.
+	Made HoldAxis an optional input argument so the constructor can be 
+	called more easily. Updated help comments to describe new usage. Now
+	converts SessionDirs to cell array if it is not a cell array.
+scripts/view/@eyes/eyes.m: Updated call to nptdata constructor so it
+	uses the new usage to correctly create nptdata object with the right
+	number in the number field.
+scripts/view/@nptdata/ProcessSession.m: Added help comments to describe
+	GroupDirName option.
+scripts/view/@streamer/streamer.m: Updated call to nptdata constructor
+	so it uses the new usage to correctly create nptdata object with 
+	the right number in the number field.
+
+July 29, 2004
+scripts/batch_processor/ProcessSession.m: Now skips analysis of sync
+	monitor files if there is a mismatch between the number of sync
+	monitor files and the number of data files.
+scripts/view/@nptdata/ProcessDay.m: Added DayObject optional input
+	argument so objects no longer need to define a ProcessDay function.
+scripts/view/@nptdata/ProcessGroup.m: Added GroupObject optional input
+	argument so object no longer need to define a ProcessGroup function.
+scripts/view/@nptdata/ProcessSession.m: Added GroupSession optional
+	input argument so object no longer need to define a ProcessSession 
+	function.
+scripts/view/@nptdata/ProcessSite.m: Added SiteObject optional input
+	argument so object no longer need to define a ProcessSite function.
+scripts/view/@nptdata/nptdata.m: Added code to create object from a 
+	derived object so we can simply the creation of nptdata objects that
+	contain directories in which user specified objects were present.
+	Moved code to create empty object into new sub-function so it can be
+	called from various places in the constructor.
+scripts/view/@nptdata/plus.m: Now prints warning if there is a mismatch
+	in the number of events and the number of sesssiondirs, except when
+	sessiondirs is empty.
+scripts/view/@nptdata/set.m: Now make sure sessiondirs is a cell array
+	before updating object. Now gets the number of events from the 
+	number of columns in sessiondirs.
+doc/view-nptdata-usage.txt: Added description of nptdata class. Added
+	description of new LevelObject optional input argument for batch
+	processing functions. Updated nptdata calls to remove the first 2
+	redundant arguments when using optional input arguments. Updated
+	example of eyejitter class usage to use PresenterTrigger optional
+	input argument. Updated examples to make use of the fact that
+	nptdata/plus can be called correctly when there are no plus 
+	functions in an user class. Expanded comments on overloading get
+	function. Added example of instantiating an nptdata object from a
+	derived object that does not have a plus function in its class.
+
+July 30, 2004
+scripts/view/@eyes/plot.m: Now correctly gets the session directory
+	from the nptdata object, which is a cell array, and uses the 
+	contents of the cell array instead of the cell array itself, to
+	change directories. The output argument varargout was being returned
+	with items that were only relevant when the 'XY' option was not 
+	used. This problem has been fixed so it now correctly returns 
+	different varargout when the 'XY' option is used or when it is not
+	used.
+scripts/view/@nptdata/InspectGUI.m: Now only turns on linkedzoom for
+	objects that request it.
+scripts/view/gui/InspectCB.m: Now only turns on linkedzoom for objects
+	that request it.
+scripts/view/@streamer/plot.m: Added semi-colon to varargout command to
+	suppress unnecessary output.
+
+August 2, 2004
+algorithms/nptSpikeTimesFFT.m: Now calls histcie with the DataCols 
+	option so a row vector is treated as separate data series with one 
+	data point each.
+scripts/miscellaneous/getOptArgs.m: NumericArguments is now initialized
+	to an empty matrix instead of a cell array containing an empty
+	matrix since that was returning false when used with isempty.
+scripts/miscellaneous/histcie.m: Added DataCols option so that a row 
+	vector can be processed as separate data series with one data point
+	each.
+scripts/view/@nptdata/nptdata.m: Updated examples in help to remove
+	first two arguments when using optional input arguments.
+
+August 5, 2004
+doc/view-nptdata-usage.txt: Added example of using ProcessDirs to
+	select a subset of directories from a nptdata object to create
+	another nptdata object.
+scripts/batch_processor/ProcessDay.m: Added code to deal with new
+	directory structure.
+scripts/batch_processor/ProcessEyeSessions.m: Added code to deal with
+	new directory structure.
+scripts/batch_processor/ProcessSession.m: Modified code to get session
+	name so it will work with both the old and new directory structure.
+	Moved printing of newline to after call to ExtractorWrapper to
+	improve legibility of progress messages. Now turns off diary (if it
+	is on) before calling RunClustBatch and turns it back on afterwards.
+	This will only work if the diary command is called in the following
+	fashion: diary([pwd filesep 'diary']).
+scripts/batch_processor/getDXYData.m: Added code to deal with new
+	directory structure.
+scripts/batch_processor/moveprocessedfiles.tcsh: Modified to work with
+	both old and new directory structures.
+
+August 6, 2004
+scripts/miscellaneous/OrganizeData.m: Now returns error message in 
+	error dialog box.
+
+August 10, 2004
+scripts/batch_processor/ProcessSession.m: Moved code that calls 
+	RunClustBatch inside the loop that checks for the presence of the
+	variable unitextracted so RunClustBatch is run only when units
+	are extracted. This change was necessary as ProcessSession was 
+	interrupted while running KlustaKwik and I just wanted it to
+	generate the dxy files, which follows the call to RunClustBatch.
+	Fixed bugs in re-extracting spikes from highpass files in highpass
+	directory.
+scripts/batch_processor/ProcessEyeSessions.m: Now creates
+	processedeyes.txt only in sessions where data was processed instead
+	of every directory it checks. This change was necessary to reduce
+	the number of files that have to be manually deleted when different
+	sessions have different eye calibration sessions.
+
+August 11, 2004
+scripts/read_files/ReadDescriptor.m: Added command to close file. This 
+	might one of the reasons why there are problems moving data or 
+	unmounting drives even if it appears Matlab is no longer working on
+	any data files.
+
+August 12, 2004
+scripts/batch_processor/ProcessDay.m: Fixed bug in checking the return
+	value of the call to cygwin to move files.
+
+August 16, 2004
+scripts/batch_processor/kkwrapper: Added to cvs control shell script 
+	used to launch parallel	KlustaKwik processes. Added code to search 
+	for best score after all KlustaKwik processes for a group have
+	completed. 
+scripts/batch_processor/kkewrapper: Added to cvs control shell script 
+	used to launch parallel	KlustaKwik processes with a penalty mix
+	argument of 1. Added code to search for best score after all 
+	KlustaKwik processes for a group have completed. 
+scripts/view/@nptdata/ProcessDirs: Updated help comments to illustrate
+	correct use of the Object argument.
+
+August 20, 2004
+scripts/view/@nptGroup/plot.m: Fixed missing quote in help comments.
+	Now sets plot and constructor option to empty cell arrays if they
+	are not present so we can use the same code regardless of how many
+	columns in Object are passed into the function.
+scripts/miscellaneous/getOptArgs.m: Removed double-spacing that somehow
+	crept into the file. Added code to use the 'flags' field in
+	ArgStruct if 'flags' is not specified, and also to add the 'flags'
+	field if the 'flags' is specified.
+scripts/view/@dirfiles: New class to act as template.
+scripts/view/@dirfiles/dirfiles.m: Constructor for template class.
+scripts/view/@dirfiles/subsref.m: Subsref function for template class.
+scripts/view/@dirfiles/plus.m: Plus function for template class.
+
+August 23, 2004
+scripts/miscellaneous/nptMkDir.m: New function to create directory if it
+	is not already present and return error if there is a problem
+	creating the directory.
+scripts/view/@nptdata/ProcessCellCombos.m: New function to process
+	objects that compute data from pairs of cells.
+scripts/view/@nptdata/ProcessGroup.m: Added option to specify names of
+	cluster directories. Useful for selecting single units (using '*s')
+	or multi-units (using '*m').
+scripts/view/@nptdata/ProcessSession.m: Added option to call new
+	function ProcessCellCombos if the get function of an object returns
+	a value that is not 'Single'.
+scripts/view/@nptdata/get.m: Added code to return an AnalysisLevel of
+	'Single' for all objects by default. This allows all objects to work
+	with the new code in ProcessSession that checks for objects that
+	require the function ProcessCellCombos.
+scripts/view/@nptdata/nptdata.m: Added code to create nptdata objects
+	containing the current directory using the 'auto' option. This makes
+	it easy to generate cell arrays of directories either from the
+	session or group directory, which is used in ProcessCellCombos.
+
+August 24, 2004
+scripts/view/@nptdata/ProcessDirs.m: Changed isempty call to ischar when
+	checking for the presence of the Object argument since empty objects 
+	are typically passed to the function and the isempty function of 
+	nptdata will get called and return true.
+scripts/view/@nptdata/ProcessSession.m: Changed default GroupDirName to
+	'group*' since that seems to be the most commonly used.
+doc/view-nptdata-usage.txt: Added example usage of using ProcessDirs to
+	go to each session directory and calling ProcessSession and then
+	adding the objects returned by ProcessSession together.
+scripts/view/@nptdata/ProcessCellCombos.m: Fixed bug so now both 
+	IntraGroup and InterGroup pairs are correctly calculated when 
+	neither optional input arguments are specified.
+
+August 25, 2004
+scripts/view/@nptdata/ProcessGroup.m: Now converts the Cells and 
+	SkipCells arguments to full paths and does all comparisons using
+	the full path in order to be able to specify directories from
+	a function like ProcessDays.
+
+August 27, 2004
+algorithms/nptSpikeTimesFFT.m: Now creates spike trains that are as
+	long as the last spike time instead of using the duration argument
+	to specify the length. Removed duration argument.
+scripts/view/@nptdata/plus.m: Now if one of the arguments is not an
+	nptdata object, the other is returned. If both are not nptdata
+	objects, then an empty nptdata object is returned. This allows the
+	objects created in the nptDirCmd option of ProcessDirs to be added
+	without having to call the DataInit option.
+scripts/view/@dirfiles/plus.m: Added new plus code in nptdata/plus to
+	template plus function.
+scripts/view/@nptdata/InspectGUI.m: Fixed bug in spelling of s.Arg when
+	the object does not return plot arguments.
+
+August 30, 2004
+scripts/view/@dirfiles/plus.m: Added code to check for empty objects
+	in case empty objects are going to cause problems (e.g. 
+	Cat/@FMagnitude/plus.m). 
+
+September 1, 2004
+scripts/view/@nptdata/ProcessCellCombos.m: Added comment about the
+	utility of using ProcessGroup to skip directories with skip.txt just
+	in case we start wondering why we are gathering directories with
+	ProcessGroup before doing the calculations.
+	
+September 3, 2004	
+algorithms/nptSpikeTimesFFT.m: Now returns time vector for
+	time-frequency plots. Removed Duration field from Args. Now returns
+	empty output arguments if the data is empty. Now rounds up number of
+	segments to include all data instead of truncating last fraction of
+	data. Now correctly uses noOverlapLength instead of BinSize to
+	ensure correct segment sizes.
+scripts/miscellaneous/nptDir.m: Added code to work around bug in Matlab
+	dir function when doing a directory listing on a mounted Windows
+	filesystem from Macs.
+
+September 7, 2004
+scripts/batch_processor/ProcessSession.m: Now also checks timingflag to
+	see if we need to loop through trials. This is necessary if 'timing'
+	is the only flag specified.
+
+September 8, 2004
+scripts/miscellaneous/getOptArgs.m: Now converts shortcuts to lowercase
+	so case will not matter when specifying shortcuts.
+scripts/view/@dirfiles/dirfiles.m: Now adds the flags field separately
+	to the Args strcuture. This might make it more apparent that the
+	flags field is really a one-level cell array rather than the double-
+	level cell array that is required when initializing within the
+	struct call.
+
+September 9, 2004
+scripts/miscellaneous/concatenate.m: Added code to concatenate data
+	columnwise so we don't have to transpose before and after calling
+	concatenate if we want to append data columnwise. Added code to
+	only concatenate vectors that are not empty.
+scripts/read_files/ReadRevCorrIniJonathan.m: Added check for empty 
+	Matrix field.
+scripts/view/@dirfiles/dirfiles.m: Now removes the 'Auto' argument from
+	varargin and stores the varargin returned from getOptArgs under a
+	different names so nargin will work properly. Otherwise, if 'Auto'
+	is removed by getOptArgs, nargin will return 0. Replaced redundant 
+	nargin calls with a variable that is set by one call to nargin.
+
+September 10, 2004
+scripts/view/@dirfiles/dirfiles.m: Fixed bug that closed the struct
+	command for Args with a "}" instead of a ")".
+scripts/view/@nptdata/ProcessCellCombos.m: Added code to create the 
+	combinations directory only when there are cluster pairs to
+	process.
+scripts/miscellaneous/concatenate.m: Removed code that only
+	concatenated vectors that are not empty since functions such as
+	Cat/CreateRaster are expecting the old behavior.
+
+September 15, 2004
+scripts/view/@nptdata/ProcessDay.m: Now calls ProcessSite by default. 
+	Replaced 'UseSites' argument with 'NoSites' to specify old behavior.
+	Now no longer adds eyecal directory to SkipSites if SkipSites is not
+	empty. This allows the checksystem objects to be created for eye
+	calib sessions as well. Added code to remove arguments specific to
+	this function so that the checksystem constructor will not get
+	confused.
+scripts/miscellaneous/concatenate.m: Added code to properly concatenate
+	a scalar value and an empty matrix as it was causing problems
+	with the jointevents object.
+
+September 16, 2004
+scripts/miscellaneous/dirLevel.m: Added code to return name prefixes for
+	the	various kinds of directories (e.g. cluster, group, session, 
+	etc.). We will try to make this function the repository for 
+	directory specific information so we will not have to change a whole
+	bunch of functions if the directory hierarchy changes.
+scripts/view/@nptdata/groupDirs.m: New function to group indices 
+	according to group. This can be used with cummulative objects like 
+	the responsiveness object to calculate the standard deviation of the
+	responsiveness within a group.
+
+September 21, 2004
+scripts/batch_processor/ProcessEyeSessions.m: Fixed bug that was not
+	returning to parent directory if a skip.txt was found in a session.
+
+September 27, 2004
+scripts/view/@nptdata/name2index.m: Added check for empty sessiondirs
+	so we won't try to do anything with empty cell arrays. Now returns 0
+	if sessiondirs is empty.
+scripts/miscellaneous/dirLevel.m: Changed relative option to Relative so
+	we can use R as a shortcut.
+
+October 1, 2004
+scripts/view/@nptgroup: Changed nptgroup to lower case so objects saved
+	on Windows will work with non-Windows machines.
+scripts/view/@nptgroup/get.m: Changed case of nptgroup.
+scripts/view/@nptgroup/nptgroup.m: Changed case of nptgroup.
+scripts/view/@nptgroup/plot.m: Changed case of nptgroup.
+scripts/view/@nptgroup/subsref.m: Changed case of nptgroup.

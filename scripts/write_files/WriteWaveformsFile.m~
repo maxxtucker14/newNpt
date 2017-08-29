@@ -1,0 +1,26 @@
+function WriteWaveformsFile(filename,num_spikes,num_channels,waveforms,times)
+%status = WriteWaveformsFile(filename,headerinfo,waveforms,times)
+%
+%filename is [sessionName 'g' groupNum 'waveforms.bin'] -> ie. a226g0001waveforms.bin
+%
+%num_spikes - the number of extracted spikes
+%
+%num_channels  - 1 for electrode, 4 for tetrode, etc...
+%
+%waveforms  - a matrix of extracted waveforms with each waveform per row
+%
+%times - spike times in microseconds
+
+
+
+
+fid=fopen(filename,'w','ieee-le');
+WriteWaveformsHeader(fid,num_spikes,num_channels);
+fwrite(fid,zeros(1,100),'int8');
+wf1 = permute(waveforms,[3 2 1]);
+wf2 = reshape(wf1,[],num_spikes);
+fwrite(fid,wf2,'int16');                
+fwrite(fid,times*100,'uint64');
+fclose(fid);
+
+                

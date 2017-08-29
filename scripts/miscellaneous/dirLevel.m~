@@ -1,0 +1,217 @@
+function [p,varargout] = dirLevel(destLevel,varargin)
+%dirLevel Return directory hierarchy information used in the Gray Lab
+%   P = dirLevel(LEVEL) returns the absolute path to LEVEL.
+%      e.g. calling dirLevel('site') from
+%      /Data/a1/site02/session03/group0004/cluster01s returns
+%      /Data/a1/site02.
+%
+%   P = dirLevel(LEVEL,'Relative') returns the relative path to LEVEL.
+%      e.g. using dirLevel('site','relative') in the above example will
+%      return ../../../
+%
+%   [P,CWD] = dirLevel(...,'CDNow') changes directory in addition to
+%   returning the path. The previous directory is returned in CWD.
+%
+%   This function only works going upwards because directory splits in 
+%   downward direction. This function does not check whether the 
+%   directory actually exists.
+%
+%   P = dirLevel(0,PREFIX) returns the prefix for the specified directory
+%   level. These are the recognized PREFIX values and their current return
+%   values:
+%      'CellPrefix'      'cluster'
+%      'GroupPrefix'     'group'
+%      'SessionPrefix'   'session'
+%      'SitePrefix'      'site'
+%      'DayPrefix'       'day'
+%      'DaysPrefix'      'days'
+%
+%   P = dirLevel(DIRECTORY,'ShortName') returns the abbreviated name so
+%   if DIRECTORY is /Data/a1/site02/session03/group0004/cluster01s, P is
+%   a1s02n03g04c01s. This can be used to shorten strings in the title of
+%   plots.
+%
+%   P = dirLevel(0,'GetClusterDirs') returns the path to 
+
+Args = struct('Relative',0,'CellPrefix',0,'GroupPrefix',0, ...
+	'SessionPrefix',0,'SitePrefix',0,'DayPrefix',0,'DaysPrefix',0, ...
+	'ShortName',0,'CDNow',0,'GetClusterDirs',0);
+Args.flags = {'Relative','CellPrefix','GroupPrefix', ...
+	'SessionPrefix','SitePrefix','DayPrefix','DaysPrefix','ShortName', ...
+	'CDNow','GetClusterDirs'};
+Args = getOptArgs(varargin,Args);
+
+%dir type and level relative to session directory.
+levels = {  'cluster' -2; ...
+        'group' -1; ...
+        'sort' -1; ...
+        'highpass' -1; ...
+        'eye' -1; ...
+        'eyefilt' -1; ...
+        'lfp' -1; ...
+        'session' 0; ...
+        'site' 1; ...
+        'day' 2; ...
+        'days' 3}; 
+        
+% names for other directories
+siteDName = 'site';
+sessionDName = 'session';
+groupDName = 'group';
+groupDName2 = 'group00';
+clusterDName = 'cluster';
+comboDName = 'combinations';
+fschar = '/';
+pcfschar = '\';
+searchstr = ['%[^' fschar ']' fschar];
+
+% abbreviations for other directories
+siteAbbr = 's';
+sessionAbbr = 'n';
+groupAbbr = 'g';
+clusterAbbr = 'c';
+
+% define constants
+% number of fileseps to subtract from the cluster directory to get to the 
+% beginning of the days directory (i.e. data directory)
+nfilesep = 4;
+
+pwDir = pwd;
+
+% return directory name prefixes so that this function can be the sole
+% repository of directory name information, which makes it easy to make
+% changes if we ever change the directory names
+if(Args.CellPrefix)
+	p = levels{1,1};
+	return
+elseif(Args.GroupPrefix)
+	p = levels{2,1};
+	return
+elseif(Args.SessionPrefix)
+	p = levels{8,1};
+	return
+elseif(Args.SitePrefix)
+	p = siteDName;
+	return
+elseif(Args.DayPrefix || Args.DaysPrefix)
+	p = '';
+	return
+elseif(Args.ShortName)
+	% if on windows, replace \ with / so that strread will work properly
+	% otherwise, for some reason, strread returns the entire string instead of
+	% parsing it into parts
+	if(strcmp(computer,'PCWIN'))
+		if(ischar(destLevel))
+			destLevel = strrep(destLevel,pcfschar,fschar);
+		end
+	end
+    % find indicies corresponding to filesep
+    fi = strfind(destLevel,fschar);
+    % cluster directory name looks like:
+    % /.../a1/site01/session01/group0002/cluster02s
+    % get substring starting from character after 5th last filesep
+    dname = destLevel( (fi(end-nfilesep)+1):end );
+    % check if dname contains combinations
+    if(isempty(strfind(dname,comboDName)))
+        % use this form instead of just calling
+        % strread(dname,'whitespace','/') so we don't have to remove each
+        % of the prefixes
+		[animal,site,session,group,cluster] = strread(dname, ...
+			[searchstr siteDName searchstr sessionDName searchstr groupDName2 searchstr clusterDName '%s']);
+		p = [char(animal) siteAbbr char(site) sessionAbbr char(session) groupAbbr char(group) clusterAbbr char(cluster)];
+    else
+        [animal,site,session,combo] = strread(dname, ...
+            [searchstr siteDName searchstr sessionDName searchstr [comboDName fschar] '%s']);
+		p = [char(animal) siteAbbr char(site) sessionAbbr char(session) char(combo)];
+    end
+	return
+elseif(Args.GetClusterDirs)
+	% if on windows, replace \ with / so that strread will work properly
+	% otherwise, for some reason, strread returns the entire string instead of
+	% parsing it into parts
+	if(strcmp(computer,'PCWIN'))
+		pwDir = strrep(pwDir,pcfschar,fschar);
+	end
+	% find indicies corresponding to filesep
+	fi = strfind(pwDir,fschar);
+	% parse cluster directory names from current directory
+	a = strread(pwDir,'%s ','whitespace',fschar);
+	% get the length of a
+	al = length(a);
+	% check to see if the second to last field is combinations
+	if(strcmp(a{al-1},comboDName))
+		% try to parse last field to get group and cluster names
+		[g,gl] = sscanf(a{al},[groupAbbr '%d' clusterAbbr '%d%c']);
+		% divide length of g by 3 to figure out how many cluster directories
+		% there are
+		clusterDs = gl/3;
+		% reshape g
+		gr = reshape(g,3,clusterDs);
+		% pre-allocate memory
+		p1 = cell(1,clusterDs);
+		prefix = pwDir(1:fi(end-1));
+		for idx = 1:clusterDs
+			p1{idx} = sprintf(['%s' groupDName '%04d/' clusterDName '%02d%c'], ...
+				prefix,gr(:,idx));
+		end
+		p = {p1{:}};
+	else
+		p = {};
+	end
+    return
+end
+
+if sum(strcmp(destLevel,{'highpass','eye','eyefilt','lfp'}))
+    ilevel = 'session';
+else
+    ilevel = destLevel;
+end
+
+[p,n,e] = fileparts(pwDir);
+curL='';
+for ii=1:size(levels,1)
+    if ~isempty(strfind(n,levels{ii,1}))
+        curL  = levels{ii,2};
+    end
+    if ~isempty(strfind(ilevel,levels{ii,1}))
+        destL  = levels{ii,2};
+    end
+end
+if isempty(curL)
+    fprintf('Warning: Could not determine current level.\n');
+    fprintf('Leaving current directory unchanged.\n');
+    p = pwDir;
+    varargout{1} = '';
+    return
+end
+
+
+%To get from one directory to another we will be forced to go through the
+%session level.
+if Args.Relative
+     p='';
+    for ii=1:(destL-curL)
+        p=[p '..' filesep];
+    end
+    if sum(strcmp(destLevel,{'highpass','eye','eyefilt','lfp'}))
+        p=fullfile(p,destLevel,'');
+    end
+else
+   p=pwDir;
+    for ii=1:(destL-curL)
+        p=fileparts(p);
+    end
+    if sum(strcmp(destLevel,{'highpass','eye','eyefilt','lfp'})) 
+        p=fullfile(p,destLevel,'');
+    end
+end
+if(Args.CDNow)
+    % make sure directory exists
+    if(isdir(p))
+    	cd(p);
+    	varargout{1} = pwDir;
+    else
+        fprintf('Warning: Target directory not present!\n');
+        varargout{1} = '';
+    end
+end

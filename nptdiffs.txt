@@ -1,0 +1,1620 @@
+diff -rw -x CVS -x .DS_Store npt/PlotFFT.m npt-cvs/PlotFFT.m
+2,7c2,5
+< %   PlotFFT(X,FS) plots the magnitude of the FFT of the signal x 
+< %   with sampling frequency FS. If X is a matrix, the FFT is applied
+< %   to each column and the mean and standard deviation of the 
+< %   magnitude across columns are plotted.
+< %   This function was derived from Technical Note 1702. For more 
+< %   information, please see the following URL:
+---
+> % PLOTFFT Plot the FFT of a signal. It takes as arguments the signal and the sampling frequnecy,
+> % and plots the FFT in a figure window.
+> % PlotFFT(x,Fs) Plots the magnitude of the FFT of the signal x with sampling frequency Fs
+> % It was derived from Technical Note 1702. For more information, please see the following URL:
+10,11c8
+< % make sure x is column vector if one of the dimensions is 1
+< x = vecc(x);
+---
+> 
+18c15
+< FFTX=FFTX(1:NumUniquePts,:);
+---
+> FFTX=FFTX(1:NumUniquePts);
+20,21d16
+< % get size of MX
+< [mxr,mxc] = size(MX);
+24,27c19,21
+< MX(2:(end-1),:) = MX(2:(end-1),:)*2;
+< % MX=MX*2;
+< % MX(1,:)=MX(1,:)/2;   % Account for endpoint uniqueness
+< % MX(mxr,:)=MX(mxr,:)/2;
+---
+> MX=MX*2;
+> MX(1)=MX(1)/2;   % Account for endpoint uniqueness
+> MX(length(MX))=MX(length(MX))/2;  % We know NFFT is even
+30c24
+< MX=MX/size(x,1);
+---
+> MX=MX/length(x);                  %
+32,44c26
+< % take the tranpose so we can use mean and std easily
+< MXT = MX';
+< % get the mean magnitude across columns of MX
+< mxMean = mean(MXT);
+< plot(f,mxMean);
+< % if there were more than 1 time series, plot the standard deviation
+< if(mxc>1)
+<     mxStd = std(MXT);
+<     hold on
+<     plot(f,mxMean+mxStd,'c')
+<     plot(f,mxMean-mxStd,'c')
+<     hold off
+< end
+---
+> plot(f,MX);
+\ No newline at end of file
+diff -rw -x CVS -x .DS_Store npt/ShihChengChangeLog.txt npt-cvs/ShihChengChangeLog.txt
+1334,1772d1333
+< 
+< December 20, 2003
+< miscellaneous/parseArgs: New function downloaded from Matlab Central
+< 	that parses optional arguments.
+< 
+< December 21, 2003
+< view/nptdata/InsepctGUI.m: Fixed bug that was not passing optional 
+< 	arguments correctly.
+< view/gui/InspectCB.m: Fixed bug that was not passing optional arguments
+< 	correctly.
+< 
+< January 5, 2004
+< scripts/batch_processor/moveprocessedfiles.tcsh: Modified to check
+< 	for existence of old directories and remove them if necessary.
+< 	Also now prints more informative messages.
+< 
+< January 6, 2004
+< Created branch called syen-version.
+< scripts/view/@nptdata/InspectGUI: Added optional argument named 
+< 	addObjs. Removed requirement for optArgs for backward
+< 	compatibility. Added code to make sure function doesn't crash
+< 	if optional arguments like dir are left out when multiple 
+< 	objects are used. Removed several redundant function calls.
+< scripts/batch_processor/ProcessSession: Added Baldwin's changes
+< 	for version 1.11 except reverted the default of 'sort_algo'
+< 	to 'KK'.
+< scripts/miscellaneous/linkedzoom: Renamed from linkedZoom.M.
+< 
+< January 7, 2004
+< scripts/miscellaneous/getOptArgs: Renamed from parseArgs.m. Modified 
+< 	to take optional arguments in the form param,value. Fixed code to 
+< 	process aliases properly. Now skips any unknown arguments by
+< 	default, which can be changed using the optional input argument
+< 	'stopOnError'.
+< 
+< January 8, 2004
+< scripts/miscellaneous/getOptArgs: Changes parseArgs to getOptArgs
+< 	in help comments.
+< scripts/view/@nptdata/InspectGUI: Now passes optional arguments
+< 	using s.optargs{i}{:} instead of first storing it in a local 
+< 	variable.
+< 
+< January 13, 2004
+< scripts/batch_processor/ProcessDay: Added option to use cygwin to
+< 	move processed files. Added some explanations to code that 
+< 	converted from old data hierarchy. Substituted use of function
+< 	'exist' with 'ispresent'.
+< scripts/view/@nptdata/useProcessedMarker: Changed default to 0.
+< scripts/miscellaneous/getOptArgs: Fixed bug in processing length of 
+< 	Aliases argument.
+< scripts/miscellanoues/panGUI.m: Updated help comments.
+< scripts/view/@nptdata/InspectGUI.m: Updated help comments.
+< scripts/view/@nptdata/useProcessedMarker.m: Changed default to not
+< 	create markers otherwise if we try to use nptSessionCmd, it 
+< 	might fail.
+< 
+< January 14, 2004
+< scripts/batch_processor/cygwincmd.tcsh: Renamed from 
+< 	cygwinmoveprocessedcmds. Now can take any tcsh script in as
+< 	argument and run it.
+< scripts/batch_processor/ProcessDay: Now uses cygwincmd instead of
+< 	cygwinmoveprocessedcmds to run moveprocessedfiles.tcsh.
+< 
+< January 15, 2004
+< scripts/batch_processor/vecc: New function to return column vector.
+< scripts/batch_processor/vecr: New function to return row vector.
+< scripts/batch_processor/ProcessDay: Updated code to use cygwin to 
+< 	move processed files now that tcsh works as expected on 
+< 	STREAMERB. Now checks if input argument is character before
+< 	switch statement.
+< scripts/batch_processor/ProcessDays: Now checks if input argument
+< 	is character before switch statement.
+< scripts/batch_processor/ProcessSession: Now checks if input 
+< 	argument is character before switch statement.
+< scripts/batch_processor/ProcessEyeSessions: Now checks if input 
+< 	argument is character before switch statement.
+< 
+< January 23, 2004
+< scripts/miscellaneous/getOptArgs: Removed NumericArguments field 
+< 	from output data structure.
+< scripts/view/gui/InspectCB: Now passes optional arguments using 
+< 	s.optargs{i}{:} instead of first storing it in a local variable.
+< BaldwinChangeLog.txt: Updated using version from main trunk.
+< scripts/view/@ispikes/plot: Updated using version from main trunk.
+< scripts/miscellaneous/nptDefaultColors: New file from main trunk.
+< scripts/write_files/WriteWaveformsFile.m: New file from main trunk.
+< scripts/batch_processor/ProcessDay: Modified to copy just the dxy 
+< 	files when using the optional eyeSessions input argument.
+< 
+< January 27, 2004
+< scripts/miscellaneous/getOptArgs: Fixed bug that failed to initialize
+< 	l to NumArgCount.
+< 
+< February 16, 2004
+< scripts/miscellaneous/nptDir: Added help comments for 
+< 	'CaseInsensitiveSuffix' option.
+< 
+< February 20, 2004
+< scripts/view/@nptdata/nptdata: Added sessiondirs field. Added code
+< 	to pass sessiondirs in as a cell array or in a text file.
+< scripts/view/@nptdata/loadobj: New function to update old saved
+< 	npdata objects.
+< scripts/view/@nptdata/plot: Modified to go through sessiondirs and
+< 	load and plot specified objects.
+< scripts/miscellaneous/nptSubplot: Modified to return rows and cols.
+< 
+< February 23, 2004
+< scripts/batch_processor/ProcessSession: Added optional input argument
+< 	to pass arguments to RunClustBatch.
+< 
+< February 24, 2004
+< scripts/miscellaneous/deg2rad: New function that converts between
+< 	degrees and radians.
+< scripts/miscellaneous/rad2deg: New function that converts between
+< 	radians and degrees.
+< scripts/miscellaneous/histcie: Added optional input argument 'DropLast'
+< 	to drop the last value in N which is always 0. Added help comments
+< 	that described modifications to output argument BIN. Modified
+< 	code to handle matrices.
+< scripts/miscellaneous/vecc: Modified to work only with vectors with
+< 	single row.
+< scripts/miscellaneous/vecr: Modified to work only with vectors with
+< 	single column.
+< scripts/view/@pntdata/plot: Added try-catch block to catch errors
+< 	loading objects or plotting objects.
+< 
+< February 25, 2004
+< scripts/@nptdata/nptdata: Added 'Eval' optional input argument that
+< 	evaluates command string to see if current directory is to be
+< 	used to create a nptdata object.
+< scripts/@nptdata/ProcessSession: Added help comments to illustrate
+< 	the use of the output argument when using 'nptSessionCmd'. 
+< scripts/@nptdata/plus: Added code to actually add nptdata objects.
+< 
+< March 2, 2004
+< scripts/batch_processor/getEyeCalData: New function that contains
+< 	code that used to be in ProcessEyeSessions. Also used by new
+< 	code in eyes class. Now also checks for skip.txt before trying
+< 	to use dxy file.
+< scripts/batch_processor/ProcessEyeSessions: Now uses getEyeCalData.
+< scripts/read_files/nptReadDXYFile: New function that reads DXY
+< 	files.
+< scripts/view/@eyes/private/addData2DFields: New function that
+< 	computes and stores data for displaying calibration data in 2D.
+< scripts/view/@eyes/eyes: Added new fields and calls to 
+< 	addData2DFields.
+< scripts/view/@eyes/loadobj: New function that adds new fields to 
+< 	previously saved objects.
+< scripts/view/@eyes/plot: Added code to display data along with
+< 	calibration grid in 2D.
+< 
+< March 3, 2004
+< scripts/batch_processor/ProcessEyeSessions: Fixed bug that failed 
+< 	to generate dirlist. Fixed bug that incorrectly named screencoords
+< 	as ec.screencoords. Reformatted to remove extremely long lines.
+< scripts/batch_processor/getEyeCalData: Reformatted to remove
+< 	extremely long lines.
+< 	
+< March 4, 2004
+< scripts/batch_processor/getDXYData: Renamed from getEyeCalData.
+< scripts/view/@eyes/eyes: Removed fields added recently as we
+< 	don't want to load the DXY files for every object that inherits
+< 	from the eyes class.
+< scripts/view/@eyes/loadobj: Removed since data structure has reverted
+< 	back to original form.
+< scripts/view/@eyes/plot: Now takes data structure returned by
+< 	getEyeCalData as optional input argument to do 2D plots.
+< scripts/view/@eyes/private/addData2DFields: Renamed function to
+< 	scripts/miscellaneous/getEyeCalData.
+< scripts/miscellaneous/getEyeCalData: Renamed from addData2DFields.
+< 	Added code to pass optional input arguments to specify directory
+< 	location, gridsteps and interpolation algorithm.
+< 
+< March 5, 2004
+< scripts/view/@nptdata/name2index: New function that returns session
+< 	index given session name or part of session name.
+< scripts/view/@event/SetEventNumber: Now checks to make sure new
+< 	number is within range. If not, old number is retained and is
+< 	now returned as well.
+< scripts/view/gui/InsepctCB: Now calls name2index for object when
+< 	something other than a number is entered in the edit box. Also
+< 	uses number returned by SetEventNumber when number is out of
+< 	range so the 0 returned by name2index when no matches are found
+< 	will not cause function to crash.
+< 
+< March 8, 2004
+< scripts/view/@nptdata/name2index: Fixed bug in returning total number
+< 	of sessions.
+< scripts/batch_processor/ProcessSession: Added code that saved
+< 	trigDurations, presTrigOnsets and syncOnsets in milliseconds in
+< 	the second column of trigDurations, in the new variables 
+< 	presTrigOnsetsMS and syncOnsetsMS respectively. Since we have access
+< 	to the sampling_rate, this is easier to do here.
+< 
+< March 9, 2004
+< scripts/view/@nptdata/name2index: Fixed bug in converting name to
+< 	index.
+< scripts/view/gui/InspectCB: Now checks if search string contains
+< 	's:' which allows the user to denote numbers as search string.
+< 
+< March 15, 2004
+< scripts/miscellaneous/getOptArgs: Added code to subtract and remove 
+< 	optional arguments.
+< 
+< March 16, 2004
+< scripts/view/@eyes/plot: Added 'DataStart', 'DataEnd', 'AxisZoom'
+< 	optional input arguments.
+< scripts/view/@ispikes/separate: New function to separate multiple 
+< 	clusters into separate ispikes objects.
+< 
+< March 18, 2004
+< scripts/miscellaneous/getPositionMeanStd: New function to compute
+< 	mean and standard deviation of x- and y-signals.
+< scripts/view/@eyes/getMeanStd: New function that reads in datafile
+< 	and calls getPositionMeanStd.
+< scripts/view/@eyes/plot: Added separate 'XY' flag that does not
+< 	plot eye cal grid. Added 'XYStd' option that plots eye positions
+< 	as well as the histogram of the distances from the mean in a
+< 	separate plot. The std for the distribution is also included in 
+< 	the title of second plot. Added hardcoded vchan and hchan since
+< 	we don't necessarily use structure passed in by Data2D.
+< 
+< March 22, 2004
+< scripts/view/@eyejitter/eyejitter: Constructor for new class that 
+< 	analyzes jitter in eye position.
+< scripts/view/@eyejitter/plot: Plot command for new eyejitter class.
+< scripts/view/@eyes/eyes: Added code to create object automatically.
+< scripts/view/@eyes/isempty: New function that returns 1 if object
+< 	is empty.
+< scripts/view/@ispikes/getSpikeCounts: New function that calls
+< 	histcie on spike times.
+< scripts/miscellaneous/getOptArgs: Modified help comments to add
+< 	description of second output argument.
+< scripts/miscellaneous/histcie: Added code to make sure data is column
+< 	vector if 1 of the dimensions is 1.
+< 
+< March 23, 2004
+< scripts/read_files/ReadIniRF: New function to read RF info from INI
+< 	files.
+< scripts/view/@eyejitter/eyejitter: Fixed bug that failed to initialize
+< 	nooffsets.
+< scripts/view/@eyejitter/plot: Added square brackets in help comments
+< 	to indicate choice between 'All' and 'Trials' optional input
+< 	arguments. Added code to create 3D plots of interpolated surface.
+< 	Cleaned up code that checked for matching lengths of Trials
+< 	and Responses arguments.
+< scripts/view/@eyes/eyes: Fixed bug that failed to create proper
+< 	nptdata object in CreateEmptyEyesObject.
+< 
+< March 24, 2004
+< scripts/miscellaneous/getOptArgs: Added code to use shortcuts. Cleaned
+< 	up help comments.
+< scripts/view/@fields/fields: New function to display receptive fields.
+< 
+< March 26, 2004
+< scripts/batch_processor/tolower.tcsh: Modified to take directory
+< 	argument.
+< scripts/batch_processor/cmpCD: New shell script to compare data on
+< 	disk to CD.
+< @scripts/view/@mapfields: Renamed from @fields since fields is built-in
+< 	Matlab function.
+< 
+< March 29, 2004
+< scripts/batch_processor/cmpCD: Removed from CVS and copied to local 
+< 	machine.
+< 
+< March 30, 2004
+< scripts/miscellaneous/getOptArgs: Added option to keep numeric 
+< 	arguments.
+< scripts/view/@mapfields/plot: New plot function for mapfields object.
+< scripts/view/@mapfields/subsref: New subsref function for mapfields 
+< 	object.
+< 
+< March 31, 2004
+< scripts/miscellaneous/getOptArgs: Fixed bug in processing shortcuts.
+< scripts/view/@mapfields/mapfields: Added code to save object.
+< scripts/view/@mapfields/plot: Added code to clear axis by default or
+< 	else plots keep getting added.
+< 
+< April 1, 2004
+< scripts/view/@eyejitter/eyejitter: Added code to change HoldAxis to 0.
+< scripts/view/@eyejitter/hist: New function plot 2D-histogram of eye
+< 	positions.
+< scripts/miscellaneous/histn: New function downloaded from Matlab 
+< 	Central that computes histogram in n-dimensions.
+< scripts/miscellaneous/getOptArgs: Fixed bug in not initializing ShortCuts
+< 	variable.
+< 
+< April 2, 2004
+< scripts/miscellaneous/getOptArgs: Fixed typo in help comments for 
+< 	shortcuts. Now uses 'exact' argument for all strmatch calls.
+< scripts/view/@eyejitter/eyejitter: Now uses 'shortcuts' argument when
+< 	calling getOptArgs for 'redo' and 'save'. Changed fieldnames in 
+< 	Args struct to include uppercase characters to enable abbreviations.
+< scripts/view/@eyejitter/hist: Added colorbar to imagesc plot.
+< scripts/view/@eyejitter/plot: Now uses 'keepnumeric' when calling
+< 	getOptArgs so the 2nd input argument is no longer required to be a
+< 	number. Clarified help comments. Added 'hist' option to plot eye
+< 	position histogram.
+< scripts/view/@mapfields/plot: Modified so 'All' input argument is
+< 	processed even in presence of numeric 2nd argument so this function
+< 	can be used with InsepctGUI.
+< 
+< April 5, 2004
+< scripts/miscellaneous/panGUI.fig: Modified to allow axis to rescale 
+< 	with figure resize.
+< 
+< April 7, 2004
+< nptAddPath: Modified to skip CVS directories and directories with . 
+< 	at the beginning of the name.
+< scripts/miscellaneous/nptDir: Cleaned up code that removes files or
+< 	directories with . at the beginning of the name.
+< 
+< April 8, 2004
+< nptAddPath: Fixed bugs in new code added yesterday.
+< 
+< April 9, 2004
+< PlotFFT: Modified to handle matrices as inputs and compute FFT for each
+< 	column and plot the mean and standard deviation of the magnitudes.
+< nptFFT: Modified to handle matrices as inputs and compute FFT for each
+< 	column.
+< nptPlotFFT: New function to replace PlotFFT that calls nptFFT so we
+< 	will not need to maintain two separate functions that compute FFTs.
+< 
+< April 12, 2004
+< algorithms/nptFFTMag: Renamed from nptFFT. Now skips multiplying all
+< 	frequencies between DC and Nyquist by 2. Replaced use of length(x)
+< 	with size(x,1) to be explicit that the data is supposed to be in 
+< 	columns.
+< algorithms/nptSpikeTimesFFT: New function that computes the histogram
+< 	of spike times and breaks the signal into segments before computing
+< 	the FFT in order to increase the size of the frequency bins. 
+< algorithms/welch: New function that returns a Welch window.
+< algorithms/nptFFT: Renamed to nptFFTMag.
+< 
+< April 13, 2004
+< algorithms/nptSpikeTimesFFT: Added code to skip segment code if there 
+< 	is only one segment to avoid out of memory errors. 
+< scripts/miscellaneous/histcie: Added code to make sure output of histc
+< 	is a column vector to prevent problems with 1x1 inputs. Cleaned up
+< 	code which replaced input with a variable with the same name.
+< scripts/view/@nptdata/InspectGUI: Commented out title command that uses
+< 	a sessionname field since that should be the responsibility of the 
+< 	particular object.
+< scripts/view/gui/InsepctCB: Commented out title command that uses a 
+< 	sessionname field since that should be the responsibility of the 
+< 	particular object.
+< 
+< April 21, 2004
+< Updated from main trunk:
+< scripts/read_files/nptReadStreamerFileChunk.m
+< scripts/view/@trialwaves/trialwaves.m
+< 
+< Added files from main trunk:
+< algorithms/ContourArea.m
+< algorithms/filters/TwoDimGaussFilter.m
+< scripts/miscellaneous: max2.m
+< scripts/miscellaneous: min2.m
+< scripts/write_files/nptAppendStreamerFile.m
+< scripts/write_files/nptWriteStreamerFileHeader.m
+< 
+< Merged from main trunk:
+< scripts/batch_processor/ProcessSession: Added code for handling single
+< 	trials. Fixed putative bug that was only looping over 2 trials.
+< 
+< nptdiffs.txt: New file containing current known differences between
+< 	main trunk and this branch. Do "diff -rw -x CVS -x \.DS_Store npt
+< 	npt-cvs > ndiffs.txt" and then "diff nptdiffs.txt ndiffs.txt" to
+< 	identify new differences.
+< 
+< April 22, 2004
+< scripts/miscellaneous/cell2array: New function that converts from
+< 	cell arrays to matrices that are padded to the right lengths.
+< scripts/view/@eyejitter/eyejitter: Fixed help comments to substitute
+< 	references to BIAS with EYEJITTER.
+< 
+< April 23, 2004
+< Updated from main trunk:
+< BaldwinChangeLog.txt
+< algorithms/ContourArea.m
+< algorithms/filters/TwoDimGaussFilter.m
+< scripts/read_files/ReadExtraSyncsFile.m
+< scripts/read_files/ReadRevCorrIni.m
+< scripts/read_files/read_init_info.m
+< 
+< Added file from main trunk:
+< scripts/miscellaneous/max3.m
+< scripts/miscellaneous/min3.m
+< 
+< Merged from main trunk:
+< scripts/view/@nptdata/ProcessDay.m
+< 
+< Removed from main trunk:
+< scripts/view/MSeqframe.m
+< scripts/view/createMSeqMovie.m
+< 
+< April 25, 2004
+< scripts/miscellaneous/cell2array: Modified to take cell array of rows 
+< 	as well as columns. Now returns error if one of the dimensions of
+< 	the cell array is not 1.
+< scripts/view/@nptdata/InspectGUI: Now calls get with varargin so the
+< 	overloaded form of the get function can be used instead of the get
+< 	function in @nptdata.
+< scripts/view/@nptdata/ProcessDay: Removed changes from main trunk that
+< 	was causing problems.
+< 
+< April 26, 2004
+< scripts/view/@nptdata/get: Added varargin to input arguments so it 
+< 	will work with changes to InspectGUI.
+< 
+< April 27, 2004
+< scripts/miscellaneous/logbar: New function that creates bar plots with
+< 	log scale on the y-axis.
+< scripts/view/@nptdata/plot: Added code to only call subplot when
+< 	neccessary.
+< 
+< May 5, 2004
+< Updated from main trunk:
+< BaldwinChangeLog.txt
+< scripts/read_files/ReadRevCorrIni
+< scripts/read_files/ReadIniFileWrapper
+< scripts/read_files/ReadRevCorrIniJonathan
+< 
+< Merged from main trunk:
+< scripts/batch_processor/ProcessEyeSessions: Added redoValue optional
+< 	input argument.
+< scripts/batch_processor/ProcessSession: Added check for sort_algo
+< 	equal to 'none'.
+< scripts/view/gui/InspectCB: Added return statement to quit callback.
+< 
+< scripts/miscellaneous/dividBins: New function to sub-divide bins.
+< 
+< May 7, 2004
+< Updated from main trunk:
+< BaldwinChangeLog.txt
+< scripts/read_files/ReadRevCorrIni
+< 
+< scripts/batch_processor/ProcessSession: Removed code that set trials
+< 	to 2 for single trial sessions.
+Only in npt-cvs/algorithms: nptFFT.m
+Only in npt/algorithms: nptFFTMag.m
+Only in npt/algorithms: nptSpikeTimesFFT.m
+Only in npt/algorithms: welch.m
+Only in npt/doc: view-nptdata-usage.txt
+diff -rw -x CVS -x .DS_Store npt/nptAddPath.m npt-cvs/nptAddPath.m
+47,49c47
+< 		  % or a CVS directory
+< 		  if( ~strcmpi(dirlist(i).name,'doc') & isempty(findstr(dirlist(i).name,'@')) ...
+< 		      & ~strcmpi(dirlist(i).name,'cvs') )
+---
+> 		  if ~strcmp(dirlist(i).name,'doc') & isempty(findstr(dirlist(i).name,'@'))
+56,57c54
+< % abbreviated version nptDir to remove dirs with '.' at the beginning
+< % of the name
+---
+> % abbreviated version nptDir to remove '.' and '..' from dir listing
+60,67c57,63
+< dirlist = dir(dname);
+< dirsize = size(dirlist,1);
+< a = [];
+< for i = 1:dirsize
+< 	if ~strcmp(dirlist(i).name(1),'.')
+< 		% first entry is a '.', which means that we should remove
+< 		% it from our list
+< 		a = [a; dirlist(i)];
+---
+> a = dir(dname);
+> if ~isempty(a)
+> 	dirsize = size(a,1);
+> 	if strcmp(a(1).name,'.')
+> 	   % first entry is a '.', which means that we should remove the first 2
+> 	   % entries
+> 	   a = a(3:dirsize);
+Only in npt: nptdiffs.txt
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/ProcessDay.m npt-cvs/scripts/batch_processor/ProcessDay.m
+50,52d49
+< %      'cygwinmove'  Uses a cygwin shell script to greatly speed up 
+< %                    moving processed files on Windows machines.
+< %                    Requires cygwin to be installed on the computer.
+75d71
+< cygwin = 0;
+87d82
+< 		if(ischar(varargin{i}))
+123,125d117
+< 			case('cygwinmove')
+< 				cygwin = 1;
+< 			end
+154,155c146
+<    % files out of the directory. Only necessary for old psychophysical
+<    % data which has the old data hierarchy.
+---
+>    % files out of the directory
+157,158c148,152
+<    % use ispresent instead of isdir to avoid case sensitivity
+<    if(ispresent('eyes','dir','CaseInsensitive'))
+---
+>    % use exist instead of nptDir since nptDir will actually do a dir
+>    % in the Eyes directory when all we want to know is if the Eyes
+>    % directory exists. The exist function will return 7 if the directory
+>    % exists and 0 if not
+>    if exist('Eyes','dir') == 7
+235,236c229
+<             % [s,w] = system(sprintf('cp -r %s %02i',eyeSessions{i},eNum));
+<             [s,w] = system(sprintf('mkdir %02i; cp %s/*_dxy.bin %02i',eNum,eyeSessions{i},eNum));
+---
+>             [s,w] = system(sprintf('cp -r %s %02i',eyeSessions{i},eNum));
+253,260d245
+<       if(strcmp(platform,'PCWIN') & cygwin)
+<       	  % get path to script
+<       	  mname = which('moveprocessedfiles.tcsh');
+<       	  doscommand = ['\cygwin\bin\tcsh ' mname];
+<       	  tic
+<           status = dos(doscommand);
+<           toc
+<       else
+264,267d248
+< 	  end
+< 	  if(status)
+< 	  	  fprintf('Warning: Processed files not moved properly!\n');
+< 	  end
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/ProcessDays.m npt-cvs/scripts/batch_processor/ProcessDays.m
+26d25
+< 		if(ischar(varargin{i}))
+33d31
+< 			end
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/ProcessEyeSessions.m npt-cvs/scripts/batch_processor/ProcessEyeSessions.m
+25d24
+< 		if(ischar(varargin{i}))
+36d34
+< end
+40,41c38,39
+< ec = getDXYData;
+< 
+---
+> NumberofDXYfiles=0;
+> exp_sessions=[];
+43c41,107
+< if ec.NumberofDXYfiles>0
+---
+> for i=1:size(dirlist,1)	%loop through sessions
+>    if dirlist(i).isdir
+>       cd (dirlist(i).name)
+>       dxy_list=nptDir('*_dxy.bin');
+>       if ~isempty(dxy_list)
+>          fprintf('\t\tUsing DXY File %s\n', dxy_list(1).name);
+>          
+>          NumberofDXYfiles = NumberofDXYfiles + 1;
+>          fid=fopen(dxy_list(1).name,'r','ieee-le');
+>          % read in variables
+>          ScreenHeight(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          ScreenWidth(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          GridRows(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          GridCols(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          Xsize(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          Ysize(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          CenterX(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          CenterY(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          NumBlocks(NumberofDXYfiles) = fread(fid, 1, 'int32');
+>          NumberOfPoints(NumberofDXYfiles) = GridRows(NumberofDXYfiles)*GridCols(NumberofDXYfiles);
+>          NumberOfTrials(NumberofDXYfiles) = NumberOfPoints(NumberofDXYfiles)*NumBlocks(NumberofDXYfiles);
+>          %meanVH is the average voltage of the last fixation for each trial.  This was used to create avgVH in ProcessSession
+>          %but it is not used anymore.
+>          meanVHmatrix(NumberofDXYfiles,1:2,1:NumberOfTrials(NumberofDXYfiles)) = fread(fid, [2,NumberOfTrials(NumberofDXYfiles)], 'double');
+>          %avgVh is the average voltage for each grid point.
+>          avgVH(NumberofDXYfiles,1:2,1:NumberOfPoints(NumberofDXYfiles)) = fread(fid, [2,NumberOfPoints(NumberofDXYfiles)], 'double');
+>          fclose(fid);
+>       end   
+>       exp_sessions=[exp_sessions str2num(dirlist(i).name)];
+>       cd ..
+>    end
+> end
+> 
+> if NumberofDXYfiles==1
+>    eyecoilcoords = squeeze(avgVH);
+>    
+> elseif NumberofDXYfiles==0
+>    fprintf('No dxy file present can not process eyedata\n');
+>    
+>    %average all dxy files if they have the same parameters
+> elseif  ( isempty(find( diff(ScreenHeight) )) & ... % This operation first scans across all elements of
+>       isempty(find( diff(ScreenWidth) )) & ... % each screen parameter, e.g. ScreenHeight(NumberofDXYfiles)
+>       isempty(find( diff(GridRows)    )) & ... % and calculates the differences between neighbors ('diff').
+>       isempty(find( diff(GridCols)    )) & ... % 'find' then returns the index of all of the differences
+>       isempty(find( diff(Xsize)   		)) & ... % that were non-zero.  'isempty' returns a 1 if the results
+>       isempty(find( diff(Ysize)		   )) & ... % of 'find' were an empty set, indicating no differences.
+>       isempty(find( diff(CenterX)     )) & ... 
+>       isempty(find( diff(CenterY)     )) )
+>    
+>    eyecoilcoords = squeeze(mean(avgVH));
+>    
+> else
+>    
+>    fprintf('Warning!: Screen parameters in DXY files DO NOT match.\n\t\tUsing only the first DXY file: %s\n\n', dxy_list(1).name);
+>    % get average eyecoil coordinates from first DXY file's averages
+>    eyecoilcoords = squeeze(avgVH(1,:,:));
+> end
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> if NumberofDXYfiles>0
+56,58c120,121
+< 				% if there is no descriptor file, just skip over this 
+< 				% session since it might be a session with a 
+< 				% substitute dxy file
+---
+>             % if there is no descriptor file, just skip over this session
+>             % since it might be a session with a substitute dxy file
+71,72c134
+< 						[path filename ext]=...
+< 							fileparts(eyefiltdirlist(i).name);
+---
+>                   [path filename ext]=fileparts(eyefiltdirlist(i).name);
+76,86c138,141
+< 						[eyefilt,num_channels,sampling_rate,datatype,...
+< 							points]=nptReadDataFile([prefix ...
+< 										eyefiltdirlist(i).name]);
+< 						screencoords = nptEyecoil2Screen(eyefilt,...
+< 							ec.eyecoilcoords,ec.GridCols,ec.GridRows,...
+< 							ec.CenterY,ec.CenterX,ec.Xsize,ec.Ysize);
+< 						nptWriteDataFile([filename(1:length(filename)-4)...
+< 							'.' trialname],sampling_rate,screencoords);
+< 						fprintf('\t\tdatafile: %s  channels: %i\n',...
+< 							[filename(1:length(filename)-4)...
+< 								'.' trialname],2);
+---
+>                   [eyefilt,num_channels,sampling_rate,datatype,points]=nptReadDataFile([prefix eyefiltdirlist(i).name]);
+>                   screencoords = nptEyecoil2Screen(eyefilt,eyecoilcoords,GridCols,GridRows,CenterY,CenterX,Xsize,Ysize);
+>                   nptWriteDataFile([filename(1:length(filename)-4) '.' trialname],sampling_rate,screencoords);
+>                   fprintf('\t\tdatafile: %s  channels: %i\n',[filename(1:length(filename)-4) '.' trialname],2);
+93a149
+>          
+98a155,158
+> 
+> 
+>    
+>    
+\ No newline at end of file
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/ProcessSession.m npt-cvs/scripts/batch_processor/ProcessSession.m
+34,37c34
+< %                       'KK' is the default.
+< %       'clustoptions'  Optional input arguments for RunClustBatch.
+< %                       (e.g. ProcessSession('clustoptions',{'Do_AutoClust',
+< %                       'no'}).
+---
+> %                       'none' is the default.
+60c57
+< sort_algo='KK';
+---
+> sort_algo='none';
+68d64
+< clustoptions = {};
+75d70
+<     	if(ischar(varargin{i}))
+116,117d110
+< 				case('clustoptions')
+< 					clustoptions = varargin{i+1};
+124,125c117
+< 			end % switch
+< 		end % if(ischar)
+---
+>         end
+305,306d296
+<                 % get sampling_rate in ms since that is used more often
+<                 srms = sampling_rate/1000;
+357,360c347
+<                                     % column 1 in trigDurations is in data points and
+<                                     % column 2 is in ms so subtract 1 from data point
+<                                     % since data point 1 is 0 ms.
+<                                     trigDurations = [trigDurations; tdur(1) (tdur(1)-1)/srms];
+---
+>                                     trigDurations = [trigDurations; tdur(1)];
+528,532c515
+<         	% get presTrigOnsets and syncOnsets in ms. Do this here
+<         	% since we know the sampling rate.
+<         	presTrigOnsetsMS = (presTrigOnsets-1)/srms;
+<         	syncOnsetsMS = (syncOnsets-1)/srms;
+<             save([sessionname 'timing'],'trigDurations','presTrigOnsets','syncOnsets','smSyncs','presTrigOnsetsMS','syncOnsetsMS');
+---
+>             save([sessionname 'timing'],'trigDurations','presTrigOnsets','syncOnsets','smSyncs');
+537c520
+<                 rawfilename = [filename '_highpass'];
+---
+>                 rawfilename = [sessionname '_highpass'];
+615c598
+<         if(sort & ~strcmp(sort_algo,'none'))
+---
+>         if sort & ~strcmp(sort_algo,'none')
+627c610
+<                     RunClustBatch([p filesep 'Batch_BBClustEE.txt'],clustoptions{:})
+---
+>                     RunClustBatch([p filesep 'Batch_BBClustEE.txt'])
+629c612
+<                     RunClustBatch([p filesep 'Batch_BBClust.txt'],clustoptions{:})
+---
+>                     RunClustBatch([p filesep 'Batch_BBClust.txt'])
+634c617
+<                     RunClustBatch([p filesep 'Batch_KKwikEE.txt'],clustoptions{:})
+---
+>                     RunClustBatch([p filesep 'Batch_KKwikEE.txt'])
+636c619
+<                     RunClustBatch([p filesep 'Batch_KKwik.txt'],clustoptions{:})      
+---
+>                     RunClustBatch([p filesep 'Batch_KKwik.txt'])      
+Only in npt/scripts/batch_processor: cpdescriptor.tcsh
+Only in npt/scripts/batch_processor: getDXYData.m
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/moveprocessedfiles.tcsh npt-cvs/scripts/batch_processor/moveprocessedfiles.tcsh
+14,22d13
+< 			echo "  eyefilt:"
+< 			# check if the eyefilt directory exists
+< 			if (-e eyefilt) then
+< 				# remove files and directories in eyefilt directory
+< 				# to prevent confusion
+< 				echo "    removing contents of eyefilt directory"
+< 				rm -r eyefilt/*
+< 			else
+< 				echo "    creating eyefilt directory"
+24,25d14
+< 			endif
+< 			echo "    moving eyefilt files"
+32,40d20
+< 			echo "  eye:"
+< 			# check if the eye directory exists
+< 			if (-e eye) then
+< 				# remove files and directories in eye directory
+< 				# to prevent confusion
+< 				echo "    removing contents of eye directory"
+< 				rm -r eye/*
+< 			else
+< 				echo "    creating eye directory"
+42,43d21
+< 			endif
+< 			echo "    moving eye files"
+50,58d27
+< 			echo "  lfp:"
+< 			# check if the lfp directory exists
+< 			if (-e lfp) then
+< 				# remove files and directories in lfp directory
+< 				# to prevent confusion
+< 				echo "    removing contents of lfp directory"
+< 				rm -r lfp/*
+< 			else
+< 				echo "    creating lfp directory"
+60,61d28
+< 			endif
+< 			echo "    moving lfp files"
+68,76d34
+< 			echo "  highpass:"
+< 			# check if the highpass directory exists
+< 			if (-e highpass) then
+< 				# remove files and directories in highpass directory
+< 				# to prevent confusion
+< 				echo "    removing contents of highpass directory"
+< 				rm -r highpass/*
+< 			else
+< 				echo "    creating highpass directory"
+78,79d35
+< 			endif
+< 			echo "    moving highpass files"
+86,94d41
+< 			echo "  sort:"
+< 			# check if there is a sort directory
+< 			if (-e sort) then
+< 				# remove files and directories in sort directory
+< 				# to prevent confusion
+< 				echo "    removing contents of sort directory"
+< 				rm -r sort/*
+< 			else
+< 				echo "    creating sort directory"
+96,97d42
+< 			endif
+< 			echo "    moving sort files"
+102,114c47,48
+< 		if (-e FD) then
+< 			echo "  FD:"
+< 			# check if there is a sort directory
+< 			if (-e sort) then
+< 				# check if there is a FD directory already
+< 				if (-e sort/FD) then
+< 					echo "    removing contents of sort/FD directory"
+< 					# remove FD directory
+< 					rm -r sort/FD
+< 				endif
+< 			else
+< 				echo "    creating sort directory"
+< 				# no sort directory so create one and move FD into it
+---
+> 		@ nfiles = `ls -1 FD |& grep -v No | wc -l`
+> 		if ($nfiles > 0) then
+116,118d49
+< 			endif
+< 			# move FD directory to sort
+< 			echo "    moving FD directory"
+121d51
+< 
+diff -rw -x CVS -x .DS_Store npt/scripts/batch_processor/tolower.tcsh npt-cvs/scripts/batch_processor/tolower.tcsh
+2,6d1
+< # usage: tolower.tcsh [dir]
+< if( $1 != "") then
+< 	cd $1
+< endif
+< 	
+10,11c5
+< 	mv ${i} temp
+< 	mv temp ${nfile}
+---
+> 	mv ${i} ${nfile}
+Only in npt/scripts/miscellaneous: cell2array.m
+diff -rw -x CVS -x .DS_Store npt/scripts/miscellaneous/concatenate.m npt-cvs/scripts/miscellaneous/concatenate.m
+3c3
+< %   C = CONCATENATE(A,B) concatenates two row vectors 
+---
+> %   C = CONCATENATE(A,B) concatonates two row vectors 
+Only in npt/scripts/miscellaneous: deg2rad.m
+Only in npt/scripts/miscellaneous: divideBins.m
+Only in npt/scripts/miscellaneous: getEyeCalData.m
+Only in npt/scripts/miscellaneous: getOptArgs.m
+Only in npt/scripts/miscellaneous: getPositionMeanStd.m
+diff -rw -x CVS -x .DS_Store npt/scripts/miscellaneous/histcie.m npt-cvs/scripts/miscellaneous/histcie.m
+1c1
+< function [n,bin] = histcie(x,edges,varargin)
+---
+> function [n,bin] = histcie(x,edges)
+8,13c8
+< %   still be used to create plots easily. BIN is also modified so
+< %   that any value in X matching EDGES(end) will be set to bin
+< %   length(EDGES)-1.
+< %
+< %   [N,BIN] = HISTCIE(X,EDGES,'DropLast') drops the last value in
+< %   N, which is always 0.
+---
+> %   still be used to create plots easily.
+15,19d9
+< Args = struct('DropLast',0);
+< Args = getOptArgs(varargin,Args,'flags',{'DropLast'});
+< 
+< % make sure x is column vector if one of its dimension is 1
+< x = vecc(x);
+21,22d10
+< % make sure nh is a column vector, especially when x is 1x1
+< nh = vecc(nh);
+24a13
+> if (nh(nhl) > 0)
+26c15
+< nh1 = nhl - 1;
+---
+> 	x = nhl - 1;
+28c17
+< nh(nh1,:) = nh(nh1,:) + nh(nhl,:);
+---
+> 	nh(x) = nh(x) + nh(nhl);
+30,32c19,22
+< nh(nhl,:) = 0;
+< % find binh == edges(end) and set them to nhl - 1 (i.e. nh1)
+< binh(find(binh==nhl)) = nh1;
+---
+> 	nh(nhl) = 0;
+> 	% find binh == edges(end) and set them to nhl - 1 (i.e. x)
+> 	binh(find(binh==nhl)) = x;
+> end
+38d27
+< 	if(Args.DropLast)
+40,41d28
+< 		n = nh(1:(end-1),:);
+< 	else
+43d29
+< 	end
+Only in npt/scripts/miscellaneous: histn.m
+Only in npt-cvs/scripts/miscellaneous: linkedZoom.M
+Only in npt/scripts/miscellaneous: linkedzoom.m
+Only in npt/scripts/miscellaneous: logbar.m
+diff -rw -x CVS -x .DS_Store npt/scripts/miscellaneous/nptDir.m npt-cvs/scripts/miscellaneous/nptDir.m
+20,23d19
+< %   nptDir('directory_name','CaseInsensitiveSuffix') will return a list 
+< %   of files that match 'directory_name' regardless of the case of the
+< %   suffix. This will have no effect on Windows systems. 
+< %
+72a69
+> if ~isempty(dirlist)
+79a77,79
+> 	end
+> else 
+> 	a=[];
+Only in npt/scripts/miscellaneous: nptPlotFFT.m
+diff -rw -x CVS -x .DS_Store npt/scripts/miscellaneous/nptSubplot.m npt-cvs/scripts/miscellaneous/nptSubplot.m
+1,6c1,7
+< function a = nptSubplot(n,p)
+< %nptSubplot Creates reasonable layout of subplots
+< %   A = nptSubplot(N,P) creates subplots with N being total number 
+< %   of plots and P being the current plot and returns layout in A 
+< %   ([rows cols]). Useful when calling subplot with a variable number 
+< %   of subplots.
+---
+> function nptSubplot(n,p)
+> %nptSubplot(n,p)
+> %subplot with n being total number of plots
+> %and p being the current plot.
+> %this function decides how to split up 
+> %the axis space.  Useful when calling subplot with 
+> %a variable number of subplots.
+32d32
+< subplot(r,c,p)
+34,35c34,35
+< % return layout
+< a = [r c];
+---
+>        
+> subplot(r,c,p)
+\ No newline at end of file
+Binary files npt/scripts/miscellaneous/panGUI.fig and npt-cvs/scripts/miscellaneous/panGUI.fig differ
+diff -rw -x CVS -x .DS_Store npt/scripts/miscellaneous/panGUI.m npt-cvs/scripts/miscellaneous/panGUI.m
+2,4c2,4
+< % panGUI Graphical user interface for panning through data
+< %   panGUI, by itself, creates a new window for panning through a plot
+< %   with a step size of 50.
+---
+> % panGUI M-file for panGUI.fig
+> %      panGUI, by itself, creates a new panGUI or raises the existing
+> %      singleton*.
+6c6,7
+< %   H = panGUI returns the handle to a new panGUI window.
+---
+> %      H = panGUI returns the handle to a new panGUI or the handle to
+> %      the existing singleton*.
+8c9,10
+< %   panGUI(STEP) creates a new window with a step size of STEP.
+---
+> %      panGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+> %      function named CALLBACK in panGUI.M with the given input arguments.
+10c12,21
+< %   H = panGUI(STEP)
+---
+> %      panGUI('Property','Value',...) creates a new panGUI or raises the
+> %      existing singleton*.  Starting from the left, property value pairs are
+> %      applied to the GUI before panGUI_OpeningFunction gets called.  An
+> %      unrecognized property name or invalid value makes property application
+> %      stop.  All inputs are passed to panGUI_OpeningFcn via varargin.
+> %
+> %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+> %      instance to run (singleton)".
+> %
+> % See also: GUIDE, GUIDATA, GUIHANDLES
+Only in npt/scripts/miscellaneous: rad2deg.m
+Only in npt/scripts/miscellaneous: vecc.m
+Only in npt/scripts/miscellaneous: vecr.m
+Only in npt/scripts/read_files: ReadIniRF.m
+Only in npt/scripts/read_files: nptReadDXYFile.m
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@checksystem/plot.m npt-cvs/scripts/view/@checksystem/plot.m
+18d17
+< 	if ischar(varargin{i})
+34,37d32
+< 	else
+< 		% not a character, just skip over it
+< 		i = i + 1;
+< 	end
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@event/SetEventNumber.m npt-cvs/scripts/view/@event/SetEventNumber.m
+1c1
+< function [v,n] = SetEventNumber(v,n)
+---
+> function v = SetEventNumber(v,n)
+3,5c3,4
+< %   [OBJ,NUM] = SetEventNumber(OBJ,N) sets the event number and returns
+< %   the updated object. If N is outside the range of OBJ.start and 
+< %   OBJ.end, OBJ is not changed, and OBJ.event is returned in NUM.
+---
+> %   OBJ = SetEventNumber(OBJ) sets the event number and returns
+> %   the updated object.
+9,10d7
+< % check if n is beyond the bounds of event
+< if( (n>=v.start) & (n<=v.end) )
+12,14c9
+< else
+< 	n = v.event;
+< end
+---
+> 	
+\ No newline at end of file
+Only in npt/scripts/view: @eyejitter
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@eyes/eyes.m npt-cvs/scripts/view/@eyes/eyes.m
+20,28d19
+< %   E = EYES('auto',VARARGIN) attempts to instantiate an EYE object by 
+< %   looking for files with the '_eye.0*' pattern. If the sub-directory 
+< %   EYE exits, this function changes directory before continuing. The 
+< %   following optional input arguments are valid:
+< %      'channels' - followed by number or array specifying the channels
+< %                   to be used (default: [1 2]).
+< %      'pixels' - flag indicating that the units should be pixels instead
+< %                 of degrees, which is the default.
+< %
+41,75c32,37
+< % set default arguments
+< Args = struct('auto',0,'pixels',0,'channels',[1 2]);
+< Args = getOptArgs(varargin,Args,'flags',{'auto','pixels'});
+< 
+< % set default variables
+< changedDir = 0;
+< 
+< if(nargin==0)
+< 	edata = CreateEmptyEyesObject;
+< elseif( (nargin==1) & (isa(varargin{1},'eyes')) )
+< 	edata = varargin{1};
+< else
+< 	if(Args.auto)
+< 		% if there is an eye subdirectory, we are probably in the session dir
+< 		% so change to the eye subdirectory
+< 		[r,a] = ispresent('eye','dir','CaseInsensitive');
+< 		if r
+< 			cd(a);
+< 			changedDir = 1;
+< 		end
+< 		% get list of files
+< 		filelist = nptDir('*_eye.0*','CaseInsensitive');
+< 		if(~isempty(filelist))
+< 			% get session name from first filename
+< 			fname = filelist(1).name;
+< 			k = strfind(lower(fname),'_eye.0');
+< 			e.sessionname = fname(1:(k-1));
+< 			e.channel = Args.channels;
+< 			if(Args.pixels)
+< 				e.units = 'pixels';
+< 			else
+< 				e.units = 'degrees';
+< 			end
+< 			numTrials = size(filelist,1);
+< 			n = nptdata(numTrials,holdAxis);
+---
+> switch nargin
+> case 0
+>    e.sessionname = '';
+>    e.channel = [1 2];
+>    e.units ='';
+>    n = nptdata(0,holdAxis);
+77,87d38
+< 		else
+< 			% no files here so just return empty object
+< 			edata = CreateEmptyEyesObject;
+< 		end
+< 		
+< 		% change directory back to orignial if necessary
+< 		if changedDir
+< 			cd ..
+< 		end
+< 	else % if(Args.auto)
+< 		switch(nargin)
+88a40,42
+>    if (isa(varargin{1},'eyes'))
+>       edata = varargin{1};
+>    else
+96a51
+>    end
+124,134c79
+< 		end % switch(nargin)
+< 	end % if(Args.auto)
+< end % if(nargin==0)
+< 
+< function obj = CreateEmptyEyesObject
+< 
+< e.sessionname = '';
+< e.channel = [1 2];
+< e.units ='';
+< n = nptdata(0,1);
+< obj = class(e,'eyes',n);
+---
+> end 
+\ No newline at end of file
+Only in npt/scripts/view/@eyes: getMeanStd.m
+Only in npt/scripts/view/@eyes: isempty.m
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@eyes/plot.m npt-cvs/scripts/view/@eyes/plot.m
+3,20c3,4
+< %   OBJ = PLOT(OBJ,N,VARARGIN) plots the raw data from the trial 
+< %   specified by N. The eye files are assumed to be in the current 
+< %   directory. The sampling rate of the eye signals is usually 1 kHz.
+< %
+< %   The optional input arguments are:
+< %      'XY' - flag to plot data in 2D.
+< %      'Data2D' - followed by the eye calibration data returned by
+< %                 getEyeCalData will add a grid illustrating the 
+< %                 distortions in the eye signals. This option also
+< %                 assumes 'XY' option.
+< %      'DataStart' - followed by number specifying first data point
+< %                    to be plotted (default: 1).
+< %      'DataEnd' - followed by number specifying the last data point
+< %                  to be plotted (default: length(data)).
+< %      'AxisZoom' - followed by array which is passed to axis to set
+< %                   the axis limits (default: []).
+< %      'XYStd' - followed by handle to a figure to use to display
+< %                histogram of distances from the mean.
+---
+> %   OBJ = PLOT(OBJ,N) plots the raw data from the trial specified N. 
+> %   The eye files are assumed to be in the current directory. 
+23,25d6
+< %
+< %   obj = plot(obj,n,'XY',0,'Data2D',ec,'DataStart',1,'DataEnd',l,...
+< %            'AxisZoom',[],'XYStd',[]);
+27,28c8,9
+< Args = struct('XY',0,'Data2D',0,'DataStart',1,'DataEnd',[],'AxisZoom',...
+< 	[],'XYStd',[]);
+---
+> % default optional arguments
+> data2D = 0;
+30,33c11,30
+< Args = getOptArgs(varargin,Args,'flags',{'XY'});
+< if(isstruct(Args.Data2D))
+< 	% make sure we plot in XY if Data2D was used
+< 	Args.XY = 1;
+---
+> % parse optional arguments
+> num_args = nargin - 2;
+> i = 1;
+> while(i <= num_args)
+> 	if ischar(varargin{i})
+> 		switch varargin{i}
+> 		case('data2D')
+> 			% plot data in 2D
+> 			data2D = 1;
+> 			% get eye calibration data
+> 			ec = varargin{i+1};
+> 			% remove argument from varargin
+> 			[varargin,num_args] = removeargs(varargin,i,2);
+> 		otherwise
+> 			% unknown string, just skip over it
+> 			i = i + 1;		
+> 		end
+>     else
+> 		% not a character, just skip over it
+> 		i = i + 1;
+35,36d31
+< if(~isempty(Args.XYStd))
+< 	Args.XY = 1;
+49,51d43
+< % set horizontal and vertical channels
+< vchan = 1;
+< hchan = 2;
+65,71c57,64
+< if(isempty(Args.DataEnd))
+<     Args.DataEnd = dlength;
+< end
+< if(Args.XY)
+< 	if(isstruct(Args.Data2D))
+< 		% plots the locations where the eye calibration was measured
+< 		plot(Args.Data2D.screenx(:),Args.Data2D.screeny(:),'+');
+---
+> if data2D
+> 	% get eyefilt data
+> 	efname = ['..' filesep 'eyefilt' filesep sessionname '_eyefilt.' trialn];
+> 	eyefilt = nptReadDataFile(efname);
+> 	% convert to screen coordinates
+> 	efsx = griddata(ec.eyex,ec.eyey,ec.screenx,eyefilt(2,:),eyefilt(1,:),'v4');
+> 	efsy = griddata(ec.eyex,ec.eyey,ec.screeny,eyefilt(2,:),eyefilt(1,:),'v4');
+> 	plot(ec.screenx(:),ec.screeny(:),'+')
+73,84c66,73
+< 		% draw vertical lines of grid
+< 		plot(Args.Data2D.gridx,Args.Data2D.gridy,'g');
+< 		% draw horizontal lines of grid
+< 		plot(Args.Data2D.gridx',Args.Data2D.gridy','g');
+< 	end
+< 	% plot data from trial n
+< 	plot(data(hchan,Args.DataStart:Args.DataEnd),data(vchan,Args.DataStart:Args.DataEnd),'r.')
+< 	hold on
+< 	% put a black dot on the last point
+< 	plot(data(hchan,Args.DataEnd),data(vchan,Args.DataEnd),'k.')
+< 	% flip the y axis so it corresponds to screen coordinates
+< 	set(gca,'YDir','reverse')
+---
+> 	plot(ec.gd4x,ec.gd4y,'r')
+> 	plot(ec.gd4x',ec.gd4y','r')
+> 	plot(ec.gdcx,ec.gdcy,'b')
+> 	plot(ec.gdcx',ec.gdcy','b')
+> 	plot(data(2,:),data(1,:),'g.')
+> 	plot(data(2,dlength),data(1,dlength),'k.')
+> 	plot(efsx,efsy,'m.')
+> 	plot(efsx(dlength),efsy(dlength),'k.')
+87,103d75
+<     if(~isempty(Args.AxisZoom))
+<         axis(Args.AxisZoom)
+<     end
+<     if(~isempty(Args.XYStd))
+< 		% compute mean and std for relevant data
+< 		[dm,dstd] = getPositionMeanStd(data(:,Args.DataStart:Args.DataEnd)');
+<     	% plot mean and standard deviation
+<     	plot(dm(2),dm(1),'o')
+<     	line([dm(2)-dstd dm(2)+dstd],[dm(1) dm(1)])
+<     	line([dm(2) dm(2)],[dm(1)-dstd dm(1)+dstd])
+<     	% get current figure so we can set it back after we plot histogram
+<     	h = gcf;
+<     	figure(Args.XYStd)
+<     	hist(ds)
+<     	title(['STD: ' num2str(dstd)])
+<     	figure(h)
+<     end
+128c100
+< title([sessionname '.eye.' trialn]);
+---
+> %title(filename);
+Only in npt/scripts/view/@ispikes: brunoplot.m
+Only in npt/scripts/view/@ispikes: getSpikeCounts.m
+Only in npt/scripts/view/@ispikes: separate.m
+Only in npt/scripts/view: @mapfields
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/InspectGUI.m npt-cvs/scripts/view/@nptdata/InspectGUI.m
+2,23d1
+< %NPTDATA/InspectGUI Inspect object
+< %   FIG = InspectGUI(OBJ, VARARGIN) displays a graphical user interface to
+< %   step through data contained in OBJ.
+< %
+< %   The optional input arguments are:
+< %      holdaxis - specifies whether to hold the axis limits constant 
+< %                 across plots.
+< %      addObjs - specifies that the following cell array contains
+< %                additional objects that should be plotted at the
+< %                same time.
+< %      optArgs - specifies that the following cell array contains 
+< %                optional input arguments for the various objects.
+< %                If this option is not specified, and there is only
+< %                one object, the remaining arguments are assumed to
+< %                be optional input arguments.
+< %   Examples:
+< %   InspectGUI(rf,'addObjs',{rf},'optArgs',{{},{'recovery'}})
+< %   InspectGUI(bi,'addObjs',{pi,rt})
+< %
+< %   FIG = InspectGUI(OBJ,'holdaxis','addObjs',{OBJ1,OBJ2},'optArgs',{{}})
+< 
+< 
+84c62
+< s.ev = event(1,get(obj{1},'Number',varargin{:}));
+---
+> s.ev = event(1,get(obj{1},'Number'));
+109,114d86
+<             case('addObjs')
+<                 % objs = varargin{i+1};
+<                 % obj = {obj{1}, objs{:}};
+<                 obj = {obj{1}, varargin{i+1}{:}};
+<                 [varargin,num_args] = removeargs(varargin,i,2);
+<                 i = i - 1;
+119c91
+<             case('optArgs')
+---
+>             case('optArgs')    %must use objArguments now
+136,148c108,109
+< % get total number of objects
+< nobj = length(obj);
+< % if there are multiple objects, initialize structure for number of 
+< % objects
+< if (nobj>1)
+< 	ndir = length(s.dir);
+< 	if (ndir~=nobj)
+< 		% if there are not enough directories, use the first directory,
+< 		% which is the current directory, to fill in the rest
+< 		for i=(ndir+1):nobj
+< 			s.dir{i} = s.dir{1};
+< 		end
+< 	end
+---
+> % store the optional arguments for future calls
+> %s.optargs  = varargin;
+150,174c111
+< 		noptArgs = 0;
+< 	else
+< 		noptArgs = length(s.optargs);
+< 	end
+< 	if (noptArgs~=nobj)
+< 		% there should be the same number of optArgs as objects
+< 		% if an object does not have arguments, an empty cell array
+< 		% should still be present. Need empty cell arrays instead
+< 		% of empty numerica arrays created by cell(n,m) in order for
+< 		% the optional arguments to be passed on properly
+< 		for i=(noptArgs+1):nobj
+< 			s.optargs{i} = {};
+< 		end
+< 	end
+< else
+< 	if ~isfield(s,'optargs')
+< 		if (num_args>0)
+< 			% if there are remaining arguments, and there is only 1 object with
+< 			% no optArgs, assume they are for the object
+< 			s.optargs  = {varargin};
+< 		else
+< 			% set optargs to empty cell array to prevent errors
+< 			s.optargs = {{}};			
+< 		end
+< 	end
+---
+>     s.optargs = cell(1,length(obj));
+198,199c135
+<             % pass optional arguments in a form that can be recognized as varargin
+<             s.obj{counter} = plot(obj{counter},1,s.optargs{counter}{:});
+---
+>             s.obj{counter} = plot(obj{counter},1,s.optargs{counter});
+203c139
+<             if counter~=nobj
+---
+>             if counter~=length(obj)
+214,216c150,151
+<         % pass optional arguments in a form that can be recognized as varargin
+<         s.obj{jj} = plot(obj{jj},1,s.optargs{jj}{:});
+<         if jj~=nobj
+---
+>         s.obj{jj} = plot(obj{jj},1,s.optargs{jj});
+>         if jj~=length(obj)
+222c157
+<     for ii=1:nobj
+---
+>     for ii=1:length(obj)
+224,226c159,160
+<         subplot(nobj,1,ii)
+<         % pass optional arguments in a form that can be recognized as varargin
+<         s.obj{ii} = plot(obj{ii},1,s.optargs{ii}{:});
+---
+>         subplot(length(obj),1,ii)
+>         s.obj{ii} = plot(obj{ii},1,s.optargs{ii});
+236c170
+< if nobj>1
+---
+> if length(s.obj)>1
+238,239c172,173
+<         for ii=1:nobj
+<             subplot(nobj,1,ii)
+---
+>         for ii=1:length(s.obj)
+>             subplot(length(s.obj),1,ii)
+245,246c179,180
+<         for ii=1:nobj
+<             subplot(nobj,1,ii)
+---
+>         for ii=1:length(s.obj)
+>             subplot(length(s.obj),1,ii)
+252,253c186,187
+<         % subplot(nobj,1,1)
+<         % title(getfield(s.obj{1},'sessionname'))
+---
+>         subplot(length(s.obj),1,1)
+>         title(getfield(s.obj{1},'sessionname'))
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/ProcessDay.m npt-cvs/scripts/view/@nptdata/ProcessDay.m
+53d52
+< 					selectedsessions = 1;
+54a54,56
+>                     if (~isempty(slist) & ~(sum(isspace(slist))==length(slist)))
+>                         selectedsessions = 1;
+>                     end
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/ProcessSession.m npt-cvs/scripts/view/@nptdata/ProcessSession.m
+19,21c19
+< %                       session. Be sure to set the output variable
+< %                       robj if the nptdata object created is to be 
+< %                       added to other objects.
+---
+> %                       session.
+25,26d22
+< %      e.g. ProcessSession(nptdata,'nptSessionCmd',...
+< %           'robj = nptdata(0,0,''Eval'',''ispresent(''''performance.mat'''',''''file'''')'');');
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/get.m npt-cvs/scripts/view/@nptdata/get.m
+1c1
+< function p = get(n,prop_name,varargin)
+---
+> function p = get(n,prop_name)
+Only in npt/scripts/view/@nptdata: loadobj.m
+Only in npt/scripts/view/@nptdata: name2index.m
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/nptdata.m npt-cvs/scripts/view/@nptdata/nptdata.m
+3,11c3,6
+< %   N = NPTDATA(NUMBER,HOLDAXIS,VARARGIN) instantiates an NPTDATA 
+< %   object with NUMBER of events. The object contains the following 
+< %   fields:
+< %      N.number - Number of events
+< %      N.holdaxis - Either 0 or 1 specifying whether the axis is
+< %                   rescaled for each plot (0) or only if the limits
+< %                   change (1).
+< %      N.sessiondirs - Cell array containing directory paths where
+< %                      precomputed objects are located.
+---
+> %   N = NPTDATA(NUMBER) instantiates an NPTDATA object with NUMBER of 
+> %   events. The object contains the following fields:
+> %      N.number
+> %      N.holdaxis
+13,34c8
+< %   The optional input arguments are:
+< %      'SessionDirs' - Cell array with each row containing a directory 
+< %                      path where precomputed objects are located 
+< %                      (default is empty). The NUMBER argument is 
+< %                      ignored in this case.
+< %      'SessionsFile' - Name of text file with each line containing a
+< %                       directory path where precomputed objects are 
+< %                       located (default is empty). The NUMBER argument 
+< %                       is ignored in this case.
+< %      'Eval' - Command to evaluate, which if true, creates a nptdata 
+< %               object using the current directory.
+< %
+< %   e.g. nd = nptdata(0,1,'SessionDirs',{'070203/02';'070203/03'});
+< %   e.g. nd = nptdata(0,1,'SessionsFile','sessions.txt');
+< %   e.g. nd = nptdata(0,1,'Eval',''ispresent(''bigroups.mat'',''file'')');
+< %
+< %   Dependencies: getOptArgs.
+< %   n = nptdata(1,1,'SessionDirs',{},'SessionsFile',{},'Eval','');
+< 
+< % for some reason if empty string not included in empty cell array, Args
+< % does not get created properly
+< Args = struct('SessionDirs',{''},'SessionsFile','','Eval','');
+---
+> %   Dependencies: None.
+40d13
+< 	n.sessiondirs = {};
+51d23
+< 	n.sessiondirs = {};
+54,69c26
+< 	% number will be obtained from sessiondirs so we will ignore first
+< 	% argument
+< 	Args = getOptArgs(varargin,Args);
+< 	if(~isempty(Args.SessionsFile))
+< 		Args.SessionDirs = textread(Args.SessionsFile,'%s\n');
+< 	elseif(~isempty(Args.Eval))
+< 		% evaluate string
+< 		status = eval(Args.Eval);
+< 		if(status)
+< 			Args.SessionDirs = {pwd};
+< 		end
+< 	end
+< 	n.number = length(Args.SessionDirs);
+< 	n.holdaxis = varargin{2};
+< 	n.sessiondirs = Args.SessionDirs;
+<     n = class(n,'nptdata');
+---
+> 	error('Wrong number of input arguments')
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/plot.m npt-cvs/scripts/view/@nptdata/plot.m
+1,19c1,5
+< function vw = plot(vw,n,varargin)
+< %NPTDATA/PLOT Function for plotting nptdata
+< %   OBJ = PLOT(OBJ,N,VARARGIN) is a function that is usually overloaded
+< %   by children classes. It exists partially so that InspectGUI will 
+< %   not return an error if called without an object. If no optional
+< %   arguments are specified, the function does nothing.
+< %
+< %   The optional input arguments are:
+< %      'Objects' - Expects a cell array of objects (one object per
+< %                  row) that are loaded and plotted using nptSubplot.
+< %                  Optional input arguments for each object are passed
+< %                  in as a cell array in the second column of each row
+< %                  (default is an empty cell array).
+< %      'SubPlots' - Expects a vector ([ROWS,COLS]) that overrides the 
+< %                   arrangment of subplots returned by nptSubplot
+< %                   (default is []). 
+< %  
+< %
+< %   e.g. plot(nd,1,'Objects',{'performance' {}; 'bias',{'rt'}; 'bias',{}});
+---
+> function vw = plot(vw,n)
+> %NPTDATA/PLOT Virtual function for plotting
+> %   OBJ = PLOT(OBJ,N) is a virtual function that does nothing. It
+> %   exists so that InspectGUI will not return an error if called 
+> %   without an object.
+23,71d8
+< % make sure that n does not exceed number of sessiondirs
+< n = min([n vw.number]);
+< 
+< if(n>0)
+< 	% grab current directory
+< 	cwd = pwd;
+< 	% change to corresponding directory
+< 	cd(vw.sessiondirs{n})
+< 	
+< 	Args = struct('Objects',{{'',{''}}},'SubPlots',[]);
+< 	Args = getOptArgs(varargin,Args);
+< 	nobjs = size(Args.Objects,1);
+<     % check if we really need to alter plot layouts so as to minimize
+<     % hard-coded behavior
+<     if(nobjs>1)
+< 		if(isempty(Args.SubPlots))
+< 			layout = nptSubplot(nobjs,1);
+< 		else
+< 			layout = Args.SubPlots;
+< 		end
+<     end
+< 
+< 	% load objects
+< 	for i = 1:nobjs
+< 		try
+< 			a = load(Args.Objects{i,1});
+< 			% get object name from field of 'a' which is a structure
+< 			s = fieldnames(a);
+< 			% plot object
+< 			if(nobjs>1)
+<                 % only change layout if necessary
+< 				subplot(layout(1),layout(2),i)	
+< 			end
+< 			plot(getfield(a,s{1}),1,Args.Objects{i,2}{:});
+< 			clear a
+< 		catch
+< 			% get last error
+< 			lm = lasterr;
+< 			if(~isempty(strfind(lm,'load')))
+< 				fprintf('Warning: %s object not found!\n',Args.Objects{i,1});
+< 			else
+< 				fprintf('Warning: Problem plotting %s object!\n',Args.Objects{i,1});
+< 			end
+< 		end
+< 	end
+< 	
+< 	% return to previous directory
+< 	cd(cwd);
+< else
+73d9
+< end
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/plus.m npt-cvs/scripts/view/@nptdata/plus.m
+9,10d8
+< % check for empty object
+< if (q.number == 0)
+12,20d9
+< elseif (p.number == 0)
+< 	r = q;
+< else
+< 	% assign p to r so that we can be sure we are returning the right
+< 	% object
+< 	r = p;
+< 	r.number = p.number + q.number;
+< 	r.sessiondirs = cellstr(strvcat(p.sessiondirs{:},q.sessiondirs{:}));	
+< end
+diff -rw -x CVS -x .DS_Store npt/scripts/view/@nptdata/useProcessedMarker.m npt-cvs/scripts/view/@nptdata/useProcessedMarker.m
+8c8
+< res = 0;
+---
+> res = 1;
+diff -rw -x CVS -x .DS_Store npt/scripts/view/gui/InspectCB.m npt-cvs/scripts/view/gui/InspectCB.m
+13a14
+>         n = eval(get(gcbo,'String'));
+15,28c16
+<     	% get string
+<     	str = get(gcbo,'String');
+<     	% try converting string to number
+<         n = str2num(str);
+<         % if not a number, try searching for first index that matches
+<         if(isempty(n))
+<             % check if str starts with 's:' which indicates a search string
+<             if(strncmpi('s:',str,2))
+<                 n = name2index(s.obj{1},sscanf(str,'s: %s'));
+<             else
+< 			    n = name2index(s.obj{1},str);
+<             end
+< 		end			        	
+<         [s.ev,n] = SetEventNumber(s.ev,n);
+---
+>         s.ev = SetEventNumber(s.ev,n);
+64,65c52
+<             % pass optional arguments in a form that can be recognzied as varargin
+<             s.obj{counter} = plot(s.obj{counter},n,s.optargs{counter}{:});
+---
+>             s.obj{counter} = plot(s.obj{counter},n,s.optargs{counter});
+80,81c67
+< 		% pass optional arguments in a form that can be recognzied as varargin
+<         s.obj{jj} = plot(s.obj{jj},n,s.optargs{jj}{:});
+---
+>         s.obj{jj} = plot(s.obj{jj},n,s.optargs{jj});
+91,92c77
+< 		% pass optional arguments in a form that can be recognzied as varargin
+<         s.obj{ii} = plot(s.obj{ii},n,s.optargs{ii}{:});
+---
+>         s.obj{ii} = plot(s.obj{ii},n,s.optargs{ii});
+119,120c104,105
+<         % subplot(length(s.obj),1,1)
+<         % title(getfield(s.obj{1},'sessionname'))
+---
+>         subplot(length(s.obj),1,1)
+>         title(getfield(s.obj{1},'sessionname'))

@@ -1,0 +1,59 @@
+8/30/01
+read_init_info	
+changed so that it uses fgetl to read one line
+at a time and also so it reads info according to
+blocks demarcated by [ ] headers
+
+ReadDescriptor
+same as above
+
+
+8/31/01
+read_seq
+created this function to read .seq file info
+
+
+9/4/01
+seqfile-howto
+added this documentation for .seq file parameters
+(under npt/doc)
+
+9/5/01
+read_extrasyncs
+changed so that it uses fgetl to read line by line.
+Note that init_info is not used - remove?
+read_extrasyncs_struct	created this function to read extrasyncs info all
+at once into a struct
+
+InspectSpikes
+fixed bug: line color now properly cycles through
+colors when numClusters is greater than the number
+of available line colors.
+
+show_seq
+created this function to show sparse noise sequence
+contained in .seq file
+
+9/7/01
+chop
+created this function to chop a signal into
+intervals (for getting psth to sparse noise frames)
+
+trial_raster
+created this function to make a rastergram of
+spikes according to trials.
+
+shift_spikes
+created this function to shift spikes within a
+session structure by a specified amount (to
+correct for variable offsets stimulus onset).
+
+infer_latency
+created this function to infer stimulus latency
+from trial data length (used to correct data
+collected w/hardware bug and w/o timing info).
+
+9/8/01
+stimulus-latency-bug
+add this documentation on the stimulus latency
+problems discovered week of 9/4/01, under npt/doc

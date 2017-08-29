@@ -1,0 +1,74 @@
+\documentclass{article}
+\input epsf
+\newcommand{\vi}{{\tt i}}
+\newcommand{\vj}{{\tt j}}
+\newcommand{\vo}{{\tt o}}
+\newcommand{\vc}{{\tt c}}
+\begin{document}
+
+\title{How to interpret {\tt .seq} file parameters}
+\author{Bruno A. Olshausen}
+\maketitle
+
+
+The \verb+.seq+ file contains a record of the stimulus parameters
+used on each frame of a sparse noise sequence.  Each line consists
+of four numbers:
+\begin{verbatim}
+i j o c
+\end{verbatim}
+which describe the position (\vi,\vj), orientation (\vo) and color
+(\vc) of a bar displayed on that frame.  
+
+\hspace{0.1in}
+\noindent
+{\bf Position}
+
+The coordinates \vi,\vj specify the position within a $n\times m$
+grid, whose size and position in screen coordinates are given in the
+\verb+.INI+ file (by the lines beginning 'Grid Center', 'Grid X Size',
+and 'Grid Y Size').  \vi denotes the {\em row} within the grid, and
+\vj denotes the {\em column} within the grid as shown:
+
+\epsfysize=2.0in
+\[
+\epsffile{grid.eps}
+\]
+
+
+\hspace{0.1in}
+\noindent
+{\bf Orientation}
+
+The orientation of a bar within the grid is {\em always vertical}.
+The bar is shown in different orientations by rotating the entire
+grid.  A horizontal bar is defined to be at $0^o$, so the entire
+grid is actually rotated clockwise by 90 degrees when the bar
+orientation is specified as $0^o$.  All other orientations are
+specified relative to the $0^o$ (horizontal) orientation, as
+shown:
+
+\epsfysize=2.0in
+\[
+\epsffile{orientations.eps}
+\]
+The bar is always shown at position 0,0 within the grid.
+
+\hspace{0.1in}
+\noindent
+{\bf Color}
+
+The bar color is specified relative to the {\em background luminance},
+which is given in the \verb+.INI+ file ('Background Luminance').  0
+specifies a decrement below the background luminance and 1 specifies
+an increment above the background luminance.  The exact values are
+given the by contrast, which is also specified in the \verb+.INI+ file
+('Contrast').  The formula relating these values to each other is
+\begin{equation}
+\mbox{\rm contrast} = \frac{\mbox{\rm (increment luminance)} - 
+		            \mbox{\rm (decrement luminance)}}
+                           {\mbox{\rm background luminance}}
+\end{equation}
+
+\end{document}
+

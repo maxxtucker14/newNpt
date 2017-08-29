@@ -1,0 +1,148 @@
+Ini File Notes:
+
+Eye Calibration Sessions
+ -- from '01 to early '03 Eye Cal. ini's had all of the same fields and subfields.
+
+Fields: [SESSION INFO], 
+	[RECEPTIVE FIELDS INFO], 
+	[STIMULUS INFO], 
+	[TIMING INFO], 
+	[STIMULUS SEQUENCE]
+
+
+
+In early '03 the following changes were made:
+
+"Presenter Version" subfield added to [SESSION INFO]
+
+[RECEPTIVE FIELDS INFO] renamed [RECEPTIVE FIELDS] and the following subfields were added:
+	Section Version=1
+	uDim
+	vDim
+	Spat Freq
+	Velocity
+	Mark
+
+The following subfields were added to [TIMING INFO]:   (note:  "Paradigm" was removed.)
+	Section Version=1
+	Cue Latency
+	Cue Latency Max
+	Randomize Cue Latency
+	Cue Duration
+	Cue Duration Max
+	Randomize Cue Duration
+	Post Cue Duration
+	Post Cue Duration Max
+	Randomize Post Cue Duration
+	Match Latency
+	Match Latency Max
+	Randomize Match Latency
+	Match Time Limit
+
+In '04 the following subfields were added to [TIMING INFO]:  (Section Version=2)
+	Incorrect Penalty Duration
+	Incorrect Penalty Duration Max
+	Randomize Incorrect Penalty Duration
+
+
+
+Reverse Correlation Sessions (Monkey only)
+ -- in early '01, Rev Corr. ini's had the following characteristics:
+
+Fields: [SESSION INFO],
+	[RECEPTIVE FIELDS INFO],
+	[OBJECT INFO],			(Only for Sparse Noise sessions)
+	[STIMULUS INFO],
+	[EXTRA SYNCS],
+	[FIRST FRAMES PER TRIAL]
+
+under [STIMULUS INFO],  the following "Type" strings were used:
+	TRIAL_SPARSE-NOISE
+	WINDOW_MOVIE
+The [STIMULUS INFO] sections for these two types of sessions are different
+ from each other as well as being different from those of eye cal sessions.
+ Note:  If the session was still images, there was a subfield
+	"Movie type=still_image" which appeared only in this case.
+
+
+In late '01 the [TIMING INFO] field was added.  (only change)
+
+In early '03 widespread changes were made.
+The changes made to the [SESSION INFO], [RECEPTIVE FIELDS INFO], and [TIMING INFO] fields has been previously described.
+
+The [OBJECT INFO] field was removed and non-eye calibration sessions contained 
+[TReverseCorrGUIForm] instead of [STIMULUS INFO].
+Virtually every subfield was renamed, and many were added so that all of the
+different session types would have similar [TReverseCorrGUIForm] sections.
+Here are the main changes/notes:
+	"Type" became "Reverse Corr Type" which is either a 0, 1, or 2
+		0 = M-Sequence, 1 = Sparse Noise, 2 = Movie
+	The fields "Matrix" and "Number of Frames" were refer ONLY to the m-sequence stimulus.
+		For "Matrix," 0 = 16x16 and 1 = 64x64
+		"Number of Frames" is legitimate ONLY if the session was an m-sequence.
+	"Directions per Orientation is numeric:  0 = 1, 1 = 2
+	"Random Order is numeric:  0 = Psueso-random, 1 = Blocked Orientation, 2 = Sequential
+	"Contrast Polarity" is numeric:  0 = On/Off, 1 = On, 2 = Off
+	"Object Type" is numeric:  0 = Bar, 1 = Gabor, 2 = Spot, 3 = Grating, 4 = Square
+	"Frames in Movie" refers to the length of the entire movie file.
+	"Frames" identifies the minimum number of total frames shown ONLY if the
+		session was a movie or sparse noise stimulus.
+	"StimFrames" is the number of different movie frames shown.  (So "Frames" will
+		either be less than or an integer multiple of "StimFrames")
+	"Number of Repeats" identifies the integer multiple as described above.
+	"Windowed Movie" = 1 if the session is free viewing.
+	"Movie type" is now "Still Images" (= 1).
+	"Play Continuously" is mistaken.  At this point when it = 0, the stimulus
+		plays continuously, meaning that after an incomplete trial, the stimulus
+		continues, as opposed to returning to the frame immediately after the 
+		last frame of the last complete trial (termed "Play Identical").
+	"Trial Repeats" is the correct "Play Continuously" variable.
+	"Number of Trials" here is unreliable.  It is actually the MINIMUM number of trials.
+	"Screen Resolution" is numeric.  6 = 800x600
+
+Three new other fields were also added:
+
+	[TRIAL INFO] has the subfields "Number Trials" and "SN Block Length"
+	[LAST FRAMES PER TRIAL]
+	[NUMBER OF FRAMES SHOWN PER TRIAL]
+
+
+In late '03 several fields were added or changed to clarify these earlier changes:
+All of the fields that were previously numeric were changed to contain text info.
+For instance "Reverse Corr Type" could now be "M-Sequence," "Sparse Noise," or "Movie."
+The numeric fields were kept, and the word "Index" was added to each.
+Other changes:
+	"Object Colors" became "Number of Colors"
+	"Play Continuously" was removed.
+	"Orientation Angle" became "Base Orientation Angle"
+	The [TRIAL INFO] field was removed.
+	The [OBJECT INFO] field exists if the session was "Sparse Noise".
+		note:  The subfields now say "Orientation Angle 0" instead of
+		"Orientation of Bar 0", and "Surface Size" no longer exists. 
+
+In '04 more changes were made (including those already discussed in the [TIMING INFO} field),
+many to account for new jittering grading and restricted movie stimuli.
+In the [TReverseCorrGUIForm] field the following subfields were added:
+	"Number of Frames" was changed to "Mseq Frames"
+	Mseq Start Frame
+	Mseq End Frame
+	Mseq Stimulus Frames		(like "StimFrames" for a movie)
+	Mseq Number Of Repeats
+	Temporal Frequency
+	Total Frames			(Total number of sparse noise frames)
+	Duration in Frames		(of a grating sparse noise stimulus)
+	Jittering File Name
+	Use Jittering File
+	"StimFrames" became "Stimulus Frames"
+	Enable Window 1
+	X Center For Small Movie Window 1
+	Y Center For Small Movie Window 1	
+	Diameter For Small Movie Window 1
+	Enable Window 2
+	X Center For Small Movie Window 2
+	Y Center For Small Movie Window 2
+	Diameter For Small Movie Window 2
+	"Number of Trials" was renamed "Minimum Number Of Trials"
+
+Lastly, the field [ACTUAL NUMBER OF TRIALS SHOWN] was added, with the lone subfield
+	"Number of Trials"

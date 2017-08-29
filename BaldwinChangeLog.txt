@@ -1,0 +1,707 @@
+7/16/01
+ProcessSession
+7/17/01
+ProcessExpEyeSession 	- changed name to ProcessEyeSession
+			- added if statement
+			-added eye=[];
+ProcessDay		- changed ProcessEyeSession call
+AutomatedScript		-get rid of directory hard coding (put in startup.m instead)
+ProcessSession		-if exist('unit_extracted')
+GroupSignals		-added if Active channel
+ProcessEyeSession	-changed ~isempty(dxy_list) to look at NumberofDXYfiles>0
+7/18/01
+ProcessDay2		-incorporated ProcessedDay
+AutomatedScript		-changed to call ProcessDay2
+nptEyeCoil2Screen	-cleaned up indiices
+ProcessSession		-chnaged lfp to writestreamerfile
+WriteStreamerFile	-pad scanorder
+WriteDataFile		-pad scanorder
+7/19/01
+WriteStreamerFile	-fixed logic
+WriteDataFile		-fixed logic
+nptGaussianConv		-created
+nptEyeCoil2Screen3
+ProcessSession2		-put in eye filter and write *_eyefilt.bin files
+ProcessEyeSession	-changed to eyecoil2screen3
+ProcessDay		-move eyefilt files to folder
+
+7/23/01
+ProcessSessions2	-added eyefilt to calibration files
+nptGaussianConv		-more arguments passed out
+nptEyeCalibAnalysis	-got rid of first filter because nptGaussiaConv is doing it now
+			 (output from eyecoil2screen is w/in .1 pixel of original algorithm)		
+
+7/24/01
+cleaned up comments on almost everything
+ProcessEyeSessions	-got rid of reading streamer file and cleanup marker file logic
+CheckSorting		-changed name to InspectSorting
+
+
+7/30/01
+nptExtructorwrapper	-changed duration stuff
+ProcessSession2		- fixed duration
+ProcessSession		-changed name from 2
+ProcessDay		- same as above
+ProcessSession		-changed highpass filename
+nptWriteDat		- added channel num to sorterHeader
+nptWriteSorterHdr	- added channel num to sorterHeader
+GroupSignals		-added raw_channels field to structure
+ProcessSession		-changed input arguments to algorith types
+
+ProcessDay		-changed input arguments to algorith types
+AutomatedScript		-changed input arguments to algorith types
+
+7/31/01
+ProcessSession		-changed logic of input arguments
+nptWriteDat		-added '_highpass' to filename is apppropriate
+ChannelIndex		-added if 'Active' to if statement
+ProcessSession		-changed broadband logic
+
+8/1/01
+nptWriteDat		-finished adding 'highpass' stuff
+SetupDir		-modularized section from ProcessDay
+ProcessDay		-took out SetupDir part
+
+8/6/01
+eycalibanalysis		-renamed and put old algorithms in old stuff
+EyeCioil2Screen		_ same as above
+ProcessSession		-call correct eyecalibanalysis
+ProcessEyeSessions	- call correct Eyecoil2Screen
+nptGaussianConv		-changed SamplesPerMS
+
+8/9/01
+extractorwrapper	-added mean to threshold(2 places)
+
+8/20/01
+NEW FILES:
+nptDetectSaccade
+nptEyeInfo
+nptPSTH
+nptEyeDurationHistograms
+InspectSpikesOnEyes
+nptDisplayStillImage
+
+8/20/01
+created new subfolders in npt\algorithms and in npt\scripts
+to better organize files.
+
+8/21/01
+ProcessSession		-changed to process calibration sessions
+ProcessEyeSession	-changed to process calibration sessions
+
+8/23/01
+nptDisplayMovie		-new m file
+createpoints
+read_init_info
+read_extrasyncs
+ReadStimulusHeader	-new m file
+ReadStimulusFrame	-new m file
+
+8/24/01
+DisplayStillImage
+InspectDat
+InspectSpikes 		-just updated to correct file
+Contents
+nptGaussianConv
+ProcessSession		-Unix is Case sensitive
+
+9/21/01
+processSession		initialized redo=0;
+ReadDescriptor		-bruno's new Readdescriptor requires a strread function which 
+			is not available yet so...
+			we are still using the old ReadDescriptor
+			The new one has been named ReadDescriptornew
+ProcessSession		added isempty(varargin{1}{1}) 
+
+9/28/01
+ExtractorWrapper	defined 4 sigma threshold as a variable so it can be changed easily
+pixel2degree		new function
+nptdetectsaccade	now uses pixel2degree
+
+10/23/01
+ProcessSession		write eyefilt files with WriteDataFile rather than
+			WriteStreamerFile to avoid roundoff errors.  Need to discard 
+			scanorder in the eyefilt files now.
+10/29/01
+ProcessEyeSession	fixed bug to read eyefilt files after naming convention change
+			also changed to ReadDataFile because of 10/23/01 change.
+
+11/26/01
+GenerateSessionSpikeTrains	updated to ShihCheng's newest version which reads in min_duration
+nptDetectSaccade		changed filename when saving eye as a .mat file (reflects new naming convention)
+nptEyeInfo			deleted this file and created the following three files from it.
+nptEyePowerSpectrum
+nptEyeVelocityHistogram
+nptEyePositionRangeHistogram
+
+11/27/01
+nptLfpFilter		changed name to nptLowPassFilter
+ProcessSession		changed corresponding call to nptLowPassFilter
+
+11/28/01
+StreamerDescriptor.c	changed DataType fields to lowpass, highpass and broadband only for neuronal data
+ProcessSession		implemented DataType name changes
+			reactivated lowpass filtering
+			updated comments
+GroupSignals		implemented DataType name changes
+nptDetectSaccade	changed name to nptGenerateSessionEyeMovements
+AutomatedScript		changed name to BatchPreProcessor
+nptGenerateSessionEyeMovements		changed filename to work with ProcessDay
+ProcessDay		small fix to comments
+ProcessEyeSession	added nptGenerateEyeMovements to batchprocessor for movies
+
+12/3/01
+nptPSTH			changed name "session" from GenerateSessionSpikeTrains to "spike"
+			I thought this was more informative than session as I was updating
+			comments.  I will probally change it through out the npt toolbox.
+GenerateSessionSpikeTrain	changed name from "session" to "spike"
+InspectSpikesOnEyes		changed name from "session" to "spike"
+InspectSpikes			changed name from "session" to "spike"
+BatchPreprocessor		changed switch statement to if statement
+ProcessSession			changed eye logic to filter only once
+
+12/5/01
+ProcessEyeSession	removed GenerateSessionEyeMovements from BatchPreprocessor
+BatchProcessor		created new function to batch process "processed" data
+nptEyePowerSpectrum		moved to fvt toolbox and changed subscript to fvt
+nptEyeVelocityHistogram		moved to fvt toolbox and changed subscript to fvt
+nptEyePositionRangeHistogram	moved to fvt toolbox and changed subscript to fvt
+nptEyeDurationHistograms	moved to fvt toolbox and changed subscript to fvt
+nptGenerateSessionEyeMovements	moved to fvt toolbox and changed subscript to fvt
+InspectSpikesOnEyes		moved to fvt toolbox 
+RevCorr folder			moved to fvt toolbox
+create_points			moved to fvt toolbox
+nptDisplayMovie			moved to fvt toolbox
+nptDisplayStillImage		moved to fvt toolbox
+
+12/11/01
+ProcessSession			removed eyeflag printout
+ProcessEyeSessions		initialize redo=0 if arguments are present
+ProcessEyeSessions		changed dirlist on line 110 to eyefiltdirlist to avoid errors
+
+12/12/01
+InspectSpikes			changed index name on line89 so as not to conflict with structure name change
+GenerateSessionSpikeTrains	changed printout of trial number(took out carriage return) to conserve space on BatchProcessor printout
+
+12/14/01
+nptAddPath			took out revcorr path because it is moved to fvt
+read_init_info			added some sscanf comments
+
+12/17/01
+read_init_info			added Date field
+
+12/19/01
+generateSessionSpikeTrains	changed spacing on trial printout
+
+1/2/02
+read_init_info			fixed sscanf problems
+read_extrasyncs			same
+read_extrasyncs_struct		same
+
+1/3/01
+NPT folder			mergered with Shih Cheng
+ProcessEyes			added comments
+nptDir				added if ~isempty statement
+
+1/11/01
+@streamer/subsref		new file
+@ispikes/subsref		new file
+@waveforms/subsref		new file
+@streamer/display		updated
+@ispikes/display		updated
+@waveforms/display		updated
+@waveforms/waveforms		added comments
+@streamer/plot			multiple channel plotting
+inspectCB			uigetfile defaults to *.* files
+CreateDataObject		multiple channel selection for streamer files
+@eyes/subsref			new file
+@eyes/eyes			new file
+@eyes/display			new file
+@eyes/plot			new file
+@eye/get			new file
+
+1/25/02
+CreateDataObject		added _eye cababilities to load button
+
+1/30/02
+@eyes/plot			returns handles to lines as well as object itself
+
+2/05/02
+@ispikes/ispikes		added groupname field and changed name field to sessionname 
+@ispikes/get			added groupname field and changed name field to sessionname
+@ispikes/subsref		added groupname field and changed name field to sessionname
+@ispikes/display		added groupname field and changed name field to sessionname
+
+2/11/02
+@ispikes/ispikes		changed order of fields for null constructor
+@ispikes/display		fixed sessionname bug 
+
+2/12/02
+MERGED WITH STREAMER B
+doc/nptmanual			updated viewing section
+
+2/13/02
+@ispikes/plot			fixed sessionname bug
+@ispikes/plot			added groupname to title
+CreateDataObject		added _spike to load an ispikes object
+
+3/22/02
+npt/scripts/view folder		I changed a whole bunch of stuff over the last couple of days
+
+3/25/02
+add				new function to add vectors of unequal length
+
+3/27/02
+read_init_info			added receptive field information to init_info
+
+3/10/02				
+CreateDataObject		changed name of firing rate to spikeprob
+nptdat/inspectgui		queries if object has a title and sets to 'Name' of figure
+ispikes				added title field 
+
+4/15/02
+ispikes/removespikes		new function to remove spikes when RF is outside of image
+eyes/eyes			new field of units so plot can be in degrees or pixels
+createdataobject		prompts user for degrees or pixels with eyes objects
+createdataobject		added search for '_spikeRF.mat'
+
+7/30/02
+@eyes/plot			shifted data by one point
+
+8/1/02				
+dist2				quick algorithm to compute distances between vector matrices
+
+8/8/02
+read_init_info			changed line 100 to read bar orientations as %f not %d
+                		values = sscanf(line,'Orientation of Bar %u=%f');
+9/6/02
+CreateDataObject		created one elseif statement for all generic GUI filenames
+InspectGUI			added eccentricity case
+
+9/16/02				
+HistGUI	(.m and .mat file)	created new GUi for generic Histogram Inspection
+histInspectGUI			loading function for above gui
+CreateDataObject		changed to work for above
+InspectGUi				removed some hist file types from this.
+pixel2degree			changed comments
+
+9/23/02
+HistInspectCB			put parameters into a single structure
+
+9/27/02
+ReadStreamerFileHeader		syntax error on line 41   fclose(fid):
+
+10/1/02
+nptRemoveNoiseSpike		new function (used to be called nptRemoveNoiseSpikes)
+ProcessSession			added nptRemoveNoiseSpikes
+
+10/7/02
+******************  Changed to Matlab 6.5 *******************
+
+10/11/02
+nptRemoveNoiseSpike		changed to work with new nptThreshold
+nptTHreshold			changed arguments		
+
+10/23/02            
+nptRemoveNoiseSpike     added semicolon to supress output
+
+10/25/02
+MoveProcessedFiles	added exist check for status variable
+
+10/29/02 		
+nptSpike2Sound		new file 
+
+1030/02
+ProcessDay		initialized nomove=0 if nargin==0
+
+10/31/02
+GetAnimalData		new file to get results from multiple data using excel input file
+
+11/18/02
+@eyes/plot          turned zoom on
+@streamer/plot      "
+@ispikes/plot       "
+
+1/24/03
+findindex		new file added to /miscellaneous
+
+1/25/03
+nptLoadingEngine			works with MClust
+CreateDataObject			"
+ispikes
+generatesessionspiketrains
+generatesessiondatspiketrians
+trialwaves
+waveforms
+waveforms/plot
+waveforms/subsref
+readdatfile
+readCUTfile
+
+1/26/03
+nptProcessSession	added RunClustBatch
+nptMoveProcessedFiles	added FD dir and changed copy and delete to move
+
+1/27/03
+processsession		added threshold,sort_algo and groups argument
+extractorwrapper	"	"	"
+generatesessionspiketrains	added overlap warning
+ReadCUTfile 			got rid of +1 for overlap cluster
+CreateDAtaObject		added save ispikes file questdlg box
+1/27/03
+createDataObject	line 193 cellstr instead od num2cell
+
+1/30/03
+nptExtructor		adapted for tetrode use
+ExtractorWrapper		"			
+ProcessSession			"
+nptReadDatFile			"
+@waveforms\plot			"
+
+2/05/03
+ProcessDay		added CreateCatTrials call
+CreateCAtTrials		added to BatchProcessor folder
+
+
+
+
+
+***********Mergered with StreamerB on 2/13/03 by baldwin
+Dudeman was not mergered with StreamerB Since between 10/7/02 and 10/11/02
+and so there were some overlapping files like ProcessDay and ProcessSession but I think everything is current now.
+
+2/18/03
+ProcessSession		replace all eye with eyedata
+
+2/20/03
+ProcessSession		changed dat format
+WriteWaveformsHeader	new file
+StretchTimes		new file
+CreateCAtTrials 	added to BatchProcessor folder
+
+
+3/11/03
+Generatesessionspiketrains	remove warning dialog box for overlap
+ProcessSession			made only Klusta Kwik the default spike sorting program
+
+3/20/03
+extructor			+/- 2 refractory period and only negative peaks
+processsession 			fix syntax error
+
+3/24/03
+generatesessionspiketrains	added overlap functionality
+
+4/08/03
+processsession          write waveform times as uint64
+ReadWaveformsHeader     new function
+Waveform32to64          new function
+nptLoadingEngine        changes time precision to .1msec
+ReadWaveformsFile       new function with same functionality as old nptLoadingEngine
+GenerateSessionSpikeTrains      calls ReadWaveformsFile instead of nptLoadingEngine
+
+5/12/03
+ProcessDay		got rid of CreateCatTrials
+CreateCAtTrials		delete function
+ProcessSession		added binsize to WriteSorterHdr
+nptWriteSorterHdr	added binsize for single trial 
+nptReadSorterHDr	added binsize argument
+GenerateSessionSpikeTrains      added single trial logic
+REadWaveformsFile		changed help comments
+
+
+5/14/03
+@event/increment		added case for bin files
+nptReadStreamerFileChunk	new file
+@ispikes/plot			bin file
+@streamer/plot			bin file
+
+5/20/03
+nptWriteSorterHdr	undid 5/12 changes
+nptReadSorterHDr	undid 5/12 changes
+ProcessSession		added readStreamerChunk functionality
+
+6/05/03			
+ProcessSession 		isEyeCalib
+isEyeCalib		new function
+
+6/06/03
+extract_varagin		useful function from MClust
+
+6/9/03
+createphotospikes	create spiketrain from photodiode to perform Revcorr testing
+read_seq		reads new and old seq file
+
+6/12/03
+readIniWrapper		tries to read all types of non-EyeCalib ini files
+readREvCorrIni		reads new REvcorr ini files
+REadEyeCalibIni		reads old and new eye calib files (eyecalib ini flies have not changed)
+ProcessSession		incorporated ReadIniWrapper
+
+
+**********MERGED with Presenter*************
+
+6/13/03
+readRevCorrIni		many small changes
+read_init_info		changed fieldnames to match REadRevCorrIni
+read_extrasyncs.m	deleted function
+readScanlines		new function
+ReadExtraSyncsFile	changed to work with older files
+
+
+readExtrasyncsFile	works with all types
+readScanlines		works with all types
+ProcessSession		
+Convert Folder		moved all convert functions into it
+
+6/30/03
+read_seq		troy's new function
+
+7/14/03         
+processsession  changed default KwikKlust and added tetrode and electrode batch files
+
+
+7/21/03
+ReadEyePos		New function
+
+8/04/03			deleted ReadEyePos
+
+9/04/03
+processEyeSession	line 92 incorrect dirlist index
+@nptdata/processday	added Daycommand variable
+
+9/8/03
+processSession		added additional batch variables (redoValue, extractionValue,etc...)
+processSession		do not automaticallu set extraction flag if threshold or sort_algo are passed in.
+processDay		added nomoveValue
+nptRemoveNoiseSpike	removed close all command
+
+9/9/03			
+GenerateSessionSpikeTrains	added .spikes=[] as default incase no spikes per trial
+
+9/10/03
+CreateDataObject	made reading ispikes more general
+
+9/17/03     
+ProcessSession        added lowpass and highpass cutoff freqencies as input parameters
+ProcessDay            added redoValue parameter
+
+9/23/03
+CreateMSeqMovie 	new file moved from fvt directory
+
+9/25/03
+InspectGUI          added multiple subplot functionality
+                    but optional arguments must be decalred with the 'optArgs' flag
+InspectCB           added multiple subplot functionality             
+processSesssion     added lowpass to electrode or tetrode
+@streamer/plot      commented title(filename)
+@ispikes/plot       chnaged 
+
+10/1/03
+linkedzoom	new function to zoom across subplots
+
+10/2/03
+ProcessSession		added Suffix to caseinsensetive ini nptdir search
+ProcessSession		looks for a MClust batch file in the current dir first
+
+10/6/03
+CreateDataObject	chnaged to work with DisplayData GUI
+HistGUI				"
+@eyes/plot			"
+@ispikes/plot			"
+@streamer/plot			"
+InspectGUI			"
+histInspectCB			"
+suptitle		new function
+
+10/6/03
+ReadWaveformsFile	fixed for electrodes
+@waveforms/plot		added varargin
+
+10/7/03
+@event/Increment		changed to->	if v.event>v.end %& v.end>1
+
+11/24/03
+readcutfile	 removed unused output variable
+processsession	changed from ini based to descriptor based for Rony
+
+12/15/03
+ProcessSession	changed SpikeSorting defaults
+MoveProcessedFiles	deletes FD folder if extraction is redone
+
+1/9/04
+WriteWaveformsFile  new function
+
+1/23/04
+nptDefaultColors	new function so that channel colors are same as MClust
+@ispikes/plot		uses nptDefaultColors
+
+2/25/04
+ReadStreamerFileChunk	changed comments slightly
+@trialwaves/trialwaves	fix if only only trial in session
+ProcessSession		fixed bug for single trial broadband lowpass and highpass filtering.
+
+new files:
+TwoDimGuassFilter	creates a 2d gaussain filter
+max2			max of matrix	
+min2			min of matrix
+nptAppendStreamerFile	add more data to end of file
+nptWriteStremaerHeader	creates and writes streamer header
+max3
+min3
+
+
+3/26/05
+readextrasyncsfile	changes for Jonathan
+extrasyncs wrapper
+readinitinfo
+
+4/23/05
+@nptdata/ProcessDay	fixed small bug
+
+4/26/05
+inspectCB 		return function after closing figure
+readRevCorrIni		added fields
+PresenterTrigs		put fix in for non windowed movies which do not have a presenter trig
+
+4/27/05
+extendticklabels	formats tick labels on plots to anything other than default 5 decimal places.
+
+4/28/05
+processsession		added if ... & ~strcmp(sort_algo,'none') to line 598
+processeyesessions	added redoValue logic
+	
+5/4/04
+ReadRevCorrIni		uncommented eyecalib section and added status=1
+
+5/25/04
+ispikes 		added cellname and unitype fields and data field
+GenerateSessionspikeTrains	HAck. added cellname and unitype as '' for now.
+@ispikes/loadobj	new file
+ispikes/subsref		easier now with data field
+streamer		cleaned up constructor.  numtrials part of object and parent.	
+ispikes/plot	
+
+
+6/8/04
+readIniFileWrapper	only two read ini functions now
+readRevCorrIni		updated to read all of troy's ini files.
+iniFileNotes.txt	added to docs
+@nptdata/inspectGUI	set event with mutliplrobjs argument
+
+6/9/04
+@streamer/streamer  change number of events in nptdata to inf for cat trials.
+
+6/16/04
+ProcessSession  	Changed extraction to have a single threshold per session
+ExtractorWrapper		"
+calcSTD				"  new file
+extractionThreshold		" new file
+
+6/16/04
+@ispikes/separate	create cell ispikes objs from a group ispikes object
+@ispikes/loadobj	removed unittype field
+@ispikes/ispikes	        "
+@ispikes/private/generatesessionspiketrains	"
+
+6/17/04
+ProcessSession 		changed magic number back from testing mode
+
+6/23/04
+ProcessEssion		fileparts(filename)
+calcSTD			added ;
+ReadSorterHdr		added numChunks, etc...
+WriteSorterHdr		"
+GenerateSessionSpikeTrains	added numchunks functonality
+streamer			"
+ispikes				"
+@streamer/loadobj		"
+
+6/24/04
+ispikes
+streamer
+
+6/25/04
+streamer	fixed structure syntax
+streamer/plot	added numchunks functionality
+GenerateSessionSpikeTrains	fixed bugs with numChunks
+generateDatspiketrains		fixed dat structure syntax
+ispikes/plot			added numchunks functionality
+ispikes	 	added try catch if older version of file does not load correctly.  Instead of using 		loadobj to modify we just recreate and save a new object.
+ispikes/display		modified
+ispikes/loadobj		deleted
+streamer/loadobj	deleted
+
+6/30/04
+ispikes		ispikes.mat filename
+generatesessionspiketrains	overlap warning
+separate	group info
+
+7/2/04
+ispresent 		bug in ignore case fixed
+ispikes/plot		uses getoptargs and chunksize
+streamer/plot			"
+readjonathanini		new fields
+streamer		gets chunksize from sorter hdr file.
+
+7/6/04			
+inspectGUI		removed chunkSize from plot argument
+inspectCB			"
+
+7/7/04	
+organize data		loops over days and adds site info.
+
+7/8/04
+ispikes			if error reloading cell ispikes then call seperate.
+
+7/15/04
+streamer		added absolute path to nptdata 'SessionDirs' of the streamer data.
+streamer/plot		go to sessionDir to read data
+generatesessionspiketrains	chunksize chnaged to seconds.
+dirlevel		newfunction
+ispikes			inherits from nptdata instead of streamer.
+ispikes/plot		chunkSize in seconds.  instiantes a streamer object if plotting streamer 			also (not default).
+inspectgui		removed chunksize.
+ispikes/get		inherits from nptdata.
+
+
+7/19/04
+getChunkInfo	new function to figure out how many chunks within a highpass monkey file.
+generateSessioonSpike trains	calls getChnkInfo
+streamer				"
+inspectGUI changed multipleobjects to multobjs and removed code to set axis for groups.
+
+7/21/04
+generatesessionspiketrains	added chunksize fields
+ispikes/plot			plot all channel thresholds
+extractorwrapper fixed variable name
+extractionthreshold	updated comments
+ispikes/plot		fixedf spiketrain display
+nptgroup/get		pass along varargin
+streamer	cd to session to check for highpass
+organizedata	flag btween monkey and cat sessions.
+
+7/22/04
+eyes        saves sessiondir
+eyes/plot   gets sessiondir
+nptgroup/get cds to group dir.
+streamer    cd to session dir
+streamer/plot   renamed pdir to cwd
+
+7/28/04
+getoptArgs	returns empty array inside cellarray if numeric 		arguments is not present.
+eyes/plot	varargout added.  flags added to Args.
+ispikes/plot	varargout added.  flags added to Args.
+nptgroup/plot	varargout added and handle to axis is returned.
+inspectgui	added varargout and linked zoom functionality.
+inspectguicb	plotoptions callback, linked zoom, varargout.
+plotoptions	new figure and function.
+
+8/03/04
+inspectCB	update Arg.handle before linked zoom.
+nptgroup\plot added ;
+
+8/23/04
+nptdata/processgroup	added unittype arg so that if the str matches the last char of the cluster dir then it will process it.
+
+8/30/04
+getoptargs	added if not empty char to line 191 in get parameters section and did a smart ident.

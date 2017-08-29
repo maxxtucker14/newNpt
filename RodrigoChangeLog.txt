@@ -1,0 +1,52 @@
+
+April-26-2005
+scripts/view/@eyemvt/get.m: 
+scripts/view/@eyemvt/plus.m: 
+scripts/view/@eyemvt/eyemvt.m: 
+scripts/view/@eyemvt/plot.m: 
+scripts/view/@ispikes/private/GenerateSessionSpikeTrains.m: The way the number of clusters was previously deduced was not working if ww had several overlap clusters
+RodrigoChangeLog.txt: 
+scripts/view/@eyemvt/subsref.m: 
+algorithms/eye/EyeMvtAlgo.m: New function renamed from fvtGenerateSessionEyeMovements. Output modified to facilitate object creation. Histogram measures from eyemovement object (e.g. velocity, amplitude, etc) was also added to this function. 
+
+May-03-2005
+scripts/batch_processor/ProcessSession.m: To enable the function to work even with empty fields
+scripts/view/@eyemvt/get.m: To avoid confusions between some properties that go either to the plot or to the get function 
+scripts/view/@eyemvt/eyemvt.m: The old function dirLevel was changed to the new one(getDataDirs
+scripts/view/@eyemvt/plot.m: To fix some bug about the indices that occurred when a specific set of data was selected
+
+June-20-2005
+scripts/view/gui/InspectCB.m: Changes to compute the correct number of events to display when that number does not necessary corresponds to the number of events in the object 
+algorithms/eye/EyeMvtAlgo.m: Modifications to enable the tracking of all the trials eventhough there were no saccades and fixations. Also some corrections to recognize more previously missed saccades
+scripts/view/@nptdata/name2index.m: Changes to compute the correct number of events to display when that number does not necessary corresponds to the number of events in the object 
+scripts/view/@eyemvt/get.m: debugging of the fct to handle big objects and apply various selections of data correctly
+scripts/view/@eyes/subsref.m: 
+scripts/view/@eyemvt/plot.m: debugging of the fct to handle big objects and apply various selections of data correctly
+scripts/view/@eyemvt/eyemvt.m: 
+
+September-26-2005
+
+September-28-2005
+scripts/view/@nptdata/ProcessDay.m: 
+scripts/view/@eyemvt/get.m: 
+scripts/read_files/ReadMarkerFile.m: 
+RodrigoChangeLog.txt: 
+
+October-28-2005
+scripts/view/@eyemvt/plot.m: Some temporary corrections to deal with eyemvt object created in different platforms
+RodrigoChangeLog.txt: 
+scripts/view/@eyemvt/eyemvt.m: just to display some error messages for debugging purposes
+
+November-01-2005
+
+September-14-2006
+scripts/batch_processor/ProcessDayMTSneural.m: including the CombineSessionRule into the diaryProcessDay('timing','eye','cygwinmove','extraction','threshold',4,'sort_algo','KK','clustoptions',{'Do_AutoClust','yes'},'lowpass','highpass'); 
+
+September-19-2006
+scripts/batch_processor/ProcessSession.m: adaptation to process sessions with more than 999 trials[unit,num_channels,sampling_rate,scan_order,points] = nptReadStreamerFile(dirlist(i).name);
+
+November-08-2006
+
+February-06-2007
+scripts/batch_processor/ProcessDayMTSneural.m: add the option to use wintermute as a remote kkProcessDay(nptdata,'nptSessionCmd','eyemvt(''auto'',''SacThresh'',60,''save'');'); % mtstrial(''auto'',''save'');'); 
+RodrigoChangeLog.txt: 

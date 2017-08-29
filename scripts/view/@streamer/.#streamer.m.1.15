@@ -1,0 +1,91 @@
+function sdata = streamer(varargin)
+%STREAMER Constructor function for the STREAMER class
+%   S = STREAMER(SESSIONNAME,CHANNEL) instantiates a STREAMER object
+%   using the signal specified by CHANNEL in the data file 
+%   SESSIONNAME.0001 (which is assumed to be in the current directory). 
+%   This function performs a directory listing in the current directory 
+%   to determine the number of trials in the session.
+%
+%   S = STREAMER(SESSIONNAME,CHANNEL,NUMBER_TRIALS) also instantiates a 
+%   STREAMER object but it takes the number of trials as an argument
+%   instead of performing a directory listing. 
+%
+%   The object contains the following fields:
+%      SDATA.sessionname
+%      SDATA.channel
+%      SDATA.numTrials
+%      SDATA.holdaxis
+%
+%   Dependencies: nptdata.
+
+% property of nptdata base class
+holdAxis = 1;
+
+cwd = pwd;
+p = getDataDirs('session');
+cd(p)
+if ispresent('highpass','dir','CaseInsensitive')
+    p = [p filesep 'highpass'];
+end
+cd(cwd)
+
+switch nargin
+    case 0
+        s.sessionname = '';
+        s.channel = 1;
+        s.numTrials = 0;
+        s.chunkSize = 0;
+        s.numChunks = 0;
+        n = nptdata(0,holdAxis);
+        sdata = class(s,'streamer',n);
+    case 1
+        if (isa(varargin{1},'streamer'))
+            sdata = varargin{1};
+        else
+            error('Wrong argument type')
+        end
+    case 2
+        s.sessionname = varargin{1};
+        s.channel = varargin{2};
+        % initialize fields so the order of the fields won't change
+        s.numTrials = 0;
+        s.chunkSize = 0;
+        s.numChunks = 0;
+        % get list of files
+        cd(p)
+        filelist = nptDir([s.sessionname '*.0*']);
+        cd(cwd)
+        if ~isempty(filelist)
+            s.numTrials = size(filelist,1);
+        else 
+            [s.numChunks,s.chunkSize] = getChunkInfo(s.sessionname,17)
+        end
+        if s.numChunks    
+            n = nptdata(s.numChunks,holdAxis,p);
+        else
+            n = nptdata(s.numTrials,holdAxis,p);
+        end
+        sdata = class(s,'streamer',n);
+    case 3
+        s.sessionname = varargin{1};
+        s.channel = varargin{2};
+        s.numTrials = varargin{3};
+        s.chunkSize = 0;
+        s.numChunks = 0;
+        n = nptdata(s.numTrials,holdAxis,p);
+        sdata = class(s,'streamer',n);
+    case 4
+        s.sessionname = varargin{1};
+        s.channel = varargin{2};
+        s.numTrials = varargin{3};
+        s.chunkSize = varargin{4}(2);
+        s.numChunks = varargin{4}(1);
+        if s.numChunks    
+            n = nptdata(s.numChunks,holdAxis,p);
+        else
+            n = nptdata(s.numTrials,holdAxis,p);
+        end
+        sdata = class(s,'streamer',n);
+    otherwise
+        error('Wrong number of input arguments')
+end

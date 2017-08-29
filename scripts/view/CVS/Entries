@@ -1,0 +1,27 @@
+D/@checksystem////
+D/@datafile////
+D/@dirfiles////
+D/@event////
+D/@eyejitter////
+D/@eyes////
+D/@gratings////
+D/@isi////
+D/@ispikes////
+D/@limits////
+D/@mapfields////
+D/@nptdata////
+D/@nptgroup////
+D/@streamer////
+D/@trialwaves////
+D/@waveforms////
+D/Inspect////
+D/gui////
+/CreateDataObject.m/1.7/Mon Sep 27 17:55:11 2004//
+/HistGUI.m/1.2/Thu Nov 20 00:49:57 2003//
+/HistGUI.mat/1.1.1.1/Mon Jul 14 18:13:27 2003/-kb/
+/InspectGUI.m/1.1.1.1/Mon Jul 14 18:13:27 2003//
+/ViewReadMe.m/1.1.1.1/Mon Jul 14 18:13:27 2003//
+/basicInspectGUI.m/1.1.1.1/Mon Jul 14 18:13:27 2003//
+/basicInspectGUI.mat/1.1.1.1/Mon Jul 14 18:13:27 2003/-kb/
+/histInspectGUI.m/1.1.1.1/Mon Jul 14 18:13:27 2003//
+D/@eyemvt////

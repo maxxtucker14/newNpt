@@ -1,0 +1,260 @@
+tips on creating classes:
+-------------------------
+The nptdata class has three fields: 
+	number - used to determine the number of events in an object.
+	holdAxis - used to determine if the axis limits should be held fixed
+		for all events (default: 0). 
+	sessiondirs - used to store a relevant directory for each event in 
+		an object (default: {''}).
+The first field is mandatory and needs to be set correctly in order to
+use InspectGUI. The third field is useful for objects that need to be
+able to retrieve data from specific directories. It is also useful for
+easily creating a nptdata object that contains a list of directories 
+that have certain kinds of objects.
+
+Set up 'auto' optional input argument so that the constructor can
+attempt to create an object on its own without having to pass specific
+information like the session name, which would be hard to use with the
+batch processing functionality of the nptdata class.
+
+Store data structure of object in the data field, e.g.:
+
+d.data.cellname = 'a425g5c1';
+n = nptdata(1,0);
+obj = class(d,'catcell',n);
+
+This will make it really easy to write the subsref function since the
+entire data structure of the object can be easily accessed and will
+make the use of objects very much like structures. Storing all data in
+the data field also makes Matlab less sensitive to small changes to the
+internal data structure of objects.
+
+When dealing with subsref functions for inherited objects, make the
+subsref function of the child object check that the first index is the
+name of the parent object and then strip the first index before passing
+the indices to the parent object. E.g. the gratings object inherits from
+the mapfields object, so you can do:
+
+gr.mapfields.data
+
+to access the data in the mapfields object. If the first index is not
+stripped, the mapfields/subsref function will get '.mapfields.data' 
+which it won't understand.
+
+Create loadobj function when data structure of objects change so saved
+objects can be updated when loaded.
+
+The get function is used to specify properties of a class, e.g. AnalysisLevel,
+ObjectLevel, GroupPlotProperties. It can also be used to return a different 
+number of events than that stored in the number field of the parent nptdata. 
+
+Objects should use the function getDataDirs to figure out where to go to look for 
+saved objects. This way, other objects won't have to know where to be before
+they can instantiate the object. 
+
+The ObjectLevel returned by the get function specifies where an object should
+be instantiated when the ProcessLevel functions are called (e.g. ProcessGroup,
+ProcessSession). Alternatively, use the LevelObject optional input argument (e.g. 
+'GroupObject','SessionObject') to specify where the object should be 
+instantiated if there is no get function for the class, or if you want to 
+instantiate the object in a different level. Note that this will only work if 
+the level specified on the command line is higher than the one returned by the
+get function (e.g. 'SessionObject' can be used to override a 'Cluster' level in
+the get function, but 'GroupObject' can not be used to overide a 'Session' 
+level in the get function). This is because ProcessGroup, which detects the 
+'GroupObject' argument is not called if the object is instantiated at the 
+Session level. 
+
+By default, the following levels are traversed:
+
+Days, Day, {Site}, Session, Group, Cell
+
+
+nptdata class usage examples:
+-----------------------------
+% inspect spike sorting - from the session directory do:
+cd group0001
+ng = nptgroup('auto');
+cd ../highpass
+% channels in the highpass file are ordered according to group number
+% e.g. if groups 1, 2, 4 are present, then corresponding channel numbers
+% will be 1, 2, 3.
+st = streamer('annie05080504_highpass',1);
+InspectGUI(st,'addObjs',{ng},'optArgs',{{},{'Object',{'ispikes'}}},'SP',[2 1])
+
+% this attempts to create and save performance, timing and bias objects
+% in each session directory. Since the constructor functions for each
+% object knows not to save empty objects, only sessions with relevant
+% data will be computed.
+ProcessDay(nptdata,'nptSessionCmd','performance(''auto'', ...
+	''savelevels'',5);timing(''auto'',''savelevels'',5);bias( ...
+	''auto'',''savelevels'',5);');
+
+% this returns an nptdata object that contains directories that have 
+% the file performance.mat.
+nd = ProcessDay(nptdata,'nptSessionCmd','robj = nptdata(''Eval'', ...
+	''ispresent(''''performance.mat'''',''''file'''')'');');
+
+% this command goes to each directory stored in nd (a nptdata object) 
+% and loads and plots performance and bias objects using optional input
+% arguments.
+InspectGUI(nd,'Objects',{{'performance'};{'bias',{'rt','flat', ...
+	'salience',1}};{'bias',{'rt','flat','salience',2}};{'bias',{'rt', ...
+	'flat','salience',3}}},'SP',[1 4]);
+
+% this command attempts to create an eyejitter object in each session
+% directory and returns a list of directories that contain valid 
+% eyejitter object.
+nd = ProcessDay(nptdata,'nptSessionCmd','ej = eyejitter(''auto'', ...
+	''onsets'',''PresenterTrigger'',''save''); robj = nptdata(''Eval'', ...
+	''~isempty(ej)'');');
+
+% this command goes into each cell directory in each session and 
+% creates catcell and fmagnitude objects.
+ProcessDays(catcell,'save');
+ProcessDays(fmagnitude,'save');
+
+% this command goes into each cell directory in each session and
+% adds the directory if the file catcell.mat is present.
+nd = ProcessDays(nptdata,'nptCellCmd','robj = nptdata(''Eval'', ...
+	''ispresent(''''catcell.mat'''',''''file'''')'');');
+
+% this command plots the latency and fmagnitude objects for each cell
+% directory returned by the previous command.
+InspectGUI(nd,'Objects',{{'catcell',{'Latency'}};{'fmagnitude'}}, ...
+	'SP',[2 1])
+
+% this command creates the fano and trentropy objects in every cell
+% directory and creates an object incorporating all the cells.
+ff = ProcessDays(fano,'save');
+tre = ProcessDays(trentropy,'save');
+
+% this example illustrates overloading the get function so that 
+% InspectGUI can be used for different purposes within one object.
+% The catcell/get function passes all calls to nptdata/get except when
+% the 'Surrogates' optional input argument is present. In that case, it
+% returns the number of surrogates.
+cd('a4/a402/a402g5c1')
+load catcell
+InspectGUI(cc,'Surrogates')
+
+% this command loops over the directories contained in nd and evaluates
+% the string in nptDirCmd.
+ProcessDirs(nd,'nptDirCmd','eyejitter(''auto'',''ONsets'', ...
+	''PresenterTrigger'',''Duration'',100,''save'');');
+	
+% this command loops over the directories contained in nd and returns
+% user specified data without having to create objects
+[nd,data] = ProcessDirs(nd,'nptDirCmd','[n,x,nbins,xcenter,ycenter] ...
+	= hist(eyejitter(''auto''),''BinSize'',1);data = [data; xcenter ...
+	ycenter];');
+	
+% this command loops over the directories contained in ndall and returns
+% the indices corresponding to the directories in ndall as well as the 
+% the data. This is useful when there is more than 1 row of data for each
+% directory
+[ndall,d] = ProcessDirs(ndall,'nptDirCmd','ecc = ...
+	getEccentricity(mapfields(''auto''),''Mark'',1); data = [data; ...
+	repmat(i,length(ecc),1) ecc];');
+
+% this command can be used to create a nptdata object with relevant 
+% directories even if the mat file for the object is stored in a
+% subdirectory
+nd = ProcessDays(nptdata,'nptCellCmd','robj = nptdata(''Eval'', ...
+	''~isempty(eyejitter(''''auto''''))'');');
+
+%this command uses nptGroup to plot multiple objects
+%each object needs a to tell 
+ng = nptGroup('auto');  %must be in the group directory
+%cell arrays of plot arguments and then constructor arguments.
+plot(ng,'object',{'ispikes'});  
+or using InspectGUI ...
+inspectGUI(nptdata,'multObjs',{ng;ng;sp;ng}, ...
+    'optArgs',{  ...
+        {'Object',{'ispikes',{'chunkSize',4,}}} ...
+        {'Object',{'adjspikespsth',{'chunkSize',1}}}  ...
+        {'showStreamer','showISpikes',0,'chunkSize',4} ...
+        {'Object',{'adjspikes',{'chunkSize',1}}}  ...
+              })
+
+% this command returns a nptdata object containing directories in which
+% a contoursPSTH object was successfully created. By specifying the
+% GroupDirName option, only directories matching 'group*' will be 
+% processed. This only works if the contoursPSTH object saves the 
+% current directory into the nptdata object when it is created.
+% This will work even if there is no plus function in the contoursPSTH
+% class since the nptdata/plus function will be used instead and that
+% works fine if your end goal is to get a nptdata object.
+nd = nptdata(ProcessDays(contoursPSTH,'GroupDirName','group*', ...
+	'RadiusDegrees',0.3,'UseEyeJitterLimits');
+
+% this command goes to each of the directories in nd and adds the current
+% directory if a condition is satisfied. A cell array of directories is
+% returned which is then used to create another nptdata object.
+[nd,contourDirs] = ProcessDirs(nd,'DataInit',{},'nptDirCmd', ...
+	'pf = performance(''auto'');if(size(subsref(pf,struct(''type'', ...
+	''.'',''subs'',''stim_p'')),2)>1) data = {data{:} pwd}; end');
+ndcontours = nptdata('SessionDirs',contourDirs);
+
+% this command creates a second nptdata object containing only single 
+% units from a nptdata object that contains a list of session 
+% directories
+[ndmovies,ndmoviesua] = ProcessDirs(ndmovies,'nptDirCmd', ...
+	'n = ProcessSession(nptdata,''CellDirName'',''*s''); ...
+	data = plus(data,n);');
+
+% this command creates a cummulative variability object using a nptdata
+% object containing a list of cluster directories
+[ndrnosync,v] = ProcessDirs(ndrnosync,'Object','variability','save');
+
+% this command creates a frdiff object containing only responsive 
+% units within a site
+dfrobj = ProcessDays(frdiff,'Cells',get(ndresp,'SessionDirs'),'Repetitions','Rate');
+% this command creates frdiff objects containing only pairs within a
+% site
+dfrobj2 = ProcessDays(frdiff,'Cells',get(ndresp,'SessionDirs'), ...
+	'AnalysisLevel','Pairs','Intragroup','Repetitions','Rate','redo','save');
+% this command creates nptgroup objects corresponding to those used in the above
+% analysis
+ngresp = ProcessDays(nptgroup,'Cells',get(ndresp,'SessionDirs'), ...
+	'AnalysisLevel','AllIntragroup');
+ngresp2 = ProcessDays(nptgroup,'Cells',get(ndresp,'SessionDirs'), ...
+	'AnalysisLevel','Pairs','Intragroup');
+% Alternatively, if we already have nptdata objects containing the relevant
+% directories, the nptgroup objects can be created using:
+ngintra = ProcessDirs(ndintra,'Object','nptgroup','GetClusterDirs');
+% the rasters of each pair can be displayed along with the firing rate 
+% differences using the following command:
+InspectGUI(ngresp2,'addObjs',{ngresp2,frdresp2},'optArgs', ...
+	{{'Object',{'adjspikes',{'FMarkersOff','SeparateGroupPlot','HideTitle'}},'GroupEvent'}, ...
+	 {'Object',{'firingrate'},'GroupEvent'}, ...
+	 {}},'SP',[3 1])
+InspectGUI(ngresp,'addObjs',{ngresp,frdresp},'optArgs', ...
+	{{'Object',{'adjspikes',{'FMarkersOff','SeparateGroupPlot','HideTitle'}},'GroupEvent'}, ...
+	 {'Object',{'firingrate'},'GroupEvent'}, ...
+	 {}},'SP',[3 1])
+
+% this command passes a cell array containing equivalent sessions so
+% objects can grab data from a different sesssion using different stimuli
+movstoc = ProcessDays(stoc,'Movie','Cells',get(ndcells,'SessionDirs'), ...
+	'EquivalentSessions',get(ndmseqcells,'SessionDirs'));
+% in the constructor for stoc, include a call to getEquivSession
+sd = getEquivSession(varargin2{:});
+
+% this command modifies the session directory field in nptdata for objects
+% that were computed on a different machine
+ProcessDirs(ndresp,'nptDirCmd','rf = refractory(''auto''); 
+	rf = set(rf,''SessionDirs'',pwd); save refractory rf;');
+
+% this command creates a nptdata object from a nptgroup object and instantiates
+% and plots nptgroup objects created on the fly from each combinations directory
+InspectGUI(nptdata(nptgroup('auto','GroupsFile','asxcgroups.txt')),'Objects', ...
+	{{'nptgroup',{'Object',{'adjspikes',{'FMarkersOff','SeparateGroupPlot','HideTitle'}}},{'GetClusterDirs'}}; ...
+	 {'nptgroup',{'Object',{'firingrate',{'PSTH'},{'Repetitions','Rate'}}},{'GetClusterDirs'}}; ...
+	 {'adjspikesxcorr',{'SurrHist','Sliding'}}},'SP',[3 1],'LinkedZoom')
+
+% this command runs a function from selected cluster directories and combines
+% the outputs together
+[nds,data] = ProcessSession(nptdata,'Cells',ndcells.SessionDirs, ...
+	'nptCellCmd','data = adjs2gdf;', ...
+	'DataPlusCmd','data = unique([data; pdata],''Rows'');');

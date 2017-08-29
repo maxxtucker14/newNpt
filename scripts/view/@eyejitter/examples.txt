@@ -1,0 +1,27 @@
+load contourDirs
+InspectGUI(ndcontours,'Objects',{'eyejitter' {'InFields','FieldMark',1,'Centroid'}})
+[nd,data] = ProcessDirs(ndcontours,'nptDirCmd','[t,f] = getTrialsInFields(eyejitter(''auto''),''ReturnFractionIn'',''FieldMark'',1); data = [data; f get(mapfields(''auto''),''numRFs'',''Mark'',1)];');
+d = data(:,1);
+nRFs = data(:,2);
+rf1s = find(nRFs==1);
+rf2s = find(nRFs==2);
+n1 = histcie(d(rf1s),0:0.05:1);
+n2 = histcie(d(rf2s),0:0.05:1);
+sn = 1:get(ndcontours,'Number');
+subplot(1,2,1)
+plot(sn(rf1s),d(rf1s),'.')
+hold on
+plot(sn(rf2s),d(rf2s),'r.')
+ylim([0.3 1.01])
+xlabel('Session number')
+ylabel('Proportion of included trials')
+title('Proportions of included trials')
+legend('1 RF','2 RFs',3)
+
+subplot(1,2,2)
+bar(0:0.05:1,[n1 n2],'histc')
+xlim([0.35 1])
+xlabel('Proportion of included trials')
+ylabel('Number of sessions')
+title('Distribution of proportions of included trials')
+legend('1 RF','2 RFs',2)

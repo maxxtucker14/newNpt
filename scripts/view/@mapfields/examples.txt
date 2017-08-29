@@ -1,0 +1,7 @@
+[nd,mf] = ProcessDirs(nd,'DataInit',mapfields,'nptDirCmd', ...
+	'data = data + mapfields(''auto'',''redo'',''save'');');
+InspectGUI(mf)
+plot(mf,'Ecc','Mark',1,'UseDegrees');
+plot(mf,'Ecc','Mark',1);
+plot(mf,'FromFix','NoOri','NoNumber','Mark',1,'UseDegrees');
+plot(mf,'FromFix','NoOri','NoNumber','Mark',1,);

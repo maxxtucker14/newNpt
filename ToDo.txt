@@ -1,0 +1,72 @@
+To do:
+
+@nptdata
+--------
+Add plot options GUI to InspectGUI that uses overloaded function from
+each class to fill GUI.
+
+Add function to merge fields of Args structure and merge the flags field.
+The function should warn if there are conflicts in the names of arguments. 
+This way the user can rename arguments in their objects	when debugging 
+their objects. Set up code to check Args along with Args from subfunctions 
+as well as to ignore fields like RedoLevel and SaveLevels. 
+
+Replace allg2 combinations directories with abbreviated actual directories so objects can figure out where to go. This will also make it more tolerant to changes in the constituent cluster directories. 
+
+Add try-catch around new call to plot that expects a second output
+argument. The catch statements should try to create the Args
+from s.optArgs (won't work with flags but it is better than nothing).
+
+Make InspectGUI call InspectCB so as to reduce redundancy in code.
+
+Incorporate panGUI to InspectGUI.
+
+Add code to panGUI to store original limits in order to allow zooming 
+out.
+
+Revamp ProcessDays, ProcessDay, etc. to call one function (e.g. 
+LoopOverDirs) so additions can be made once for all functions. The
+functions ProcessDays, ProcessDay will still have to exist since that
+will be the way those functions will be overloaded by derived classes.
+However, these functions will ideally contain just a call to 
+LoopOverDirs.
+
+Add 'ispresent' option to ProcessDays, ProcessDay, etc. so users won't
+have to specify long quoted strings on the command line when trying to 
+create nptdata directories that only contain directories in which certain
+objects exist or certain criterae are fulfilled.
+
+Add '~isempty' option to ProcessDays, ProcessDay, etc. so users won't
+have to specify long quoted strings on the command line. (Use ~isempty
+instead of ispresent to work with objects that are saved in a
+sub-directory instead of the cell directory.
+
+Modify InspectGUI to parse optional input arguments when using multiple
+objects in a manner similar to nptdata/plot.
+
+Look into merging nptdata and nptgroup so that some of the plot 
+functionality won't have to be replicated in both classes.
+
+Modify InspectGUI so linkedzoom can be turned on for selected subplots.
+
+Modify dxy file generation to ignore extra files.
+
+Move subplot code in @nptdata/plot to nptSubplot.
+
+Update checksystem class to use new nptdata framework.
+
+Modifiy optional input argument addObjs for InspectGUI to include 
+optional arguments instead of having to use optArgs input argument.
+
+Debug nptRemoveLineNoise.
+
+Ignore Next or Previous if we are already at the limit of events so we
+don't waste time redrawing.
+
+General
+-------
+Set up test scripts for different types of data to make sure new changes
+will work for all data.
+
+When using 'auto', objects should check if previously saved object has
+the same requested arguments.

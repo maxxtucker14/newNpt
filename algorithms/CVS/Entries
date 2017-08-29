@@ -1,0 +1,19 @@
+D/extraction////
+D/eye////
+D/filters////
+/ComputeAllTrialsFFT.m/1.1.1.1/Mon Jul 14 18:13:17 2003//
+/ContourArea.m/1.2/Wed May 12 21:59:07 2004//
+/dist2.m/1.1.1.1/Mon Jul 14 18:13:17 2003//
+/nptFFTMag.m/1.2/Wed May 12 21:59:07 2004//
+/nptFindPeak.m/1.1.1.1/Mon Jul 14 18:13:17 2003//
+/nptThresholdCrossings.m/1.1.1.1/Mon Jul 14 18:13:17 2003//
+/welch.m/1.2/Wed May 12 21:59:07 2004//
+/spcorr.m/1.2/Wed May 26 17:55:14 2004//
+/nptThreshold.m/1.2/Fri Sep  3 22:02:11 2004//
+/nptSpikeTimesFFT.m/1.5/Fri Sep  3 21:38:18 2004//
+/CleanData.m/1.1/Fri Jan 21 22:20:38 2005//
+/slidingHist.m/1.6/Sat Jan 22 00:03:09 2005//
+/ComplCoh.m/1.1/Thu Feb  9 18:46:58 2006//
+/cohgram.m/1.1/Thu Feb  9 18:46:58 2006//
+/vecsimilarity.m/1.3/Wed Jul  5 08:43:46 2006//
+/ArtRemTrialsLFP.m/1.1/Thu May 31 21:13:44 2007/-ko/

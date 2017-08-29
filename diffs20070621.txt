@@ -1,0 +1,527 @@
+diff -rw ./scripts/batch_processor/ProcessSession.m /Volumes/cortex/matlab/npt/scripts/batch_processor/ProcessSession.m
+144c144
+<                     if ~isempty(chunkSize) && ~isspace(chunkSize)
+---
+>                     if ~isempty(chunkSize) & ~isspace(chunkSize)
+153c153
+<                     if ~isempty(groups) && ~isspace(groups)
+---
+>                     if ~isempty(groups) & ~isspace(groups)
+259,262d258
+<             % read sorter header to get chunckSize
+<             hdrfilename = nptDir(['..' filesep 'sort' filesep '*.hdr'],'CaseInsensitive');
+<             [max_duration,min_duration, trials,waves,rawfile,fs,channels, ...
+<                 means,thresholds,numChunks,chunkSize] = nptReadSorterHdr(hdrfilename.name);
+312c308
+<             if (smtrials~=0) && (smtrials~=trials)
+---
+>             if (smtrials~=0) & (smtrials~=trials)
+610c606
+<                 if single_flag && ~highpassflag && strcmp(dtype,'Streamer')
+---
+>                 if single_flag & ~highpassflag & strcmp(dtype,'Streamer')
+634c630
+<                 if (~extracthighpass) && (~highpassflag) 
+---
+>                 if (~extracthighpass) & (~highpassflag) 
+741c737
+<                 if single_flag && ( strcmp(dtype,'Streamer') || strcmp(dtype,'UEI') )
+---
+>                 if single_flag & strcmp(dtype,'Streamer')
+751c747
+<                 elseif (~isempty(broadband) || extracthighpass==1)
+---
+>                 elseif (~isempty(broadband) | extracthighpass==1)
+785c781
+<             elseif   isempty(wavelist) && isdir('sort')        
+---
+>             elseif   isempty(wavelist) & isdir('sort')        
+795c791
+<             if(sort && ~strcmp(sort_algo,'none'))
+---
+>             if(sort & ~strcmp(sort_algo,'none'))
+diff -rw ./scripts/batch_processor/ProcessSession.m~ /Volumes/cortex/matlab/npt/scripts/batch_processor/ProcessSession.m~
+144c144
+<                     if ~isempty(chunkSize) && ~isspace(chunkSize)
+---
+>                     if ~isempty(chunkSize) & ~isspace(chunkSize)
+153c153
+<                     if ~isempty(groups) && ~isspace(groups)
+---
+>                     if ~isempty(groups) & ~isspace(groups)
+259,262d258
+<             % read sorter header to get chunckSize
+<             hdrfilename = nptDir(['..' filesep 'sort' filesep '*.hdr'],'CaseInsensitive');
+<             [max_duration,min_duration, trials,waves,rawfile,fs,channels, ...
+<                 means,thresholds,numChunks,chunkSize] = nptReadSorterHdr(hdrfilename.name);
+312c308
+<             if (smtrials~=0) && (smtrials~=trials)
+---
+>             if (smtrials~=0) & (smtrials~=trials)
+382c378,379
+<                     % just put the data in unit since presumably we have checked the
+---
+>                     % just put the data in unit since presumably we have
+>                     % checked the
+610c607
+<                 if single_flag && ~highpassflag && strcmp(dtype,'Streamer')
+---
+>                 if single_flag & ~highpassflag & strcmp(dtype,'Streamer')
+634c631
+<                 if (~extracthighpass) && (~highpassflag) 
+---
+>                 if (~extracthighpass) & (~highpassflag) 
+741c738
+<                 if single_flag && ( strcmp(dtype,'Streamer') || strcmp(dtype,'UEI') )
+---
+>                 if single_flag & strcmp(dtype,'Streamer')
+751c748
+<                 elseif (~isempty(broadband) || extracthighpass==1)
+---
+>                 elseif (~isempty(broadband) | extracthighpass==1)
+785c782
+<             elseif   isempty(wavelist) && isdir('sort')        
+---
+>             elseif   isempty(wavelist) & isdir('sort')        
+795c792
+<             if(sort && ~strcmp(sort_algo,'none'))
+---
+>             if(sort & ~strcmp(sort_algo,'none'))
+diff -rw ./scripts/miscellaneous/checkObjCreate.m /Volumes/cortex/matlab/npt/scripts/miscellaneous/checkObjCreate.m
+1c1
+< function n = checkObjCreate(objArgs,numArgs,varargin)
+---
+> function n = checkObjCreate(varargin)
+4c4
+< Args = struct('firstVarargin','');
+---
+> Args = struct('ArgsC','','narginC','','firstVarargin','');
+8c8
+< if (objArgs.ArgsOnly)
+---
+> if (getfield(Args.ArgsC,'ArgsOnly'))
+13c13
+< if(numArgs==0)
+---
+> if(Args.narginC==0)
+16c16
+< elseif( (numArgs==1) && isa(Args.firstVarargin{1},objArgs.classname) )
+---
+> elseif( (Args.narginC==1) & isa(Args.firstVarargin{1},getfield(Args.ArgsC,'classname')))
+20,26c20,28
+<     if(objArgs.Auto)
+<         if( (ispresent(objArgs.matname,'file','CaseInsensitive')) ...
+<                 && (objArgs.RedoLevels==0) )
+<                 fprintf('Loading saved %s object...\n',objArgs.classname);
+<                 l = load(objArgs.matname);
+<                 robj = eval(['l.' objArgs.matvarname]);
+<                 fprintf('\tComparing saved %s object arguments with new arguments specified...\n',Args.classname);
+---
+>     if(getfield(Args.ArgsC,'Auto'))
+>         % check for saved object
+>         %[pdir,cdir] = getDataOrder('session','relative','CDNow');
+>         if(ispresent(getfield(Args.ArgsC,'matname'),'file','CaseInsensitive') ...
+>                 & (getfield(Args.ArgsC,'RedoLevels')==0))
+>                 fprintf('Loading saved %s object...\n',getfield(Args.ArgsC,'classname'));
+>                 l = load(getfield(Args.ArgsC,'matname'));
+>                 robj = eval(['l.' getfield(Args.ArgsC,'matvarname')]);
+>                 fprintf('\tComparing saved %s object arguments with new arguments specified...\n',getfield(Args.ArgsC,'classname'));
+28c30
+<                 sameFlag = checkArguments(objArgs,robj.data.Args);
+---
+>                 sameFlag = checkArguments(Args.ArgsC,robj.data.Args);
+30c32
+<                     fprintf('\tSaved %s object has same requested arguments...\n',objArgs.classname);
+---
+>                     fprintf('\tSaved %s object has same requested arguments...\n',getfield(Args.ArgsC,'classname'));
+33c35
+<                     fprintf('\tDifferent requested arguments, creating new %s object...\n',objArgs.classname);
+---
+>                     fprintf('\tDifferent requested arguments, creating new %s object...\n',getfield(Args.ArgsC,'classname'));
+diff -rw ./scripts/miscellaneous/getDataOrder.m /Volumes/cortex/matlab/npt/scripts/miscellaneous/getDataOrder.m
+91a92,93
+> end
+> cd(cwd)
+107,108d108
+< 	cd(cwd)
+< end
+Only in /Volumes/cortex/matlab/npt/scripts/miscellaneous: getReturnVal.m
+Only in ./scripts/miscellaneous: separateAxis.m~
+Binary files ./scripts/view/.DS_Store and /Volumes/cortex/matlab/npt/scripts/view/.DS_Store differ
+diff -rw ./scripts/view/@dirfiles/dirfiles.m /Volumes/cortex/matlab/npt/scripts/view/@dirfiles/dirfiles.m
+32,34c32
+< % change to proper directory to check for saved object
+< [pdir,cdir] = getDataOrder('cluster','relative','CDNow');
+< command = checkObjCreate(Args,nargin,varargin);
+---
+> command = checkObjCreate('ArgsC',Args,'narginC',nargin,'firstVarargin',varargin);
+53,55d50
+< % return to previous directory
+< cd(cdir);
+< 
+81c76
+< 	saveObject(obj,Args);
+---
+> 	saveObject(obj,'ArgsC',Args);
+diff -rw ./scripts/view/@dirfiles/plot.m /Volumes/cortex/matlab/npt/scripts/view/@dirfiles/plot.m
+12a13
+>     Args = rmfield (Args, 'ArgsOnly');
+
+36,44c37,39
+< rvarl = length(Args.ReturnVars);
+
+< if(rvarl>0)
+
+<      % assign requested variables to varargout
+
+<      for rvi = 1:rvarl
+
+<      	 rvidx = rvi * 2;
+
+<          varargout{1}{rvidx-1} = Args.ReturnVars{rvi};
+
+<          varargout{1}{rvidx} = eval(Args.ReturnVars{rvi});
+
+<      end
+
+< end
+
+---
+> RR = eval('Args.ReturnVars');
+
+> for i=1:length(RR) RR1{i}=eval(RR{i}); end 
+
+> varargout = getReturnVal(Args.ReturnVars, RR1);
+
+Binary files ./scripts/view/@ispikes/.DS_Store and /Volumes/cortex/matlab/npt/scripts/view/@ispikes/.DS_Store differ
+diff -rw ./scripts/view/@ispikes/plot.m /Volumes/cortex/matlab/npt/scripts/view/@ispikes/plot.m
+27c27
+<     chunkSize = vi.data.chunkSize * 1000;
+---
+>     chunkSize = vi.data.chunkSize;
+29c29
+<     chunkSize = Args.chunkSize * 1000;
+---
+>     chunkSize = Args.chunkSize;
+57c57
+<             line([chunkSize*(n-1) chunkSize*n],[lineY lineY],'Color',Args.Color);
+---
+>             line([chunkSize*1000*(n-1) chunkSize*1000*n],[lineY lineY],'Color',Args.Color);
+61c61
+<                 [y,ind] = find(spiketime>chunkSize*(n-1) & spiketime<chunkSize*n);
+---
+>                 [y,ind] = find(spiketime>chunkSize*1000*(n-1) & spiketime<chunkSize*1000*n);
+67c67
+<         xlim([chunkSize*(n-1) chunkSize*n])
+---
+>         xlim([chunkSize*1000*(n-1) chunkSize*1000*n])
+139c139
+<                 line([chunkSize*(n-1) chunkSize*n],[lineY lineY],'Color',Args.Color);
+---
+>                 line([chunkSize*1000*(n-1) chunkSize*1000*n],[lineY lineY],'Color',Args.Color);
+143c143
+<                     [y,ind]=find(spiketime>chunkSize*(n-1) & spiketime<chunkSize*n);
+---
+>                     [y,ind]=find(spiketime>chunkSize*1000*(n-1) & spiketime<chunkSize*1000*n);
+diff -rw ./scripts/view/@nptdata/saveObject.m /Volumes/cortex/matlab/npt/scripts/view/@nptdata/saveObject.m
+1c1
+< function n = saveObject(obj,Args)
+---
+> function n = saveObject(obj,varargin)
+2a3,5
+> % Args = struct('SaveLevelsC','','classnameC','','matnameC','','matvarnameC','');
+> Args = struct('ArgsC','');
+> [Args,varargin] = getOptArgs(varargin,Args);
+4,10c7,11
+< if(Args.SaveLevels)
+<     fprintf('Saving %s object...\n',Args.classname);
+<     % check to make sure the Args structure is a field in Args
+<     if(~ismember(obj.data,'Args'))
+<     	obj.data.Args = Args;
+<     end
+<     eval([Args.matvarname ' = obj;']);
+---
+> robj = obj;
+> n = 0;
+> if(getfield(Args.ArgsC,'SaveLevels'))
+>     fprintf('Saving %s object...\n',getfield(Args.ArgsC,'classname'));
+>     eval([getfield(Args.ArgsC,'matvarname') ' = robj;']);
+12c13,14
+<     eval(['save ' Args.matname ' ' Args.matvarname]);
+---
+>     eval(['save ' getfield(Args.ArgsC,'matname') ' ' getfield(Args.ArgsC,'matvarname')]);
+>     n = 1;
+diff -rw ./scripts/view/@nptgroup/nptgroup.m /Volumes/cortex/matlab/npt/scripts/view/@nptgroup/nptgroup.m
+139c139
+<             ndg = ProcessLevel(nptdata,'Levels','Group',varargin{:});
+---
+>             ndg = ProcessLevel(nptdata,varargin{:});
+diff -rw ./scripts/view/@nptgroup/plot.m /Volumes/cortex/matlab/npt/scripts/view/@nptgroup/plot.m
+86,87c86
+< h=zeros(numDirs,1);
+< delete(gca);   %bug in R2006b with subplot requires this.
+---
+> h=[];
+93,94c92,93
+< 	h(i) = subplot('Position',axesPositions(i,:));
+< 	% h = [h hc];
+---
+> 	hc = subplot('Position',axesPositions(i,:));
+> 	h = [h hc];
+102c101
+< 		plot(thisObj,cellN,plotOptions{:},'GroupPlots',numDirs, ...
+---
+> 		thisObj = plot(thisObj,cellN,plotOptions{:},'GroupPlots',numDirs, ...
+107,109c106,108
+< %     if(strcmp(version('-release'),'14'))
+< %         set(hc,'Position',axesPositions(i,:));
+< %     end
+---
+>     if(strcmp(version('-release'),'14'))
+>         set(hc,'Position',axesPositions(i,:));
+>     end
+113,116c112,114
+< % if exist('outputs','var')
+< %     varargout{1} = {outputs{:},'handle',h};
+< % end
+< 
+---
+> if exist('outputs','var')
+> varargout{1} = {outputs{:},'handle',h};
+> end
+131,133d128
+< rvidx = (rvi + 1) * 2; 
+< varargout{1}{rvidx-1} = 'handle';
+< varargout{1}{rvidx} = h;
+Only in ./scripts/view/@nptgroup: plot.m~
+diff -rw ./scripts/view/gui/InspectFn.m /Volumes/cortex/matlab/npt/scripts/view/gui/InspectFn.m
+42,45c42,43
+<                 s.obj{ii} = plot(s.obj{ii}, s.optArgs{ii}{:});
+
+<                 outputs = '';
+
+<                 display(['Please add the argument ''ReturnVars'' to the ' ...
+
+<                          'respective plot function. Refer to @dirfiles/PLOT.']);
+
+---
+>                 display(['Error: please add the argument ''ReturnVars'' to the ' ...
+
+>                          'respective plot function! Refer to @dirfiles/PLOT.']);
+
+53,56c51,52
+<                 s.obj{ii} = plot(s.obj{ii},n,s.optArgs{ii}{:});
+
+<                 outputs = '';
+
+<                 display(['Please add the argument ''ReturnVars'' to the ' ...
+
+<                          'respective plot function. Refer to @dirfiles/PLOT.']);
+
+---
+>                 display(['Error: please add the argument ''ReturnVars'' to the ' ...
+
+>                          'respective plot function! Refer to @dirfiles/PLOT.']);
+
+82c78
+<         if isfield(s.Arg(ii).Args,'LinkedZoom') && s.Arg(ii).Args.LinkedZoom==1
+
+---
+>         if isfield(s.Arg(ii).Args,'LinkedZoom') & s.Arg(ii).Args.LinkedZoom==1
+
+84c80
+<             % axes(h(1))
+
+---
+>             axes(h(1))
+
+89,100c85,87
+<     % linkedzoom(h,'onx')
+
+<     linkaxes(h,'x');
+
+< elseif s.LinkedZoom 
+
+< %     && length(findobj(h0,'Type','axes'))>1
+
+< %     % linkedzoom(h0,'onx')
+
+< %     linkaxes(h0,'x')
+
+<     h0axes = findobj(h0,'Type','axes');
+
+<     if(length(h0axes)>1)
+
+<         linkaxes(circshift(h0axes,1),'x');
+
+<     else
+
+<         zoom xon
+
+<     end
+
+---
+>     LinkedZoom(h,'onx')
+
+> elseif s.LinkedZoom & length(findobj(h0,'Type','axes'))>1
+
+>     LinkedZoom(h0,'onx')
+
+114,116d100
+< removefields = {'NumericArguments','GroupPlots', 'GroupPlotIndex', ...
+
+<                                               'ReturnVars', 'ArgsOnly'};
+
+< rmfnum = size(removefields,2);
+
+118,128c102,104
+<     tmpstruct = s.Arg(ii).Args;
+
+<     if(isstruct(tmpstruct))
+
+<         for i = 1:rmfnum
+
+<             rmf = removefields{1};
+
+<             % check which arguments are present
+
+<             if(isfield(tmpstruct,rmf))
+
+<                 % remove arguments that are present
+
+<                 s.Arg(ii).Args = rmfield(tmpstruct,rmf);
+
+<             end
+
+<         end
+
+<     end
+
+---
+>     s.Arg(ii).Args = rmfield(s.Arg(ii).Args, {'NumericArguments', ...
+
+>                                               'GroupPlots', 'GroupPlotIndex', ...
+
+>                                               'ReturnVars', 'ArgsOnly'});
+
+Only in ./scripts/view/gui: InspectFn.m~
+diff -rw ./scripts/view/gui/ObjectCB.m /Volumes/cortex/matlab/npt/scripts/view/gui/ObjectCB.m
+61d60
+<             conArgs = {'Args',''};
+
+237c236
+<                                'FontUnits','normalized', 'FontSize',.8, 'FontWeight','bold', ...
+
+---
+>                                'FontUnits','normalized', 'FontSize',.9, 'FontWeight','bold', ...
+
+266c265
+<                                    'FontUnits','normalized', 'FontSize',.8, ...
+
+---
+>                                    'FontUnits','normalized', 'FontSize',.6, ...
+
+335c334
+<                            'FontUnits','normalized', 'FontSize',.8, 'FontWeight','bold', ...
+
+---
+>                            'FontUnits','normalized', 'FontSize',.9, 'FontWeight','bold', ...
+
+473c472
+<                                'FontUnits','normalized', 'FontSize',.8, 'FontWeight','bold', ...
+
+---
+>                                'FontUnits','normalized', 'FontSize',.9, 'FontWeight','bold', ...
+
+Binary files ./scripts/view/gui/PlotOptions.fig and /Volumes/cortex/matlab/npt/scripts/view/gui/PlotOptions.fig differ
+diff -rw ./scripts/view/gui/PlotOptions.m /Volumes/cortex/matlab/npt/scripts/view/gui/PlotOptions.m
+25c25
+< % Last Modified by GUIDE v2.5 08-Jun-2007 14:51:14
+---
+> % Last Modified by GUIDE v2.5 02-Jun-2006 17:52:39
+30c30
+< gui_Singleton = 1;
+---
+> gui_Singleton = 0;
+78,81d77
+<     if(isempty(pud.Arg(ii).Args))
+<         flagsCollect{ii} = {};
+<         numOptions = 0;
+<     else
+90d85
+<     end
+131c126
+<                        'FontUnits','normalized','FontSize',.8, ...
+---
+>                        'FontUnits','normalized','FontSize',.9, ...
+156c151
+<                  'FontUnits','normalized','FontSize',.8, ...
+---
+>                  'FontUnits','normalized','FontSize',.9, ...
+diff -rw ./scripts/view/gui/old/PlotOptions.m /Volumes/cortex/matlab/npt/scripts/view/gui/old/PlotOptions.m
+49,51c49,50
+< numObjects = size(pud.obj,2);
+< vert=1;
+< % vert = 46;
+---
+> numObjects = size(pud.obj,2)
+>    vert=1
+56d54
+<     % vert = vert - 2;    
+77,80d74
+< %             hf = uicontrol('Parent',gcf,'Units','normalized','Position',[.05 vert .9 .02], ...
+< %                 'FontUnits','normalized','FontSize',.15, ...
+< %                 'FontWeight','bold', ...
+< %                 'String',optionNames(jj),'Style','checkbox','Value',value);
+82c76
+<                 'FontUnits','normalized', ...
+---
+>                 'FontUnits','normalized','FontSize',.15, ...
+90,97d83
+< %             ho = uicontrol('Parent',gcf,'Units','normalized','Position',[.05 vert .5 .02], ...
+< %                 'FontUnits','normalized','FontSize',.15, ...
+< %                 'FontWeight','bold', ...
+< %                 'String',optionNames(jj),'Style','text');
+< %             hv = uicontrol('Parent', gcf,'Units','normalized','Position',[.6 vert .4 .02], ...
+< %                 'FontUnits','normalized','FontSize',.15, ...
+< %                 'FontWeight','bold', ...
+< %                 'String',value,'Style','edit');
+99c85
+<                 'FontUnits','normalized', ...
+---
+>                 'FontUnits','normalized','FontSize',.15, ...
+103c89
+<                 'FontUnits','normalized', ...
+---
+>                 'FontUnits','normalized','FontSize',.15, ...
+Only in ./scripts/view/gui/old: PlotOptions.m~
+diff -rw ./scripts/view/gui/optionsGUI.m /Volumes/cortex/matlab/npt/scripts/view/gui/optionsGUI.m
+33,35d32
+< if(isempty(hArgs))
+
+<     numOptions = 0;
+
+< else
+
+38d34
+< end
+
+56c52
+<                                'FontUnits','normalized', 'FontSize',.8, ...
+
+---
+>                                'FontUnits','normalized', 'FontSize',.9, ...
+
+76c72
+<                                'FontUnits','normalized', 'FontSize',.8, ...
+
+---
+>                                'FontUnits','normalized', 'FontSize',.9, ...
+
+Only in ./scripts/view/gui: optionsGUI.m~
+diff -rw ./scripts/view/gui/updatebutton_Callback.m /Volumes/cortex/matlab/npt/scripts/view/gui/updatebutton_Callback.m
+32d31
+< h_Obj = {};
+Removed code to add numChunks and chunkSize to header files for polytrode data since it will be 
+easier to inspect the spike trains in trial-based mode. The data are combined back into one long
+trial in adjspikes.

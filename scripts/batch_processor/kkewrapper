@@ -1,0 +1,158 @@
+#!/bin/tcsh -f
+# usage: kkewrapper minClusters maxClusters stepClusters [dirs]
+# e.g. kkewrapper 5 30 1
+# differs from kkwrapper in that the PenaltyMix parameter is 1
+# e.g. find . -name "FD" -type d | xargs kkewrapper 5 30 1
+# and to pack up the final files into a tar archive:
+# find . -maxdepth 5 -mindepth 5 -type f | xargs tar -cvf kk2.tar
+
+# get arguments
+@ minClusters = $1
+@ maxClusters = $2
+@ stepClusters = $3
+
+# make sure ls is not aliased to ls -F, which will add * and @ when we do ls
+unalias ls
+
+# get number of arguments
+@ nargs = $#argv
+if ( $nargs > 3 ) then
+    # if there are more arguments, loop over them instead of looping over
+    # directories in local directory
+    set dirs = ($argv[4-$nargs])
+    # get current directory
+    set thisDir = `pwd`
+    # initialize variable to keep track of final jobs
+    set endjobs = " "
+    foreach i ($dirs)
+		cd $i
+		# get name of fet file to set up symbolic link
+		set fetname = `ls -1 *.fet.1 | sed 's/\.fet\.1//'`
+		# check to see if there is a directory called final
+		if (! -e final) then
+			# create the directory
+			mkdir final
+		endif
+		if (! -e tmp) then
+			# create the directory
+			mkdir tmp
+		endif
+		# do foreach in case there are multiple fet files in this directory
+		foreach feti ($fetname)
+			@ index = 1
+			@ Cstart = $minClusters
+			@ Cend = $minClusters + $stepClusters - 1
+			@ Cadd = $Cend - $Cstart
+			set jobs = " "
+			# check Cstart in case Cend was at maxClusters on the previous run
+			# and then Cstart will be at maxClusters+1 while Cend will be
+			# at maxClusters which will cause an error
+			while ( $Cstart <= $maxClusters )
+				if ( $index > 1 ) then
+					# create symbolic link to actual fet file
+					ln -s ${feti}.fet.1 ${feti}.fet.${index}
+				endif
+				# submit job and get jobid
+				set jobid = `echo 'hostname; cd $PBS_O_WORKDIR;'"hostname > kk${feti}${index}.out; /ccb/home/syen/bin/LinuxKlustaKwik-1.6 ${feti} $index -MinClusters $Cstart -MaxClusters $Cend -MaxPossibleClusters 100 -PenaltyMix 1 -UseFeatures 1111111111 >> kk${feti}${index}.out 2>&1" | qsub -V -l nodes=1,nice=15 -j oe -o $PWD/qsubkk${feti}${index} -N KlustaKwik -`
+				echo $jobid
+				# append jobid to jobs
+				set jobs = ($jobs $jobid)
+				@ Cstart = $Cend + 1
+				@ Cend = $Cstart + $Cadd
+				if ( $Cend > $maxClusters ) then
+					@ Cend = $maxClusters
+				endif
+				@ index++
+			end
+			# substitute ":" for spaces in jobs
+			set depstr = `echo $jobs | sed 's/\ /:/g'`
+			# submit job that will find the run with the best score and 
+			# move the .clu and .model files into the final directory
+			# all the klg files are concatenated into a .klg file in the
+			# final directory. After that, we move all the files to the
+			# tmp directory and then move the files from the final
+			# directory into the current directory so that these files can
+			# be archives and extracted to the correct final location
+			echo 'cd $PBS_O_WORKDIR; mv '${feti}'.[cm]*.`grep -1 BEST '${feti}'.klg.* | grep Score | cut -d " " -f 1,4 | sort -n -r -k 2 | tail -1 | cut -d "-" -f 1 | cut -d "." -f 3` final; cat '${feti}'.klg.? '${feti}'.klg.?? > final/'${feti}'.klg; mv *'${feti}'* tmp; mv final/'${feti}'* .' > qsubcmdstr${feti}
+			set endjobid = `qsub -W depend=afterok:$depstr -j oe -o $PWD/tmp/qsubkk${feti}final -N BestKK qsubcmdstr${feti}`
+			echo $endjobid
+			set endjobs = ($endjobs $endjobid)
+		end
+		cd $thisDir
+    end
+    # check to see if we need to copy the results to another computer
+    if(-e scpdir) then
+    	# substitute ":" for spaces in endjobs
+    	set depstr2 = `echo $endjobs | sed 's/\ /:/g'`
+		echo $depstr2
+    	# submit job that will archive the results and scp it another 
+    	# computer
+    	echo 'cd $PBS_O_WORKDIR; find . -name "qsubcmdstr*" | xargs rm; find . -mindepth 5 -maxdepth 5 -type f | xargs tar -cvf kk2.tar; sh scpdir; rm -r site0? scpdir qsubscpdir kk.tar kk2.tar' | qsub -W depend=afterok:$depstr2 -j oe -o qsubscpdir -N scpdir -
+    endif
+else
+    set dirs = (`ls -d [a-z][1-9]`)
+    foreach i ($dirs)
+		cd $i
+		foreach j (*)
+			cd $j
+			foreach k (*)
+				cd $k
+				# get name of fet file to set up symbolic link
+				set fetname = `ls *.fet.1 | sed 's/\.fet\.1//'`
+				# check to see if there is a directory called final
+				if (! -e final) then
+					# create the directory
+					mkdir final
+				endif
+				if (! -e tmp) then
+					# create the directory
+					mkdir tmp
+				endif
+				# do foreach in case there are multiple fet files in this directory
+				foreach feti ($fetname)
+					@ index = 1
+					@ Cstart = $minClusters
+					@ Cend = $minClusters + $stepClusters - 1
+					@ Cadd = $Cend - $Cstart
+					set jobs = " "
+					# check Cstart in case Cend was at maxClusters on the previous run
+					# and then Cstart will be at maxClusters+1 while Cend will be
+					# at maxClusters which will cause an error
+					while ( $Cstart <= $maxClusters )
+						if ( $index > 1 ) then
+							# create symbolic link to actual fet file
+							ln -s ${feti}.fet.1 ${feti}.fet.${index}
+						endif
+						# submit job and get jobid
+						set jobid = `echo 'hostname; cd $PBS_O_WORKDIR;'"hostname > kk${feti}${index}.out; /ccb/home/syen/bin/LinuxKlustaKwik-1.6 ${feti} $index -MinClusters $Cstart -MaxClusters $Cend -MaxPossibleClusters 100 -PenaltyMix 1 -UseFeatures 1111111111 >> kk${feti}${index}.out 2>&1" | qsub -V -l nodes=1,renice=15 -j oe -o $PWD/qsubkk${feti}${index} -N KlustaKwik -`
+						echo $jobid
+						# append jobid to jobs
+						set jobs = ($jobs $jobid)
+						@ Cstart = $Cend + 1
+						@ Cend = $Cstart + $Cadd
+						if ( $Cend > $maxClusters ) then
+							@ Cend = $maxClusters
+						endif
+						@ index++
+					end
+					# substitute ":" for spaces in jobs
+					set depstr = `echo $jobs | sed 's/\ /:/g'`
+					# set up string to concatenate klg files in numerical order
+					if ( ($maxClusters - $minClusters) > 8 ) then
+						set klgpatterns = "${feti}.klg.? ${feti}.klg.??"
+					else
+						set klgpatterns = "${feti}.klg.?"
+					endif
+					# submit job that will find the run with the best score and 
+					# move the .clu and .model files into the final directory
+					# all the klg files are concatenated into a .klg file in the
+					# final directory
+					echo 'cd $PBS_O_WORKDIR; mv '"${feti}"'.[cm]*.`grep -1 BEST '"${feti}"'.klg.* | grep Score | cut -d " " -f 1,4 | sort -n -r -k 2 | tail -1 | cut -d "-" -f 1 | cut -d "." -f 3` final;'"cat $klgpatterns > final/${feti}.klg; mv *${feti}* tmp; mv final/${feti}* ." | qsub -W depend=afterok:$depstr -j oe -o $PWD/tmp/qsubkk${feti}final -N BeskKK -
+				end
+				cd ..
+			end
+			cd ..
+		end
+		cd ..
+    end
+endif
