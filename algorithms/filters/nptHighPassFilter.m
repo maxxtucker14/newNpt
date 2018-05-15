@@ -77,6 +77,7 @@ end
 if(idr==1)
     inputdata = inputdata';
 end
+fprintf('Applying high-pass filter with frequencies of %f and %f Hz\n',[low high]*Fn);
 data = filtfilt(b,a,inputdata);
 if(idr==1)
     % transpose back since extractor expects data in rows
