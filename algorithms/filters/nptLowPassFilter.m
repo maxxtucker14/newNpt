@@ -100,9 +100,9 @@ end
 order=4;
 [b,a] = butter(order, [low high]);  
 
-  
 %use filtfilt so there are no phase shifts
 if size(lfps_data,1)>3*2*order
+	fprintf('Applying low-pass filter with frequencies of %f and %f Hz\n',[low high]*Fn);
     lfps = filtfilt(b,a,lfps_data);
 end
 
