@@ -72,7 +72,14 @@ end
 [b,a] = butter(4,[low high]);
 %b=[0.1988 0 -0.7952 0 1.1928 0 -0.7952 0 0.1988];
 %a=[1 -2.4641 1.5275 -0.0918 0.6937 -0.7247 -0.0647 0.0838 0.0408];
-% need to transpose since filtfilt operates on columns
-filtereddata = filtfilt(b,a,transpose(inputdata));
-% transpose back since extractor expects data in rows
-data = transpose(filtereddata);
+% check if we need to transpose inputdata since filtfilt works on columns
+[idr,idc] = size(inputdata);
+if(idr==1)
+    inputdata = inputdata';
+end
+fprintf('Applying high-pass filter with frequencies of %f and %f Hz\n',[low high]*Fn);
+data = filtfilt(b,a,inputdata);
+if(idr==1)
+    % transpose back since extractor expects data in rows
+    data = transpose(data);
+end

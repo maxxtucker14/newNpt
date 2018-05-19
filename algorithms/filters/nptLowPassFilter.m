@@ -80,11 +80,15 @@ switch nargin
 end
 
 %subsample files to 1KHz
-% need to transpose inputdata since resample works on columns
-lfps_data = resample(transpose(inputdata),resample_rate,sampling_rate);
+% check if we need to transpose inputdata since resample works on columns
+[idr,idc] = size(inputdata);
+if(idr==1)
+    inputdata = inputdata';
+end
+lfps_data = resample(inputdata,resample_rate,sampling_rate);
 if display
     figure
-    plot(inputdata(1,:))
+    plot(inputdata(:,1))
     figure
     plot(lfps_data(:,1))
 end
@@ -96,14 +100,17 @@ end
 order=4;
 [b,a] = butter(order, [low high]);  
 
-  
 %use filtfilt so there are no phase shifts
 if size(lfps_data,1)>3*2*order
-    lfps = transpose(filtfilt(b,a,lfps_data));
-else
-    lfps = lfps_data';
+	fprintf('Applying low-pass filter with frequencies of %f and %f Hz\n',[low high]*Fn);
+    lfps = filtfilt(b,a,lfps_data);
 end
+
 if display
     hold on
-    plot(lfps(1,:),'r')
+    plot(lfps(:,1),'r')
+end
+
+if(idr==1)
+    lfps = lfps';
 end
