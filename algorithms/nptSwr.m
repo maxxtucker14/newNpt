@@ -19,7 +19,7 @@ switch nargin
 %         sd_ub = varargin{2};    % created incase we wanted it to be 4
 %         rmsFlag = 0; 
 %     
-%     case 4                      % note there is no case 3 
+%     case 4                      % note there is no case 3
 %         data = varargin{1};
 %         sd_lb = 1;
 %         sd_ub = varargin{2};
@@ -42,84 +42,26 @@ end
 m = mean(data);
 sd = std(data);
 
-% sd3 = find(data > (m + 3*sd)); % finds index of data which are above 3sd from mean
-sd1 = data > (m + 1*sd); % finds if data are above 1sd from mean
-
-% % SPW event (maximum)
-% spw = []; % stores the time that marks SPW event
-% 
-% max = 0; % dummy variable to store max in each consecutive section
-% maxi = 0;
-% prev = 0; % dummy variable to store prev data index for comparison
-% 
-% for s = 1:length(sd3)
-%     i = sd3(s);
-%     if prev == i - 1
-%         if max < data(i)
-%             max = data(i);
-%             maxi = i;
-%         end
-%         
-%     elseif prev == 0
-%         
-%     else
-%         spw = [spw, maxi]; % change this for efficiency
-%         max = data(i);
-%         maxi = i;
-%     end
-%     
-%     prev = i;
-% end
-% 
-% % Beginning and end of ripple
-% ib = strfind([0; sd1; 0]', [0 1]);
-% ie = strfind([0; sd1; 0]', [1 0]);
-% 
-% % if ib(1)>ie(1)
-% %     ib = [0 ib];
-% % elseif ib(end) > ie(end)
-% %     ie = [ie length(data)];
-% % end
-% % 
-% % if length(ib) ~= length(ie)
-% %     fprintf('ERROR:Check nptSwr code')
-% % end
-% 
-% j = 1; % for iterating through spw
-% swr = zeros(length(spw),3);
-% 
-% 
-% for i = 1:length(ib)
-%     if ib(i) <= spw(j) && ie(i) >= spw(j)
-%         swr(j,1) = ib(i);
-%         swr(j,2) = spw(j);
-%         swr(j,3) = ie(i);
-%         j = j+1;
-%     end
-% end
-% 
-% if j ~=length(spw)
-%     fprintf('ERROR:Check nptSwr code')
-% end
+sd1 = data >= (m + sd); % finds if data are above 1sd from mean
 
 % Beginning and end of ripple
-ib = strfind([0; sd1]', [0 1]);
-ie = strfind([sd1; 0]', [1 0]);
+ib = strfind([0 sd1], [0 1]); % finds all potential starting points of ripple
+ie = strfind([sd1 0], [1 0]); % finds all potential ending points of ripple
 
-swr = zeros(length(ib),3);
-iswr = 1;
+swr = zeros(length(ib),3); % predefines maximum matrix size. The extra rows are removed later
+iswr = 1; % keeps track of row of matrix filled
 
 % SPW event
 for i = 1:length(ib)
-    if any(data(ib(i):ie(i)) > (m + 3*sd))
-        [m, im] = max(data(ib(i):ie(i)));
+    if any(data(ib(i):ie(i)) >= (m + 3*sd)) % finds if any points are above 3sd from mean
+        [vm, im] = max(data(ib(i):ie(i)));
         swr(iswr,1) = ib(i)+im-1;
         swr(iswr,2) = ib(i);
-        swr(iswr,3) = ie(i);
+        swr(iswr,3) = ie(i)+1;
         iswr = iswr + 1;
     end
 end
 
-swr = swr(any(swr,2),:); %remove extra rows with 0s
+swr = swr(any(swr,2),:); %remove extra rows with 0s (might be more efficient to remove all rows from iswr)
 
 end
