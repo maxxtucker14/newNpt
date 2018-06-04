@@ -1,6 +1,11 @@
 function swr = nptSwr(varargin)
 % detects swr in a given data
 %
+% Inputs
+% 1st Varargin: data
+% 2nd Varargin: Threshold (#sd above mean to be marked as SPW Event)
+% 3rd Varargin: Mark the start and end of SPW Event (#sd above mean)
+%
 % returns matrix swr (index)
 % 1st column: SPW event
 % 2nd column: start of the ripple
@@ -9,21 +14,27 @@ function swr = nptSwr(varargin)
 switch nargin
     case 1
         data = varargin{1};
-%         sd_lb = 1;      % # of sd from mean to mark the start and end of ripple
-%         sd_ub = 3;      % # of sd from mean for ripple detection threshold
+        sd_lb = 1;      % # of sd from mean to mark the start and end of ripple
+        sd_ub = 3;      % # of sd from mean for ripple detection threshold
         rmsFlag = 0;    % determine whether to compute rms
     
-%     case 2
-%         data = varargin{1};
-%         sd_lb = 1;
-%         sd_ub = varargin{2};    % created incase we wanted it to be 4
-%         rmsFlag = 0; 
+    case 2
+        data = varargin{1};
+        sd_lb = 1;
+        sd_ub = varargin{2};    % created incase we wanted it to be 4
+        rmsFlag = 0;
+        
+    case 3
+        data = varargin{1};
+        sd_lb = varargin{3};
+        sd_ub = varargin{2};
+        rmsFlag = 0;
 %     
-%     case 4                      % note there is no case 3
+%     case 5                      % note there is no case 4
 %         data = varargin{1};
-%         sd_lb = 1;
+%         sd_lb = varargin{3};
 %         sd_ub = varargin{2};
-%         rmsFlag = varargin{3};
+%         rmsFlag = varargin{4};
 %         Fs = varargin{4};
 %         window = 0.02;          % window length (s)
 %         overlap = 0.005;        % overlap (s)
