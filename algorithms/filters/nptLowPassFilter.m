@@ -36,44 +36,36 @@ function [lfps , resample_rate]=nptLowPassFilter(varargin)
 %
 %   Dependencies: RESAMPLE, BUTTER, FILTFILT.
 
-display=0;
+% default arguments
+display = 0;
+resample_rate = 1000;
+Fn = resample_rate/2;		%!!!Use nyquist freq
+%filter signals between 1 and 150 Hz  (see filter_design.m for design specs)
+low = 1/Fn;	
+high = 150/Fn;
 
 switch nargin
 	case 2
 		inputdata = varargin{1};
 		sampling_rate = varargin{2};
-		resample_rate=1000;
-		%filter signals between 1 and 150 Hz  (see filter_design.m for design specs)
-		Fn=resample_rate/2;		%!!!Use nyquist freq
-		low=1/Fn;	
-		high=150/Fn;
 		
 	case 3
 		inputdata = varargin{1};
 		sampling_rate = varargin{2};
-		resample_rate=varargin{3};
-		%filter signals between 1 and 150 Hz  (see filter_design.m for design specs)
-		Fn=resample_rate/2;		%!!!Use nyquist freq
-		low=1/Fn;	
-		high=150/Fn;
+		resample_rate = varargin{3};
 	
 	case 4
 		inputdata = varargin{1};
 		sampling_rate = varargin{2};
-		resample_rate=1000;
-		%filter signals between LOW_FREQ_LIMIT and HIGH_FREQ_LIMIT  (see filter_design.m for design specs)
-		Fn=resample_rate/2;		%!!!Use nyquist freq
-		low=varargin{3}/Fn;	
-		high=varargin{4}/Fn;
+		low = varargin{3}/Fn;	
+		high = varargin{4}/Fn;
 		
 	case 5
 		inputdata = varargin{1};
 		sampling_rate = varargin{2};
-		resample_rate=varargin{3};
-		%filter signals between LOW_FREQ_LIMIT and HIGH_FREQ_LIMIT  (see filter_design.m for design specs)
-		Fn=resample_rate/2;		%!!!Use nyquist freq
-		low=varargin{4}/Fn;	
-		high=varargin{5}/Fn;
+		resample_rate = varargin{3};
+		low = varargin{4}/Fn;	
+		high = varargin{5}/Fn;
 
 	otherwise
 		error('Wrong number of input arguments')
